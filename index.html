@@ -133,7 +133,8 @@
  #home-screen{position:fixed;inset:0;background:#e8dcc8;z-index:3000;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem;transition:opacity 0.5s ease;}
  .home-tag{font-size:0.68rem;letter-spacing:3.5px;text-transform:uppercase;color:rgba(200,169,110,0.65);text-align:center;margin-bottom:1.2rem;}
  .home-h1{font-family:"Cormorant Garamond",serif;text-align:center;line-height:1.05;margin-bottom:0.5rem;}
- .home-h1 .hb{display:block;font-size:clamp(3rem,11vw,6rem);font-style:italic;font-weight:400;color:rgba(200,169,110,0.42);line-height:1.05;}
+ .home-h1 .hb{display:block;font-size:clamp(2.2rem,9vw,4.5rem);font-style:italic;font-weight:400;color:rgba(200,169,110,0.42);line-height:1.1;}
+ .home-h1 .hb2{display:block;font-size:clamp(2.6rem,10vw,5.5rem);font-style:italic;font-weight:400;color:rgba(200,169,110,0.55);line-height:1.1;}
  .home-h1 .hn{display:block;font-size:clamp(4rem,14vw,7.5rem);font-style:italic;font-weight:700;color:#C8A96E;line-height:1;}
  .home-sub{font-size:0.68rem;letter-spacing:3px;text-transform:uppercase;color:rgba(92,61,30,0.48);text-align:center;margin-bottom:2rem;}
  .home-cd-box{background:rgba(200,169,110,0.1);border:1px solid rgba(200,169,110,0.3);border-radius:16px;padding:1.2rem 2rem;text-align:center;margin-bottom:2rem;min-width:220px;}
@@ -170,15 +171,16 @@
 <div id="home-screen">
  <div class="home-tag">From Dani-Elle, with love 💛</div>
  <div class="home-h1">
-   <span class="hb">Happy Birthday,</span>
-   <span class="hn">Joel.</span>
+   <span class="hb">Happy</span>
+   <span class="hb2">birthday,</span>
+   <span class="hn">Joel</span>
  </div>
  <div class="home-sub">Big 32 Year Old 🎈</div>
  <div class="home-cd-box">
    <div class="home-cd-lbl" id="home-cd-lbl">First surprise unlocks in</div>
    <div class="home-cd-time" id="home-cd-time">--:--:--</div>
  </div>
- <button class="home-go-btn" onclick="enterApp()">Let's go! 🎉</button>
+ <button class="home-go-btn" onclick="enterApp()">Are you ready? 🎉</button>
 </div>
 <canvas id="confetti-canvas"></canvas>
 <div id="balloon-layer" aria-hidden="true">
@@ -1053,9 +1055,9 @@ function renderMystery(el) {
 
    var score = 0, shotsTaken = 0, shotsLeft = 5, shooting = false, animId = null;
    var floorY = H * 0.84;
-   var hoopX = W * 0.67, hoopY = H * 0.28, rimW = W * 0.11;
-   var ballR = W * 0.058;
-   var ballStartX = W * 0.17, ballStartY = floorY - ballR;
+   var hoopX = W * 0.5, hoopY = H * 0.3, rimW = W * 0.12;
+   var ballR = W * 0.06;
+   var ballStartX = W * 0.5, ballStartY = floorY - ballR;
    var aimX = hoopX, aimY = hoopY;
    var spin = 0;
    var netSway = 0; // animated net sway after score
@@ -1104,23 +1106,30 @@ function renderMystery(el) {
    }
 
    function drawPoleAndBoard() {
-     var poleX=hoopX+rimW*1.9;
-     ctx.fillStyle='rgba(0,0,0,0.4)';ctx.fillRect(poleX+3,hoopY+10,7,floorY-hoopY-10);
-     var pg=ctx.createLinearGradient(poleX,0,poleX+8,0);
-     pg.addColorStop(0,'#555');pg.addColorStop(0.4,'#999');pg.addColorStop(1,'#444');
-     ctx.fillStyle=pg;ctx.fillRect(poleX,hoopY+10,8,floorY-hoopY-10);
-     ctx.strokeStyle='#777';ctx.lineWidth=5;
-     ctx.beginPath();ctx.moveTo(poleX+4,hoopY-H*0.05);ctx.lineTo(hoopX+rimW*0.55,hoopY-H*0.05);ctx.stroke();
-     ctx.strokeStyle='#999';ctx.lineWidth=2;
-     ctx.beginPath();ctx.moveTo(poleX+4,hoopY-H*0.05);ctx.lineTo(hoopX+rimW*0.55,hoopY-H*0.05);ctx.stroke();
-     var bx=hoopX+rimW*0.35,by=hoopY-H*0.16,bw=W*0.1,bh=H*0.13;
-     ctx.fillStyle='rgba(0,0,0,0.35)';ctx.fillRect(bx+4,by+4,bw,bh);
+     // Front-on view: board centered above hoop, pole behind going to floor
+     var bw=W*0.22,bh=H*0.15,bx=hoopX-bw/2,by=hoopY-H*0.22;
+     // Pole (thin vertical, foreshortened, behind board)
+     var pw=7,px=hoopX-pw/2;
+     ctx.fillStyle='rgba(0,0,0,0.35)';ctx.fillRect(px+3,by+bh+2,pw+1,floorY-by-bh-2);
+     var pg=ctx.createLinearGradient(px,0,px+pw,0);
+     pg.addColorStop(0,'#444');pg.addColorStop(0.5,'#aaa');pg.addColorStop(1,'#444');
+     ctx.fillStyle=pg;ctx.fillRect(px,by+bh,pw,floorY-by-bh);
+     // Short bracket arms from board to hoop
+     ctx.strokeStyle='#888';ctx.lineWidth=3;
+     ctx.beginPath();ctx.moveTo(hoopX-rimW*0.4,by+bh);ctx.lineTo(hoopX-rimW*0.5,hoopY-rimW*0.1);ctx.stroke();
+     ctx.beginPath();ctx.moveTo(hoopX+rimW*0.4,by+bh);ctx.lineTo(hoopX+rimW*0.5,hoopY-rimW*0.1);ctx.stroke();
+     // Board shadow
+     ctx.fillStyle='rgba(0,0,0,0.35)';ctx.fillRect(bx+5,by+5,bw,bh);
+     // Board glass
      var bdG=ctx.createLinearGradient(bx,by,bx+bw,by+bh);
      bdG.addColorStop(0,'rgba(210,225,255,0.92)');bdG.addColorStop(1,'rgba(185,200,235,0.88)');
      ctx.fillStyle=bdG;ctx.fillRect(bx,by,bw,bh);
      ctx.strokeStyle='rgba(100,120,180,0.5)';ctx.lineWidth=1.5;ctx.strokeRect(bx,by,bw,bh);
-     ctx.strokeStyle='#e05c00';ctx.lineWidth=2;ctx.strokeRect(bx+bw*0.22,hoopY-H*0.04,bw*0.56,H*0.06);
-     ctx.fillStyle='rgba(255,255,255,0.15)';ctx.fillRect(bx+2,by+2,bw*0.3,bh*0.4);
+     // Orange target box centered on board
+     ctx.strokeStyle='#e05c00';ctx.lineWidth=2.5;
+     ctx.strokeRect(bx+bw*0.28,by+bh*0.45,bw*0.44,bh*0.45);
+     // Glass highlight
+     ctx.fillStyle='rgba(255,255,255,0.18)';ctx.fillRect(bx+3,by+3,bw*0.35,bh*0.45);
    }
 
    // Draw back rim + net — call before ball when ball is passing through
