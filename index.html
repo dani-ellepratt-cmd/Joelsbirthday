@@ -1261,7 +1261,7 @@ function renderMystery(el) {
      var won=score>=4;
      document.getElementById('bball-result').innerHTML=
        '<div class="love-note" style="text-align:center;margin-top:0.8rem">'+(
-         won?'🏆 <strong style="color:#C8A96E">'+score+'/5 — You've got game!</strong><br><br>Joel's a baller! 🏀🔥<br><br>Dani-Elle is impressed... for once 😄':
+         won?'🏆 <strong style="color:#C8A96E">'+score+'/5 — You\'ve got game!</strong><br><br>Joel\'s a baller! 🏀🔥<br><br>Dani-Elle is impressed... for once 😄':
              '😅 <strong style="color:#ef4444">'+score+'/5 — Not good enough!</strong><br><br>You owe Dani-Elle a <strong style="color:#C8A96E">full body massage! 💆‍♀️</strong><br><br>Time to get those hands working, birthday boy! 😂'
        )+'</div><button class="next-btn" style="margin-top:0.8rem" onclick="closeModal()">'+(won?'Get in! 🏆':'Fine... 💆‍♀️')+'</button>';
      if(won)launchConfetti();
