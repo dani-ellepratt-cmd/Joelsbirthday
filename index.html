@@ -969,16 +969,26 @@ function renderEightBall(el) {
      '</div>';
  };
 
+ window.showEightWin = function() {
+   document.getElementById('eight-result').innerHTML =
+     '<div class="love-note" style="margin-top:1rem;text-align:center">' +
+     '<strong style="color:#C8A96E;font-size:1.1rem">🏆 WINNER WINNER!</strong><br><br>' +
+     'Well done birthday boy! 🎱<br><br>' +
+     '<strong style="color:#C8A96E;font-size:1.3rem">A night at the Strip Club! 🎰🥂</strong><br><br>' +
+     'Dani-Elle will sort it out very soon!</div>' +
+     '<button class="next-btn" onclick="closeModal()">LETS GO! 🎉</button>';
+   launchConfetti();
+ };
+
  window.eightResult = function(r) {
    el.querySelectorAll('.play-btn,.grey-btn').forEach(function(b) { b.disabled = true; b.style.opacity = '0.5'; });
    if (r === 'win') {
-     // Show shake prompt
      document.getElementById('eight-result').innerHTML =
        '<div class="love-note" style="margin-top:1rem;text-align:center">' +
        '<div style="font-size:3.5rem;margin-bottom:0.5rem">📱</div>' +
        '<strong style="color:#C8A96E;font-size:1.15rem">Shake your phone to reveal your prize!</strong><br><br>' +
-       '<div style="font-size:0.85rem;color:var(--muted)">Give it a good shake...</div></div>';
-     // Listen for shake
+       '<div style="font-size:0.85rem;color:var(--muted)">Give it a good shake...</div>' +
+       '</div>';
      var shook = false;
      var lastAcc = {x:0,y:0,z:0};
      function onShake(e) {
@@ -989,24 +999,20 @@ function renderEightBall(el) {
        if (d > 18) {
          shook = true;
          window.removeEventListener('devicemotion', onShake);
-         document.getElementById('eight-result').innerHTML =
-           '<div class="love-note" style="margin-top:1rem;text-align:center">' +
-           '<strong style="color:#C8A96E;font-size:1.1rem">🏆 WINNER WINNER!</strong><br><br>' +
-           'Well done birthday boy! 🎱<br><br>' +
-           '<strong style="color:#C8A96E;font-size:1.3rem">A night at the Strip Club! 🎰🥂</strong><br><br>' +
-           'Dani-Elle will sort it out very soon!</div>' +
-           '<button class="next-btn" onclick="closeModal()">LETS GO! 🎉</button>';
-         launchConfetti();
+         window.showEightWin();
        }
      }
-     // Request permission on iOS 13+
      if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
        DeviceMotionEvent.requestPermission().then(function(p) {
-         if (p === 'granted') window.addEventListener('devicemotion', onShake);
-       }).catch(function(){
-         // fallback: tap button instead
+         if (p === 'granted') {
+           window.addEventListener('devicemotion', onShake);
+         } else {
+           document.getElementById('eight-result').innerHTML +=
+             '<button class="next-btn" style="margin-top:0.8rem" onclick="showEightWin()">Tap to reveal! 🎉</button>';
+         }
+       }).catch(function() {
          document.getElementById('eight-result').innerHTML +=
-           '<button class="next-btn" style="margin-top:0.8rem" onclick="(function(){document.getElementById('eight-result').innerHTML='<div class=\"love-note\" style=\"margin-top:1rem;text-align:center\"><strong style=\"color:#C8A96E;font-size:1.1rem\">🏆 WINNER WINNER!</strong><br><br>Well done birthday boy! 🎱<br><br><strong style=\"color:#C8A96E;font-size:1.3rem\">A night at the Strip Club! 🎰🥂</strong><br><br>Dani-Elle will sort it out very soon!</div><button class=\"next-btn\" onclick=\"closeModal()\">LETS GO! 🎉</button>';launchConfetti();})()">Tap to reveal! 🎉</button>';
+           '<button class="next-btn" style="margin-top:0.8rem" onclick="showEightWin()">Tap to reveal! 🎉</button>';
        });
      } else {
        window.addEventListener('devicemotion', onShake);
