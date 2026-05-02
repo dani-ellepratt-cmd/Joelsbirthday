@@ -238,7 +238,7 @@ var slots = [
  { id:'s13', hour:13, half:false, label:'1pm',  emoji:'🤲', title:'Congratulations',               desc:'Open to find out what you have won!', type:'tickles' },
  { id:'s14', hour:14, half:false, label:'2pm',  emoji:'🎡', title:'Lets Play a Game',             desc:'Spin the wheel and complete your challenge!', type:'wheel' },
  { id:'s15', hour:15, half:false, label:'3pm',  emoji:'🎱', title:'8 Ball Time',                   desc:'You vs Dani-Elle — rack them up! Winner takes all.', type:'eightball' },
- { id:'s16', hour:16, half:false, label:'4pm',  emoji:'🎁', title:'Mystery Surprise',              desc:'This one is a secret... open to find out!', type:'mystery' },
+ { id:'s16', hour:16, half:false, label:'4pm',  emoji:'🏀', title:"Let's find out 🏀",           desc:"Let's find out how good you really are...", type:'mystery' },
  { id:'s17', hour:17, half:false, label:'5pm',  emoji:'🧀', title:'The Perfect Combo',             desc:'Sit back and enjoy this one!', type:'cheese' },
  { id:'s18', hour:18, half:false, label:'6pm',  emoji:'🎸', title:'Springsteen Time',              desc:'Settle in — it is movie time with The Boss.', type:'movie' },
  { id:'s19', hour:19, half:false, label:'7pm',  emoji:'🤲', title:'Only for the Birthday Boy',    desc:'This one is exclusively for Joel...', type:'headtickles' },
@@ -1031,11 +1031,11 @@ function renderEightBall(el) {
 // ── MYSTERY ───────────────────────────────────────────────────────────
 function renderMystery(el) {
  el.innerHTML =
-   '<div class="modal-title">\uD83C\uDFC0 Birthday Shootout!</div>' +
-   '<div style="text-align:center;color:rgba(200,169,110,0.8);font-size:0.85rem;margin-bottom:0.5rem">Aim with your finger — 5 shots, how many can you sink?</div>' +
+   '<div class="modal-title">Let's find out 🏀</div>' +
+   '<div style="text-align:center;color:rgba(200,169,110,0.8);font-size:0.88rem;margin-bottom:0.5rem">Let's find out how good you really are...<br><span style="font-size:0.78rem;opacity:0.7">Tap to aim and shoot — 5 balls, need 4 to win</span></div>' +
    '<canvas id="bball-canvas" style="display:block;width:100%;border-radius:16px;cursor:crosshair;touch-action:none"></canvas>' +
    '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:0.8rem;padding:0 0.2rem">' +
-   '<div id="bball-score" style="font-family:\'Cormorant Garamond\',serif;font-size:1.4rem;color:#C8A96E;font-weight:700">0 / 0</div>' +
+   '<div id="bball-score" style="font-family:'Cormorant Garamond',serif;font-size:1.4rem;color:#C8A96E;font-weight:700">0 / 0</div>' +
    '<div id="bball-shots" style="font-size:0.85rem;color:var(--muted)">5 shots left</div>' +
    '</div>' +
    '<div id="bball-result"></div>';
@@ -1058,6 +1058,7 @@ function renderMystery(el) {
    var ballStartX = W * 0.17, ballStartY = floorY - ballR;
    var aimX = hoopX, aimY = hoopY;
    var spin = 0;
+   var netSway = 0; // animated net sway after score
 
    function drawArena() {
      var bg = ctx.createLinearGradient(0,0,0,H);
@@ -1122,29 +1123,42 @@ function renderMystery(el) {
      ctx.fillStyle='rgba(255,255,255,0.15)';ctx.fillRect(bx+2,by+2,bw*0.3,bh*0.4);
    }
 
-   function drawRimAndNet() {
-     ctx.strokeStyle='rgba(0,0,0,0.4)';ctx.lineWidth=7;
-     ctx.beginPath();ctx.ellipse(hoopX+2,hoopY+4,rimW,rimW*0.22,0,0,2*Math.PI);ctx.stroke();
+   // Draw back rim + net — call before ball when ball is passing through
+   function drawNetAndBackRim(sway) {
+     sway = sway || 0;
+     // Back rim (appears behind ball)
      ctx.strokeStyle='#8b2e00';ctx.lineWidth=6;
      ctx.beginPath();ctx.ellipse(hoopX,hoopY,rimW,rimW*0.22,0,0,Math.PI);ctx.stroke();
+     // Net with sway
+     var nSegs=9,nDepth=H*0.11+sway*0.6,neckW=rimW*0.42;
+     ctx.strokeStyle='rgba(230,230,230,0.65)';ctx.lineWidth=1;
+     for(var i=0;i<=nSegs;i++){
+       var t=i/nSegs;
+       var swayOff=Math.sin(t*Math.PI)*sway*0.8;
+       var tx2=hoopX-rimW+rimW*2*t;
+       var bx2=hoopX-neckW+neckW*2*t;
+       var by2=hoopY+nDepth+swayOff;
+       ctx.beginPath();ctx.moveTo(tx2,hoopY);
+       ctx.quadraticCurveTo((tx2+bx2)/2+(t<0.5?-3:3),hoopY+nDepth*0.55+swayOff*0.5,bx2,by2);ctx.stroke();
+     }
+     for(var row=1;row<=5;row++){
+       var prog=row/5,ry=hoopY+(nDepth)*prog;
+       var swayR=Math.sin(prog*Math.PI)*sway*0.5;
+       var lx2=(hoopX-rimW)+(hoopX-neckW-(hoopX-rimW))*prog;
+       var rx2=(hoopX+rimW)+(hoopX+neckW-(hoopX+rimW))*prog;
+       ctx.beginPath();ctx.moveTo(lx2,ry+swayR);
+       ctx.quadraticCurveTo(hoopX,ry+nDepth*0.03+swayR,rx2,ry+swayR);ctx.stroke();
+     }
+   }
+
+   // Draw front rim only — call after ball so rim appears in front
+   function drawFrontRim() {
+     ctx.strokeStyle='rgba(0,0,0,0.4)';ctx.lineWidth=7;
+     ctx.beginPath();ctx.ellipse(hoopX+2,hoopY+4,rimW,rimW*0.22,0,0,2*Math.PI);ctx.stroke();
      ctx.strokeStyle='#ff6200';ctx.lineWidth=6;
      ctx.beginPath();ctx.ellipse(hoopX,hoopY,rimW,rimW*0.22,0,Math.PI,2*Math.PI);ctx.stroke();
      ctx.strokeStyle='rgba(255,180,80,0.5)';ctx.lineWidth=2;
      ctx.beginPath();ctx.ellipse(hoopX,hoopY-1,rimW*0.85,rimW*0.18,0,Math.PI*1.1,Math.PI*1.9);ctx.stroke();
-     var nSegs=9,nDepth=H*0.11,neckW=rimW*0.42;
-     ctx.strokeStyle='rgba(230,230,230,0.65)';ctx.lineWidth=1;
-     for(var i=0;i<=nSegs;i++){
-       var t=i/nSegs,tx=hoopX-rimW+rimW*2*t,bx2=hoopX-neckW+neckW*2*t,by2=hoopY+nDepth;
-       ctx.beginPath();ctx.moveTo(tx,hoopY);
-       ctx.quadraticCurveTo((tx+bx2)/2+(t<0.5?-3:3),hoopY+nDepth*0.55,bx2,by2);ctx.stroke();
-     }
-     for(var row=1;row<=5;row++){
-       var prog=row/5,ry=hoopY+nDepth*prog;
-       var lx2=(hoopX-rimW)+(hoopX-neckW-(hoopX-rimW))*prog;
-       var rx2=(hoopX+rimW)+(hoopX+neckW-(hoopX+rimW))*prog;
-       ctx.beginPath();ctx.moveTo(lx2,ry);
-       ctx.quadraticCurveTo(hoopX,ry+nDepth*0.03,rx2,ry);ctx.stroke();
-     }
    }
 
    function drawBall(x, y, r, sp) {
@@ -1154,7 +1168,6 @@ function renderMystery(el) {
      var gr=ctx.createRadialGradient(x-r*0.28,y-r*0.28,r*0.05,x+r*0.1,y+r*0.1,r*1.1);
      gr.addColorStop(0,'#ff9a50');gr.addColorStop(0.35,'#e85c00');gr.addColorStop(0.75,'#c04000');gr.addColorStop(1,'#6b1e00');
      ctx.fillStyle=gr;ctx.fillRect(x-r,y-r,r*2,r*2);
-     // Rotating seams
      ctx.save();
      ctx.translate(x,y);ctx.rotate(sp);ctx.translate(-x,-y);
      ctx.strokeStyle='rgba(0,0,0,0.55)';ctx.lineWidth=Math.max(1.2,r*0.07);
@@ -1170,29 +1183,14 @@ function renderMystery(el) {
      ctx.beginPath();ctx.arc(x,y,r,0,2*Math.PI);ctx.stroke();
    }
 
-   function drawTrajectory(tx, ty) {
-     var steps=42,px=ballStartX,py=ballStartY,tS=58;
-     var pvx=(tx-ballStartX)/tS;
-     var pvy=(ty-ballStartY-0.5*0.42*tS*tS)/tS;
-     if(pvy>-5)pvy=-9;
-     ctx.save();
-     for(var i=0;i<steps;i++){
-       px+=pvx;py+=pvy;pvy+=0.42;
-       if(py>H+20)break;
-       var a=(1-i/steps)*0.7;
-       var dr=Math.max(2.5,ballR*0.22*(1-i/steps*0.6));
-       ctx.beginPath();ctx.arc(px,py,dr,0,2*Math.PI);
-       ctx.fillStyle='rgba(255,210,80,'+a.toFixed(2)+')';
-       ctx.fill();
-     }
-     ctx.restore();
-   }
-
    function drawScene(ballX, ballY, sp, msg, msgCol) {
      ctx.clearRect(0,0,W,H);
-     drawArena();drawFloor();drawPoleAndBoard();drawRimAndNet();
-     if(!shooting&&shotsLeft>0)drawTrajectory(aimX,aimY);
-     drawBall(ballX||ballStartX,ballY||ballStartY,ballR,sp||0);
+     drawArena();drawFloor();drawPoleAndBoard();
+     var ballAboveHoop = (ballY||ballStartY) < hoopY + rimW*0.25;
+     drawNetAndBackRim(netSway);
+     if(!ballAboveHoop) drawBall(ballX||ballStartX,ballY||ballStartY,ballR,sp||0);
+     drawFrontRim();
+     if(ballAboveHoop) drawBall(ballX||ballStartX,ballY||ballStartY,ballR,sp||0);
      if(msg){
        ctx.font='bold 18px Inter,sans-serif';ctx.textAlign='center';
        ctx.fillStyle='rgba(0,0,0,0.6)';ctx.fillText(msg,W/2+1,H*0.56+1);
@@ -1202,7 +1200,7 @@ function renderMystery(el) {
 
    function shoot(tx, ty) {
      if(shooting||shotsLeft<=0)return;
-     shooting=true;shotsLeft--;shotsTaken++;spin=0;
+     shooting=true;shotsLeft--;shotsTaken++;spin=0;netSway=0;
      var bx=ballStartX,by=ballStartY,gravity=0.42,tSteps=58;
      var vx=(tx-bx)/tSteps;
      var vy=(ty-by-0.5*gravity*tSteps*tSteps)/tSteps;
@@ -1211,27 +1209,37 @@ function renderMystery(el) {
      if(animId)cancelAnimationFrame(animId);
      function animate(){
        ctx.clearRect(0,0,W,H);
-       drawArena();drawFloor();drawPoleAndBoard();drawRimAndNet();
+       drawArena();drawFloor();drawPoleAndBoard();
        bx+=vx;by+=vy;vy+=gravity;spin+=0.13;
        var r=ballR*(0.84+0.16*(by/H));
+       // Shadow on floor
        if(by>floorY-ballR*3){
          var sa=Math.min(0.4,(by-floorY+ballR*3)/(ballR*3));
          ctx.fillStyle='rgba(0,0,0,'+sa+')';
          ctx.beginPath();ctx.ellipse(bx,floorY+2,r*0.9,r*0.2,0,0,2*Math.PI);ctx.fill();
        }
-       drawBall(bx,by,r,spin);
+       // Score detection
        if(!scored&&vy>0&&by>hoopY-r*1.2&&by<hoopY+r*1.5&&bx>hoopX-rimW*0.72&&bx<hoopX+rimW*0.72){
-         scored=true;score++;
+         scored=true;score++;netSway=14;
        }
+       // Decay net sway
+       if(netSway>0)netSway*=0.88;
+       // Draw with correct layering — ball through net
+       var ballAboveHoop=by<hoopY+rimW*0.25;
+       drawNetAndBackRim(netSway);
+       if(!ballAboveHoop) drawBall(bx,by,r,spin);
+       drawFrontRim();
+       if(ballAboveHoop) drawBall(bx,by,r,spin);
        frame++;
        if(by<H+60&&frame<140){animId=requestAnimationFrame(animate);}
        else{
+         netSway=0;
          document.getElementById('bball-score').textContent=score+' / '+shotsTaken;
          document.getElementById('bball-shots').textContent=shotsLeft+' shot'+(shotsLeft!==1?'s':'')+' left';
          shooting=false;
          if(shotsLeft===0){setTimeout(showResult,700);}
          else{
-           var swishMsg=scored?'Swish! \uD83C\uDFC0':'Miss!';
+           var swishMsg=scored?'Swish! 🏀':'Miss!';
            drawScene(ballStartX,ballStartY,0,swishMsg,scored?'#22C55E':'#ef4444');
          }
        }
@@ -1240,23 +1248,23 @@ function renderMystery(el) {
    }
 
    function showResult(){
-     ctx.clearRect(0,0,W,H);drawArena();drawFloor();drawPoleAndBoard();drawRimAndNet();
+     ctx.clearRect(0,0,W,H);drawArena();drawFloor();drawPoleAndBoard();
+     drawNetAndBackRim(0);drawFrontRim();
      ctx.fillStyle='rgba(0,0,0,0.55)';
      ctx.beginPath();if(ctx.roundRect)ctx.roundRect(W*0.15,H*0.35,W*0.7,H*0.3,12);else ctx.rect(W*0.15,H*0.35,W*0.7,H*0.3);ctx.fill();
      ctx.strokeStyle='rgba(200,169,110,0.4)';ctx.lineWidth=1.5;ctx.stroke();
      ctx.fillStyle='#C8A96E';ctx.font='bold 48px Cormorant Garamond,serif';ctx.textAlign='center';
      ctx.fillText(score+' / 5',W/2,H*0.52);
      ctx.fillStyle='rgba(255,255,255,0.75)';ctx.font='15px Inter,sans-serif';
-     var tag=score===5?'PERFECT! \uD83D\uDD25':score>=3?'Good shooting! \uD83D\uDE04':score>=1?'Not bad! \uD83D\uDE04':'Brick city! \uD83D\uDE02';
+     var tag=score>=4?'GAME! 🔥':score>=2?'Not bad... 😬':'Needs work! 😂';
      ctx.fillText(tag,W/2,H*0.6);
+     var won=score>=4;
      document.getElementById('bball-result').innerHTML=
        '<div class="love-note" style="text-align:center;margin-top:0.8rem">'+(
-         score===5?'\uD83C\uDFC6 <strong style="color:#C8A96E">PERFECT 5/5!</strong> Joel\'s got GAME! \uD83C\uDFC0\uD83D\uDD25':
-         score>=3?'\uD83C\uDFC0 <strong style="color:#C8A96E">'+score+'/5</strong> \u2014 Nice shooting birthday boy! \uD83D\uDE04':
-         score>=1?'\uD83D\uDE04 <strong style="color:#C8A96E">'+score+'/5</strong> \u2014 Room for improvement! \uD83D\uDE02':
-         '\uD83D\uDE02 <strong style="color:#C8A96E">0/5</strong> \u2014 Stick to the day job mate!'
-       )+'</div><button class="next-btn" style="margin-top:0.8rem" onclick="closeModal()">Not bad! \uD83C\uDFC0</button>';
-     if(score>=3)launchConfetti();
+         won?'🏆 <strong style="color:#C8A96E">'+score+'/5 — You've got game!</strong><br><br>Joel's a baller! 🏀🔥<br><br>Dani-Elle is impressed... for once 😄':
+             '😅 <strong style="color:#ef4444">'+score+'/5 — Not good enough!</strong><br><br>You owe Dani-Elle a <strong style="color:#C8A96E">full body massage! 💆‍♀️</strong><br><br>Time to get those hands working, birthday boy! 😂'
+       )+'</div><button class="next-btn" style="margin-top:0.8rem" onclick="closeModal()">'+(won?'Get in! 🏆':'Fine... 💆‍♀️')+'</button>';
+     if(won)launchConfetti();
    }
 
    drawScene(ballStartX,ballStartY,0);
@@ -1267,25 +1275,19 @@ function renderMystery(el) {
      return{x:(e.clientX-rect.left)*sx,y:(e.clientY-rect.top)*sy};
    }
 
-   // Desktop: hover shows trajectory, click shoots
-   canvas.addEventListener('mousemove',function(e){
-     if(!shooting&&shotsLeft>0){var p=getPos(e);aimX=p.x;aimY=p.y;drawScene(ballStartX,ballStartY,0);}
-   });
+   // Desktop: click to shoot (no trajectory shown)
    canvas.addEventListener('click',function(e){
-     if(!shooting&&shotsLeft>0){var p=getPos(e);aimX=p.x;aimY=p.y;shoot(p.x,p.y);}
+     if(!shooting&&shotsLeft>0){var p=getPos(e);shoot(p.x,p.y);}
    });
 
-   // Mobile: drag to aim, release to shoot
-   canvas.addEventListener('touchmove',function(e){
-     e.preventDefault();
-     if(!shooting&&shotsLeft>0){var p=getPos(e);aimX=p.x;aimY=p.y;drawScene(ballStartX,ballStartY,0);}
-   },{passive:false});
+   // Mobile: tap to shoot
    canvas.addEventListener('touchend',function(e){
      e.preventDefault();
-     if(!shooting&&shotsLeft>0){shoot(aimX,aimY);}
+     if(!shooting&&shotsLeft>0){var p=getPos(e);shoot(p.x,p.y);}
    },{passive:false});
  },100);
 }
+
 // ── CHEESE AND WINE ───────────────────────────────────────────────────
 function renderCheese(el) {
  el.innerHTML =
