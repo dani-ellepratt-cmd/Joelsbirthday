@@ -356,21 +356,23 @@ function renderGift(el) {
 // ── SPIN TO WIN ────────────────────────────────────────────
 function renderSpinWheel(el) {
  var prizes=[
-   {label:'Head Tickles'},
-   {label:'Espresso Martini'},
-   {label:'Margarita'},
-   {label:'$100 Lulu Lemon'},
-   {label:'New Puppy'},
-   {label:'Body Massage'},
-   {label:'Birthday Present'}
+   {label:'Head Tickles',   emoji:'🤲'},
+   {label:'Esp. Martini',   emoji:'☕'},
+   {label:'Margarita',      emoji:'🍹'},
+   {label:'$100 Lulu',      emoji:'🛍️'},
+   {label:'New Puppy',      emoji:'🐶'},
+   {label:'Body Massage',   emoji:'💆'},
+   {label:'Birthday Present',emoji:'🎁'}
  ];
+ var segColors=['#faeee0','#f2c8c8','#dfc4a8','#faeee0','#f2c8c8','#dfc4a8','#faeee0'];
+
  el.innerHTML=
-   '<div class="modal-title">\uD83C\uDFA1 Spin to Win!</div>'+
+   '<div class="modal-title">🎡 Spin to Win!</div>'+
    '<div style="text-align:center;color:rgba(200,169,110,0.75);font-size:0.85rem;margin-bottom:0.8rem">What will you win? Give it a spin!</div>'+
-   '<div style="display:flex;justify-content:center;margin-bottom:0.8rem">'+
+   '<div style="display:flex;justify-content:center;margin-bottom:1rem;background:#e8dcc8;border-radius:20px;padding:1rem">'+
    '<canvas id="wheel-canvas" style="max-width:100%"></canvas>'+
    '</div>'+
-   '<button class="play-btn" id="spin-btn" onclick="doSpin()" style="max-width:180px;margin:0 auto;display:block">Spin!</button>'+
+   '<button class="play-btn" id="spin-btn" onclick="doSpin()" style="max-width:180px;margin:0 auto;display:block;background:linear-gradient(135deg,#8B5E3C,#C49A6C);color:#fff;font-size:1rem">🎡 Spin!</button>'+
    '<div id="wheel-result" style="margin-top:0.8rem"></div>';
 
  var canvas=document.getElementById('wheel-canvas');
@@ -380,40 +382,77 @@ function renderSpinWheel(el) {
  canvas.width=sz*dpr;canvas.height=sz*dpr;
  canvas.style.width=sz+'px';canvas.style.height=sz+'px';
  ctx.scale(dpr,dpr);
- var cx=sz/2,cy=sz/2,outerR=125,N=prizes.length,seg=2*Math.PI/N;
+ var cx=sz/2,cy=sz/2,outerR=118,N=prizes.length,seg=2*Math.PI/N;
  var rotation=0,spinning=false,done=false;
  var bdayIdx=prizes.length-1;
 
  function draw(rot){
    ctx.clearRect(0,0,sz,sz);
-   ctx.beginPath();ctx.arc(cx,cy,outerR+10,0,2*Math.PI);
-   var rg=ctx.createLinearGradient(cx-outerR,cy,cx+outerR,cy);
-   rg.addColorStop(0,'#6b4c0a');rg.addColorStop(0.5,'#C8A96E');rg.addColorStop(1,'#6b4c0a');
-   ctx.fillStyle=rg;ctx.fill();
+
+   // Shadow under wheel
+   ctx.beginPath();ctx.arc(cx+2,cy+3,outerR+14,0,2*Math.PI);
+   ctx.fillStyle='rgba(0,0,0,0.12)';ctx.fill();
+
+   // Wooden outer ring
+   ctx.beginPath();ctx.arc(cx,cy,outerR+14,0,2*Math.PI);
+   var wood=ctx.createLinearGradient(cx-outerR-14,cy,cx+outerR+14,cy);
+   wood.addColorStop(0,'#7a4f2a');wood.addColorStop(0.25,'#c49a6c');
+   wood.addColorStop(0.5,'#e8c48a');wood.addColorStop(0.75,'#b88a50');
+   wood.addColorStop(1,'#7a4f2a');
+   ctx.fillStyle=wood;ctx.fill();
+
+   // Ring border
+   ctx.beginPath();ctx.arc(cx,cy,outerR+14,0,2*Math.PI);
+   ctx.strokeStyle='#5a3820';ctx.lineWidth=2;ctx.stroke();
+   ctx.beginPath();ctx.arc(cx,cy,outerR+2,0,2*Math.PI);
+   ctx.strokeStyle='rgba(90,56,32,0.4)';ctx.lineWidth=1;ctx.stroke();
+
+   // Dots on ring
+   for(var d=0;d<28;d++){
+     var da=(d/28)*2*Math.PI;
+     ctx.beginPath();ctx.arc(cx+Math.cos(da)*(outerR+8),cy+Math.sin(da)*(outerR+8),2.8,0,2*Math.PI);
+     ctx.fillStyle='rgba(255,255,255,0.55)';ctx.fill();
+   }
+
+   // Segments
    for(var i=0;i<N;i++){
      var a0=rot+i*seg,a1=a0+seg;
      ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,outerR,a0,a1);ctx.closePath();
-     ctx.fillStyle=i%2===0?'#1a1208':'#2d2010';ctx.fill();
-     ctx.strokeStyle='rgba(200,169,110,0.5)';
-     ctx.lineWidth=1.5;ctx.stroke();
+     ctx.fillStyle=segColors[i];ctx.fill();
+     ctx.strokeStyle='#c4956a';ctx.lineWidth=1.5;ctx.stroke();
+
+     // Emoji icon at mid-radius
      ctx.save();ctx.translate(cx,cy);ctx.rotate(a0+seg/2);
-     ctx.textAlign='right';ctx.textBaseline='middle';
+     ctx.font='15px serif';ctx.textAlign='center';ctx.textBaseline='middle';
+     ctx.fillText(prizes[i].emoji,outerR*0.52,0);
+
+     // Label text
      var lbl=prizes[i].label;
-     var fs=lbl.length>14?10:(lbl.length>10?11.5:13);
-     ctx.fillStyle='#E8C87A';
+     var fs=lbl.length>13?9.5:(lbl.length>9?11:12.5);
      ctx.font='bold '+fs+'px "Inter",sans-serif';
-     ctx.shadowColor='rgba(0,0,0,0.7)';ctx.shadowBlur=3;
-     ctx.fillText(lbl,outerR-10,0);
-     ctx.shadowBlur=0;
+     ctx.fillStyle='#5a3820';
+     ctx.textAlign='right';ctx.textBaseline='middle';
+     ctx.fillText(lbl,outerR-8,0);
      ctx.restore();
    }
-   ctx.beginPath();ctx.arc(cx,cy,28,0,2*Math.PI);
-   var hg=ctx.createRadialGradient(cx-7,cy-7,2,cx,cy,28);
-   hg.addColorStop(0,'#e8c870');hg.addColorStop(1,'#7a5c10');
-   ctx.fillStyle=hg;ctx.fill();
-   ctx.strokeStyle='#C8A96E';ctx.lineWidth=2;ctx.stroke();
-   ctx.beginPath();ctx.moveTo(cx,cy-outerR-5);ctx.lineTo(cx-11,cy-outerR-22);ctx.lineTo(cx+11,cy-outerR-22);ctx.closePath();
-   ctx.fillStyle='#e63030';ctx.fill();ctx.strokeStyle='rgba(255,255,255,0.8)';ctx.lineWidth=1.5;ctx.stroke();
+
+   // Center hub
+   ctx.beginPath();ctx.arc(cx,cy,24,0,2*Math.PI);
+   var hub=ctx.createRadialGradient(cx-6,cy-6,2,cx,cy,24);
+   hub.addColorStop(0,'#fdf6ee');hub.addColorStop(1,'#d4b090');
+   ctx.fillStyle=hub;ctx.fill();
+   ctx.strokeStyle='#8B5E3C';ctx.lineWidth=2.5;ctx.stroke();
+   ctx.beginPath();ctx.arc(cx,cy,7,0,2*Math.PI);
+   ctx.fillStyle='#8B5E3C';ctx.fill();
+
+   // Pointer (wooden peg at top)
+   ctx.save();ctx.translate(cx,cy-outerR-6);
+   ctx.beginPath();ctx.moveTo(0,8);ctx.lineTo(-9,-10);ctx.lineTo(9,-10);ctx.closePath();
+   var pg=ctx.createLinearGradient(-9,-10,9,8);
+   pg.addColorStop(0,'#c49a6c');pg.addColorStop(1,'#7a4f2a');
+   ctx.fillStyle=pg;ctx.fill();
+   ctx.strokeStyle='#5a3820';ctx.lineWidth=1.5;ctx.stroke();
+   ctx.restore();
  }
  draw(0);
 
@@ -745,8 +784,11 @@ function renderTickles(el) {
    }
    ctx.globalCompositeOperation = 'destination-out';
    var scratching = false;
-   var totalPixels = canvas.width * canvas.height;
    var scratchedEnough = false;
+   var scratchDist = 0;
+   var scratchStrokes = 0;
+   var lastScratchPos = null;
+
    function getPos(e) {
      var rect = canvas.getBoundingClientRect();
      var scaleX = canvas.width / rect.width;
@@ -754,34 +796,38 @@ function renderTickles(el) {
      if (e.touches) return { x:(e.touches[0].clientX-rect.left)*scaleX, y:(e.touches[0].clientY-rect.top)*scaleY };
      return { x:(e.clientX-rect.left)*scaleX, y:(e.clientY-rect.top)*scaleY };
    }
+
+   function triggerReveal() {
+     if (scratchedEnough) return;
+     scratchedEnough = true;
+     canvas.style.opacity = '0';
+     canvas.style.transition = 'opacity 0.6s ease';
+     document.getElementById('scratch-hint').textContent = '🎉 You scratched it!';
+     var reveal = document.getElementById('tickle-reveal');
+     if (reveal) { reveal.style.display = 'block'; setTimeout(function(){ reveal.scrollIntoView({behavior:'smooth',block:'nearest'}); }, 150); }
+     launchConfetti();
+   }
+
    function scratch(e) {
      e.preventDefault();
      if (!scratching) return;
      var pos = getPos(e);
-     ctx.beginPath(); ctx.arc(pos.x, pos.y, 28, 0, 2*Math.PI); ctx.fill();
-     checkRevealed();
-   }
-   function checkRevealed() {
-     if (scratchedEnough) return;
-     var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-     var cleared = 0;
-     for (var i = 3; i < imageData.data.length; i += 4) { if (imageData.data[i] === 0) cleared++; }
-     if (cleared / totalPixels > 0.60) {
-       scratchedEnough = true;
-       canvas.style.opacity = '0';
-       canvas.style.transition = 'opacity 0.6s ease';
-       document.getElementById('scratch-hint').textContent = '🤲 You scratched it! You won Head Tickles!';
-       var reveal = document.getElementById('tickle-reveal');
-       if (reveal) { reveal.style.display = 'block'; setTimeout(function(){ reveal.scrollIntoView({behavior:'smooth',block:'nearest'}); }, 100); }
-       launchConfetti();
+     ctx.beginPath(); ctx.arc(pos.x, pos.y, 30, 0, 2*Math.PI); ctx.fill();
+     scratchStrokes++;
+     if (lastScratchPos) {
+       var dx = pos.x - lastScratchPos.x, dy = pos.y - lastScratchPos.y;
+       scratchDist += Math.sqrt(dx*dx + dy*dy);
      }
+     lastScratchPos = pos;
+     if (scratchDist > canvas.width * 1.8 || scratchStrokes > 20) triggerReveal();
    }
-   canvas.addEventListener('mousedown', function(e) { scratching = true; scratch(e); });
+
+   canvas.addEventListener('mousedown', function(e) { scratching = true; lastScratchPos = null; scratch(e); });
    canvas.addEventListener('mousemove', scratch);
-   canvas.addEventListener('mouseup', function() { scratching = false; });
-   canvas.addEventListener('touchstart', function(e) { scratching = true; scratch(e); }, {passive:false});
+   canvas.addEventListener('mouseup', function() { scratching = false; lastScratchPos = null; });
+   canvas.addEventListener('touchstart', function(e) { scratching = true; lastScratchPos = null; scratch(e); }, {passive:false});
    canvas.addEventListener('touchmove', scratch, {passive:false});
-   canvas.addEventListener('touchend', function() { scratching = false; });
+   canvas.addEventListener('touchend', function() { scratching = false; lastScratchPos = null; });
  }, 100);
 
  window.startGamble = function() {
