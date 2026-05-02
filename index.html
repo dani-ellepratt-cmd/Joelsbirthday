@@ -364,7 +364,7 @@ function renderSpinWheel(el) {
    {label:'Body Massage',   emoji:'💆'},
    {label:'Birthday Present',emoji:'🎁'}
  ];
- var segColors=['#faeee0','#f2c8c8','#dfc4a8','#faeee0','#f2c8c8','#dfc4a8','#faeee0'];
+ var segColors=['#faeee0','#e8cb6a','#dfc4a8','#faeee0','#e8cb6a','#dfc4a8','#faeee0'];
 
  el.innerHTML=
    '<div class="modal-title">🎡 Spin to Win!</div>'+
@@ -421,12 +421,8 @@ function renderSpinWheel(el) {
      ctx.fillStyle=segColors[i];ctx.fill();
      ctx.strokeStyle='#c4956a';ctx.lineWidth=1.5;ctx.stroke();
 
-     // Emoji icon at mid-radius
-     ctx.save();ctx.translate(cx,cy);ctx.rotate(a0+seg/2);
-     ctx.font='15px serif';ctx.textAlign='center';ctx.textBaseline='middle';
-     ctx.fillText(prizes[i].emoji,outerR*0.52,0);
-
      // Label text
+     ctx.save();ctx.translate(cx,cy);ctx.rotate(a0+seg/2);
      var lbl=prizes[i].label;
      var fs=lbl.length>13?9.5:(lbl.length>9?11:12.5);
      ctx.font='bold '+fs+'px "Inter",sans-serif';
@@ -819,7 +815,7 @@ function renderTickles(el) {
        scratchDist += Math.sqrt(dx*dx + dy*dy);
      }
      lastScratchPos = pos;
-     if (scratchDist > canvas.width * 1.8 || scratchStrokes > 20) triggerReveal();
+     if (scratchDist > canvas.width * 3.5 || scratchStrokes > 45) triggerReveal();
    }
 
    canvas.addEventListener('mousedown', function(e) { scratching = true; lastScratchPos = null; scratch(e); });
@@ -1278,13 +1274,47 @@ function renderMovie(el) {
 
 // ── HEAD TICKLES ──────────────────────────────────────────────────────
 function renderHeadTickles(el) {
+ var facts = [
+   { icon:'🚀', name:'Elon Musk', age:'Age 32', fact:'Was 32 when he founded SpaceX — reshaping private space travel forever.' },
+   { icon:'📚', name:'J.K. Rowling', age:'Age 32', fact:'Was 32 when Harry Potter and the Philosopher\'s Stone was published, starting a global phenomenon.' },
+   { icon:'🏠', name:'Brian Chesky', age:'Age 32', fact:'Was 32 when Airbnb started scaling globally after surviving its early struggles.' },
+   { icon:'🏀', name:'LeBron James', age:'Age 32', fact:'Was still dominating and winning championships at 32 — arguably becoming a more complete player than ever.' },
+   { icon:'⚽', name:'Cristiano Ronaldo', age:'Age 32', fact:'Won the Ballon d\'Or at 32, proving that elite performance only gets sharper with time.' },
+   { icon:'💛', name:'Joel Pratt', age:'Age 32', fact:'32 is where experience meets clarity. You\'ve lived enough to know what works, what matters, and where you\'re going. You\'ve laid the foundations — now it\'s about executing, backing yourself, and turning everything you\'ve been building into something real.\n\nThis isn\'t just another year... this is YOUR year. 🔥' }
+ ];
+ var fi = 0;
+
+ function showFact(idx) {
+   var f = facts[idx];
+   var isLast = idx === facts.length - 1;
+   var isJoel = isLast;
+   el.innerHTML =
+     '<div class="modal-title">Only for the Birthday Boy 🤲</div>' +
+     '<div style="font-size:0.6rem;letter-spacing:3px;text-transform:uppercase;color:rgba(200,169,110,0.55);text-align:center;margin-bottom:1rem">' + (idx+1) + ' of ' + facts.length + '</div>' +
+     '<div style="background:linear-gradient(135deg,' + (isJoel?'#1a1208,#2d1a00':'#0a0a0a,#141414') + ');border-radius:20px;padding:1.8rem 1.4rem;text-align:center;margin-bottom:1.2rem;border:1px solid rgba(200,169,110,' + (isJoel?'0.5':'0.15') + ')">' +
+     '<div style="font-size:3rem;margin-bottom:0.6rem">' + f.icon + '</div>' +
+     '<div style="font-family:\'Cormorant Garamond\',serif;font-size:1.5rem;font-weight:700;color:#C8A96E;margin-bottom:0.2rem">' + f.name + '</div>' +
+     '<div style="font-size:0.65rem;letter-spacing:3px;text-transform:uppercase;color:rgba(200,169,110,0.5);margin-bottom:1rem">' + f.age + '</div>' +
+     '<div style="color:rgba(255,255,255,0.88);font-size:0.95rem;line-height:1.7;font-style:italic">"' + f.fact.replace(/\n/g,'<br><br>') + '"</div>' +
+     '</div>' +
+     (isLast
+       ? '<button class="next-btn" onclick="closeModal()">Best. Birthday. Ever. 😌</button>'
+       : '<button class="play-btn" onclick="htNext()">Next ›</button>'
+     );
+   window.htNext = function() { fi++; showFact(fi); };
+ }
+
+ // Start with the head tickles message, then tap to begin facts
  el.innerHTML =
    '<div class="modal-title">Only for the Birthday Boy!</div>' +
-   '<div class="love-note" style="text-align:center">' +
-   'Joel, this one is exclusively for you...<br><br>' +
-   '<strong style="color:#C8A96E;font-size:1.2rem">30 Minutes of Head Tickles from your wife! 🤲😌</strong><br><br>' +
-   'Get comfortable. Dani-Elle is on duty. ❤️</div>' +
-   '<button class="next-btn" onclick="closeModal()">Best. Birthday. Ever. 😌</button>';
+   '<div class="love-note" style="text-align:center;margin-bottom:1.2rem">' +
+   'Joel, get comfortable...<br><br>' +
+   '<strong style="color:#C8A96E;font-size:1.2rem">30 Minutes of Head Tickles from your wife 🤲😌</strong><br><br>' +
+   'Dani-Elle is on duty. Sit back and enjoy this while she gets started... ❤️</div>' +
+   '<button class="play-btn" onclick="htStart()">Read something while I tickle 👀</button>' +
+   '<button class="next-btn" style="margin-top:0.8rem" onclick="closeModal()">Just the tickles thanks 😌</button>';
+
+ window.htStart = function() { showFact(0); };
 }
 
 // ── DESSERT ───────────────────────────────────────────────────────────
