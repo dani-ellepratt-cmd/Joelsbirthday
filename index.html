@@ -677,10 +677,10 @@ function renderLunch(el) {
    '<div class="love-note">Time to get dressed, birthday boy! 🌅<br><br>' +
    'We are going OUT for a birthday lunch today. Get ready — it is going to be a great afternoon!<br><br>' +
    'More details coming very soon... 👀<br><br>— Dani-Elle ❤️</div>' +
-   '<div id="bonus-countdown-wrap" style="margin-top:1.2rem;background:linear-gradient(160deg,#0a0a0a,#1a1208);border-radius:14px;padding:1.2rem;text-align:center">' +
-   '<div style="font-size:0.8rem;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:#C8A96E;margin-bottom:0.4rem">⭐ A bonus surprise unlocks in...</div>' +
-   '<div id="bonus-countdown" style="font-family:Bangers,cursive;font-size:3rem;color:white;letter-spacing:4px">--:--</div>' +
-   '<div style="font-size:0.8rem;color:#C8A96E;font-weight:700;margin-top:0.3rem">Keep an eye on this... 👀</div>' +
+   '<div id="bonus-countdown-wrap" style="margin-top:1.2rem;background:linear-gradient(160deg,#C8A96E,#9a7040);border-radius:14px;padding:1.2rem;text-align:center;border:2px solid rgba(255,230,150,0.4);box-shadow:0 4px 20px rgba(200,169,110,0.3)">' +
+   '<div style="font-size:0.8rem;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:rgba(80,40,0,0.85);margin-bottom:0.4rem">⭐ A bonus surprise unlocks in...</div>' +
+   '<div id="bonus-countdown" style="font-family:Bangers,cursive;font-size:3rem;color:#3a2000;letter-spacing:4px;text-shadow:0 1px 0 rgba(255,220,100,0.4)">--:--</div>' +
+   '<div style="font-size:0.8rem;color:rgba(80,40,0,0.75);font-weight:700;margin-top:0.3rem">Keep an eye on this... 👀</div>' +
    '</div>' +
    '<button class="next-btn" onclick="closeModal()">Lets go! 🎉</button>' +
    '<button class="grey-btn" style="margin-top:0.8rem" onclick="closeModal();openBonus()">👀 Preview 12:30 Surprise</button>';
@@ -829,7 +829,7 @@ function renderTickles(el) {
      document.getElementById('scratch-hint').textContent = '🎉 You scratched it!';
      launchConfetti();
      var reveal = document.getElementById('tickle-reveal');
-     if (reveal) { setTimeout(function(){ reveal.style.display = 'block'; setTimeout(function(){ reveal.scrollIntoView({behavior:'smooth',block:'nearest'}); }, 150); }, 3000); }
+     if (reveal) { setTimeout(function(){ reveal.style.display = 'block'; setTimeout(function(){ reveal.scrollIntoView({behavior:'smooth',block:'nearest'}); }, 150); }, 6000); }
    }
 
    function scratch(e) {
@@ -972,14 +972,45 @@ function renderEightBall(el) {
  window.eightResult = function(r) {
    el.querySelectorAll('.play-btn,.grey-btn').forEach(function(b) { b.disabled = true; b.style.opacity = '0.5'; });
    if (r === 'win') {
+     // Show shake prompt
      document.getElementById('eight-result').innerHTML =
        '<div class="love-note" style="margin-top:1rem;text-align:center">' +
-       '<strong style="color:#C8A96E;font-size:1.1rem">🏆 WINNER WINNER!</strong><br><br>' +
-       'Well done birthday boy! 🎱<br><br>' +
-       '<strong style="color:#C8A96E;font-size:1.2rem">We are going to the Strip Club! 🎰🥂</strong><br><br>' +
-       'Dani-Elle will sort out a night very soon!</div>' +
-       '<button class="next-btn" onclick="closeModal()">LETS GO! 🎉</button>';
-     launchConfetti();
+       '<div style="font-size:3.5rem;margin-bottom:0.5rem">📱</div>' +
+       '<strong style="color:#C8A96E;font-size:1.15rem">Shake your phone to reveal your prize!</strong><br><br>' +
+       '<div style="font-size:0.85rem;color:var(--muted)">Give it a good shake...</div></div>';
+     // Listen for shake
+     var shook = false;
+     var lastAcc = {x:0,y:0,z:0};
+     function onShake(e) {
+       if (shook) return;
+       var a = e.accelerationIncludingGravity || e.acceleration || {};
+       var d = Math.abs((a.x||0)-lastAcc.x)+Math.abs((a.y||0)-lastAcc.y)+Math.abs((a.z||0)-lastAcc.z);
+       lastAcc = {x:a.x||0,y:a.y||0,z:a.z||0};
+       if (d > 18) {
+         shook = true;
+         window.removeEventListener('devicemotion', onShake);
+         document.getElementById('eight-result').innerHTML =
+           '<div class="love-note" style="margin-top:1rem;text-align:center">' +
+           '<strong style="color:#C8A96E;font-size:1.1rem">🏆 WINNER WINNER!</strong><br><br>' +
+           'Well done birthday boy! 🎱<br><br>' +
+           '<strong style="color:#C8A96E;font-size:1.3rem">A night at the Strip Club! 🎰🥂</strong><br><br>' +
+           'Dani-Elle will sort it out very soon!</div>' +
+           '<button class="next-btn" onclick="closeModal()">LETS GO! 🎉</button>';
+         launchConfetti();
+       }
+     }
+     // Request permission on iOS 13+
+     if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
+       DeviceMotionEvent.requestPermission().then(function(p) {
+         if (p === 'granted') window.addEventListener('devicemotion', onShake);
+       }).catch(function(){
+         // fallback: tap button instead
+         document.getElementById('eight-result').innerHTML +=
+           '<button class="next-btn" style="margin-top:0.8rem" onclick="(function(){document.getElementById('eight-result').innerHTML='<div class=\"love-note\" style=\"margin-top:1rem;text-align:center\"><strong style=\"color:#C8A96E;font-size:1.1rem\">🏆 WINNER WINNER!</strong><br><br>Well done birthday boy! 🎱<br><br><strong style=\"color:#C8A96E;font-size:1.3rem\">A night at the Strip Club! 🎰🥂</strong><br><br>Dani-Elle will sort it out very soon!</div><button class=\"next-btn\" onclick=\"closeModal()\">LETS GO! 🎉</button>';launchConfetti();})()">Tap to reveal! 🎉</button>';
+       });
+     } else {
+       window.addEventListener('devicemotion', onShake);
+     }
    } else {
      document.getElementById('eight-result').innerHTML =
        '<div class="love-note" style="margin-top:1rem;text-align:center">' +
