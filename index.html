@@ -179,11 +179,13 @@
 </div>
 <canvas id="confetti-canvas"></canvas>
 <div id="balloon-layer" aria-hidden="true">
- <span class="bg-balloon" style="left:8%;animation-duration:14s;animation-delay:0s;font-size:2.3rem">🎈</span>
- <span class="bg-balloon" style="left:28%;animation-duration:11s;animation-delay:5s;filter:hue-rotate(60deg);font-size:1.9rem">🎈</span>
- <span class="bg-balloon" style="left:55%;animation-duration:16s;animation-delay:2s;filter:hue-rotate(200deg);font-size:2.1rem">🎈</span>
- <span class="bg-balloon" style="left:78%;animation-duration:12s;animation-delay:8s;font-size:2.5rem">🎈</span>
- <span class="bg-balloon" style="left:42%;animation-duration:18s;animation-delay:11s;filter:hue-rotate(300deg);font-size:1.8rem">🎈</span>
+ <span class="bg-balloon" style="left:8%;animation-duration:14s;animation-delay:0s;font-size:2.3rem;filter:hue-rotate(40deg) saturate(1.3) brightness(1.1)">🎈</span>
+ <span class="bg-balloon" style="left:28%;animation-duration:11s;animation-delay:5s;filter:hue-rotate(200deg) saturate(1.2);font-size:1.9rem">🎈</span>
+ <span class="bg-balloon" style="left:55%;animation-duration:16s;animation-delay:2s;font-size:2.1rem">🎈</span>
+ <span class="bg-balloon" style="left:78%;animation-duration:12s;animation-delay:8s;filter:hue-rotate(105deg) saturate(0.85) brightness(0.85);font-size:2.5rem">🎈</span>
+ <span class="bg-balloon" style="left:42%;animation-duration:18s;animation-delay:11s;filter:hue-rotate(40deg) saturate(1.3) brightness(1.1);font-size:1.8rem">🎈</span>
+ <span class="bg-balloon" style="left:15%;animation-duration:13s;animation-delay:9s;filter:hue-rotate(200deg) saturate(1.2);font-size:2rem">🎈</span>
+ <span class="bg-balloon" style="left:65%;animation-duration:17s;animation-delay:3s;filter:hue-rotate(105deg) saturate(0.85) brightness(0.85);font-size:1.7rem">🎈</span>
 </div>
 
 <div id="next-widget">
@@ -503,8 +505,8 @@ function renderSlots(el) {
    document.head.appendChild(st);
  }
 
- var lColors=['#ff0033','#ffcc00','#00ccff','#ff6600','#cc00ff','#00ff77',
-              '#ff0033','#ffcc00','#00ccff','#ff6600','#cc00ff','#00ff77','#ff0033','#ffcc00'];
+ var lColors=['#FFD700','#fff8dc','#FFD700','#fff8dc','#FFD700','#fff8dc',
+              '#FFD700','#fff8dc','#FFD700','#fff8dc','#FFD700','#fff8dc','#FFD700','#fff8dc'];
 
  function buildStrip(){
    var html='';
@@ -516,35 +518,61 @@ function renderSlots(el) {
 
  el.innerHTML=
    '<div class="modal-title">\uD83C\uDFB0 Birthday Jackpot!</div>'+
-   // ── Big casino lights row ──
-   '<div id="cl-wrap" style="display:flex;justify-content:center;align-items:center;gap:7px;padding:6px 0 10px">'+
+   // ── Casino machine wrapper ──
+   '<div style="position:relative;max-width:320px;margin:0 auto 0.6rem">'+
+
+   // ── Arched JACKPOT header ──
+   '<div style="background:linear-gradient(180deg,#d40000 0%,#8b0000 100%);border-radius:22px 22px 0 0;border:3px solid #C8A96E;border-bottom:3px solid #9a7540;padding:0.55rem 0.8rem 0.5rem;text-align:center;box-shadow:0 -4px 18px rgba(180,0,0,0.5),inset 0 1px 0 rgba(255,200,100,0.3)">'+
+   '<div style="font-size:1.2rem;line-height:1;margin-bottom:3px">\uD83D\uDC51</div>'+
+   '<div style="font-family:\'Cormorant Garamond\',serif;font-size:2rem;font-weight:700;color:#FFD700;letter-spacing:6px;text-shadow:0 0 16px rgba(255,215,0,0.9),0 2px 0 #7a5200,0 -1px 0 rgba(255,255,200,0.6)">JACKPOT</div>'+
+   // bulb row
+   '<div id="cl-wrap" style="display:flex;justify-content:center;align-items:center;gap:5px;margin-top:0.4rem">'+
    lColors.map(function(c,i){
-     return '<div class="cl" style="background:'+c+';box-shadow:0 0 10px '+c+',0 0 22px '+c+'50;animation-delay:'+(i*0.065).toFixed(3)+'s"></div>';
+     return '<div class="cl" style="width:13px;height:13px;background:'+c+';box-shadow:0 0 8px '+c+',0 0 16px '+c+'88;border:1px solid rgba(255,255,200,0.4);animation-delay:'+(i*0.1).toFixed(2)+'s"></div>';
    }).join('')+
    '</div>'+
+   '</div>'+
+
    // ── Machine body ──
-   '<div style="background:linear-gradient(160deg,#0a0500,#1a0800);border-radius:24px;border:3px solid #C8A96E;padding:1.2rem;box-shadow:0 0 40px rgba(200,169,110,0.2),inset 0 0 60px rgba(0,0,0,0.5);margin:0.3rem 0;">'+
-   '<div style="text-align:center;margin-bottom:0.8rem">'+
-   '<div style="font-family:\'Cormorant Garamond\',serif;font-size:1.6rem;font-weight:700;color:#FFD700;letter-spacing:4px;text-shadow:0 0 12px rgba(255,215,0,0.6)">\u2605 JACKPOT \u2605</div>'+
-   '<div style="font-size:0.6rem;letter-spacing:3px;color:rgba(200,169,110,0.5);text-transform:uppercase;margin-top:2px">Birthday Special Edition</div>'+
+   '<div style="background:linear-gradient(180deg,#c60000 0%,#800000 60%,#6a0000 100%);border:3px solid #C8A96E;border-top:none;border-radius:0 0 20px 20px;padding:0.9rem 1rem 1rem;box-shadow:0 6px 24px rgba(0,0,0,0.5),inset 0 0 40px rgba(0,0,0,0.25);position:relative">'+
+
+   // ── Lever ──
+   '<div style="position:absolute;right:-22px;top:30px;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer" onclick="pullSlots()">'+
+   '<div style="width:18px;height:18px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#ff6666,#cc0000);border:2px solid #C8A96E;box-shadow:0 2px 6px rgba(0,0,0,0.5)"></div>'+
+   '<div style="width:8px;height:60px;background:linear-gradient(180deg,#C8A96E,#8a6520,#C8A96E);border-radius:4px;border:1px solid rgba(200,169,110,0.6)"></div>'+
+   '<div style="width:22px;height:14px;background:linear-gradient(135deg,#C8A96E,#8a6520);border-radius:4px;border:1px solid rgba(200,169,110,0.8)"></div>'+
    '</div>'+
-   '<div style="display:flex;justify-content:center;gap:0.8rem;margin-bottom:0.8rem;flex-wrap:wrap">'+
-   prizes.map(function(p){return '<div style="text-align:center;font-size:0.6rem;color:rgba(200,169,110,0.55)"><div style="font-size:1.1rem">'+p.sym+'</div>'+p.name+'</div>';}).join('')+
-   '</div>'+
-   '<div style="display:flex;gap:0.6rem;justify-content:center;position:relative;margin-bottom:0.7rem">'+
-   '<div style="position:absolute;left:-4px;right:-4px;top:50%;height:3px;background:linear-gradient(90deg,transparent,rgba(200,169,110,0.6),transparent);transform:translateY(-50%);pointer-events:none;z-index:5"></div>'+
+
+   // ── Reel window (silver) ──
+   '<div style="background:linear-gradient(180deg,#d8d8d8,#f0f0f0,#d8d8d8);border-radius:10px;border:4px solid #C8A96E;padding:6px;margin-bottom:0.6rem;box-shadow:inset 0 3px 10px rgba(0,0,0,0.35),0 2px 0 rgba(255,200,100,0.3)">'+
+   '<div style="display:flex;gap:5px;justify-content:center;position:relative">'+
+   '<div style="position:absolute;left:-16px;top:50%;transform:translateY(-50%);color:#C8A96E;font-size:1rem;font-weight:900">\u25B6</div>'+
+   '<div style="position:absolute;right:-16px;top:50%;transform:translateY(-50%);color:#C8A96E;font-size:1rem;font-weight:900">\u25C0</div>'+
+   // win-line highlight
+   '<div style="position:absolute;left:0;right:0;top:50%;height:3px;background:rgba(255,215,0,0.45);transform:translateY(-50%);pointer-events:none;z-index:5;border-radius:2px"></div>'+
    [0,1,2].map(function(i){
-     return '<div style="width:80px;height:'+reelH+'px;background:#030101;border-radius:10px;border:2px solid rgba(200,169,110,0.4);overflow:hidden;position:relative;">'+
-     '<div style="position:absolute;top:0;left:0;right:0;height:40%;background:linear-gradient(#030101,transparent);z-index:2;pointer-events:none"></div>'+
-     '<div style="position:absolute;bottom:0;left:0;right:0;height:40%;background:linear-gradient(transparent,#030101);z-index:2;pointer-events:none"></div>'+
+     return '<div style="width:82px;height:'+reelH+'px;background:#fafafa;border-radius:7px;border:2px solid rgba(160,120,60,0.35);overflow:hidden;position:relative;box-shadow:inset 0 0 8px rgba(0,0,0,0.12)">'+
+     '<div style="position:absolute;top:0;left:0;right:0;height:38%;background:linear-gradient(rgba(210,210,210,0.85),transparent);z-index:2;pointer-events:none;border-radius:7px 7px 0 0"></div>'+
+     '<div style="position:absolute;bottom:0;left:0;right:0;height:38%;background:linear-gradient(transparent,rgba(210,210,210,0.85));z-index:2;pointer-events:none;border-radius:0 0 7px 7px"></div>'+
      '<div id="jstrip'+i+'" style="display:flex;flex-direction:column;transform:translateY(0)">'+buildStrip()+'</div>'+
      '</div>';
    }).join('')+
    '</div>'+
-   '<div style="text-align:center;font-size:0.62rem;color:rgba(200,169,110,0.38);letter-spacing:2px;margin-bottom:0.3rem">\u00b7 MATCH 3 TO WIN \u00b7</div>'+
-   '<div id="spins-ctr" style="text-align:center;font-size:0.78rem;font-weight:600;color:rgba(200,169,110,0.7);letter-spacing:1px;margin-bottom:0.2rem">3 chances remaining</div>'+
    '</div>'+
-   '<button class="play-btn" id="slot-btn" onclick="pullSlots()" style="margin-top:0.5rem;font-size:1.1rem;letter-spacing:1px">SPIN!</button>'+
+
+   // ── Match 3 / spins counter ──
+   '<div style="text-align:center;font-size:0.58rem;color:rgba(255,220,150,0.65);letter-spacing:2.5px;margin-bottom:3px;text-transform:uppercase">\u00b7 Match 3 to Win \u00b7</div>'+
+   '<div id="spins-ctr" style="text-align:center;font-size:0.75rem;font-weight:700;color:#FFD700;letter-spacing:1px;margin-bottom:0.5rem;text-shadow:0 0 8px rgba(255,215,0,0.5)">3 chances remaining</div>'+
+
+   // ── Bottom display bar ──
+   '<div style="background:#050505;border-radius:8px;border:2px solid rgba(200,169,110,0.5);padding:0.3rem 0.8rem;text-align:center;margin-bottom:0.6rem;font-family:monospace;font-size:1.1rem;color:#00ff88;letter-spacing:4px;text-shadow:0 0 8px #00ff88">1.000.000</div>'+
+
+   // ── Gold SPIN button ──
+   '<button id="slot-btn" onclick="pullSlots()" style="width:100%;padding:0.75rem;background:linear-gradient(180deg,#FFD700,#C8A96E,#8a6520);color:#4a2c00;font-family:\'Inter\',sans-serif;font-size:1.05rem;font-weight:900;letter-spacing:3px;border:none;border-radius:10px;cursor:pointer;box-shadow:0 3px 12px rgba(0,0,0,0.4),inset 0 1px 0 rgba(255,255,200,0.5);text-transform:uppercase">SPIN</button>'+
+
+   '</div>'+// end machine body
+   '</div>'+// end machine wrapper
+
    '<div id="jackpot-result" style="margin-top:0.8rem"></div>';
 
  function setLightSpeed(dur){
