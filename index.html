@@ -247,10 +247,7 @@ var slots = [
 ];
 
 function isUnlocked(slot) {
-  var now = new Date();
-  var cur = now.getHours() * 60 + now.getMinutes();
-  var unlock = slot.hour * 60 + (slot.half ? 30 : 0);
-  return cur >= unlock;
+  return true; // PREVIEW MODE - all unlocked
 }
 
 function formatTime(d) {
