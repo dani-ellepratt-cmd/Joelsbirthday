@@ -1422,9 +1422,9 @@ function renderCheese(el) {
      '<div style="font-family:\'Cormorant Garamond\',serif;font-size:1.8rem;font-weight:700;color:#C8A96E;margin-bottom:0.3rem">A Glass of Wine</div>' +
      '<div style="color:rgba(255,255,255,0.65);font-size:0.88rem">Dani-Elle\'s got you covered birthday boy 🥂</div>' +
      '</div>' +
-     '<div style="background:rgba(200,169,110,0.08);border:1px solid rgba(200,169,110,0.25);border-radius:14px;padding:1rem 1.2rem;text-align:center;margin-bottom:1.2rem">' +
-     '<div style="font-size:0.7rem;letter-spacing:2px;text-transform:uppercase;color:rgba(200,169,110,0.55);margin-bottom:0.4rem">Feeling lucky? 🤞</div>' +
-     '<div style="color:rgba(255,255,255,0.6);font-size:0.82rem">Shake <strong style="color:#C8A96E">one more time</strong> to gamble it for something bigger...</div>' +
+     '<div style="background:linear-gradient(135deg,#C8A96E,#9a7040);border-radius:14px;padding:1rem 1.2rem;text-align:center;margin-bottom:1.2rem;box-shadow:0 3px 12px rgba(200,169,110,0.3)">' +
+     '<div style="font-size:0.7rem;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.85);margin-bottom:0.4rem;font-weight:700">Feeling lucky? 🤞</div>' +
+     '<div style="color:rgba(0,0,0,0.75);font-size:0.85rem;font-weight:600">Shake <strong>one more time</strong> to gamble it for something bigger...</div>' +
      '</div>' +
      '<div style="display:flex;flex-direction:column;gap:0.8rem">' +
      '<button class="next-btn" onclick="cheeseTakeIt()">I\'ll take it! 🍷</button>' +
@@ -1445,11 +1445,11 @@ function renderCheese(el) {
        '<div class="modal-title">Going for it! 🤞</div>' +
        '<div style="background:linear-gradient(160deg,#1a0800,#3d1a00);border-radius:24px;padding:2rem 1.5rem;text-align:center;margin-bottom:1.4rem;border:2px solid #C8A96E;box-shadow:0 0 30px rgba(200,169,110,0.2)">' +
        '<div style="font-size:5rem;margin-bottom:0.8rem;animation:shakeBtnPulse 0.8s ease-in-out infinite;display:inline-block">📱</div>' +
-       '<div style="font-family:\'Cormorant Garamond\',serif;font-size:1.4rem;font-weight:700;color:#C8A96E;margin-bottom:0.4rem">Shake again!</div>' +
-       '<div style="color:rgba(255,255,255,0.6);font-size:0.85rem">Give it everything you\'ve got...</div>' +
+       '<div style="font-family:\'Cormorant Garamond\',serif;font-size:1.4rem;font-weight:700;color:#C8A96E;margin-bottom:0.4rem">Shake to win!</div>' +
+       '<div style="color:rgba(255,255,255,0.6);font-size:0.85rem">Give it everything you\'ve got to win the upgrade...</div>' +
        '</div>' +
        '<div id="cheese-fallback3" style="display:none">' +
-       '<button class="play-btn" onclick="cheeseShowPrize2()">Reveal! 🤞</button>' +
+       '<button class="play-btn" onclick="cheeseShowPrize2()">Tap to reveal! 🤞</button>' +
        '</div>';
      window.cheeseShowPrize2 = function() {
        el.innerHTML =
@@ -1467,11 +1467,33 @@ function renderCheese(el) {
          '<button class="next-btn" onclick="closeModal()">YES! Let\'s go! 🎉</button>';
        launchConfetti();
      };
-     setupShakeListener(function() { window.cheeseShowPrize2(); });
-     setTimeout(function() {
-       var fb3 = document.getElementById('cheese-fallback3');
-       if (fb3) fb3.style.display = 'block';
-     }, 4000);
+     // Second shake — require actual shake, only show tap if permission denied
+     if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
+       DeviceMotionEvent.requestPermission().then(function(p) {
+         if (p === 'granted') {
+           var s2={x:0,y:0,z:0},s2done=false;
+           window.addEventListener('devicemotion',function s2h(e){
+             if(s2done)return;
+             var a=e.accelerationIncludingGravity||e.acceleration||{};
+             var d=Math.abs((a.x||0)-s2.x)+Math.abs((a.y||0)-s2.y)+Math.abs((a.z||0)-s2.z);
+             s2={x:a.x||0,y:a.y||0,z:a.z||0};
+             if(d>18){s2done=true;window.removeEventListener('devicemotion',s2h);window.cheeseShowPrize2();}
+           });
+         } else {
+           var fb3=document.getElementById('cheese-fallback3');
+           if(fb3)fb3.style.display='block';
+         }
+       }).catch(function(){var fb3=document.getElementById('cheese-fallback3');if(fb3)fb3.style.display='block';});
+     } else {
+       var s2b={x:0,y:0,z:0},s2bdone=false;
+       window.addEventListener('devicemotion',function s2bh(e){
+         if(s2bdone)return;
+         var a=e.accelerationIncludingGravity||e.acceleration||{};
+         var d=Math.abs((a.x||0)-s2b.x)+Math.abs((a.y||0)-s2b.y)+Math.abs((a.z||0)-s2b.z);
+         s2b={x:a.x||0,y:a.y||0,z:a.z||0};
+         if(d>18){s2bdone=true;window.removeEventListener('devicemotion',s2bh);window.cheeseShowPrize2();}
+       });
+     }
    };
  }
 
@@ -1489,8 +1511,8 @@ function renderMovie(el) {
    '<div id="boss-close" style="display:none;margin-top:1.2rem">' +
   '<div style="text-align:center;font-size:0.75rem;letter-spacing:2px;color:rgba(200,169,110,0.6);text-transform:uppercase;margin-bottom:0.8rem">What do you want to do?</div>' +
   '<div style="display:flex;gap:0.8rem;justify-content:center">' +
-  '<button class="play-btn" style="flex:1" onclick="closeModal()">🎬 Watch the Movie</button>' +
-  '<button class="next-btn" style="flex:1" onclick="closeModal()">🎵 Listen to His Music</button>' +
+  '<button class="play-btn" style="flex:1" onclick="bruceMovieNote()">🎬 Watch the Movie</button>' +
+  '<button class="next-btn" style="flex:1" onclick="bruceMusicNote()">🎵 Listen to His Music</button>' +
   '</div>' +
   '</div>';
 
@@ -1521,6 +1543,33 @@ function renderMovie(el) {
      wrap.scrollTop = wrap.scrollHeight;
    }, m.delay);
  });
+
+ window.bruceMovieNote = function() {
+   var bc = document.getElementById('boss-close');
+   if (bc) bc.innerHTML =
+     '<div style="background:linear-gradient(135deg,#0d0800,#1a1208);border-radius:16px;padding:1.4rem;text-align:center;margin-bottom:1.2rem;border:1px solid rgba(200,169,110,0.3)">' +
+     '<div style="font-size:2rem;margin-bottom:0.6rem">🎬🎸</div>' +
+     '<div style="font-family:\'Cormorant Garamond\',serif;font-size:1.2rem;font-weight:700;color:#C8A96E;margin-bottom:0.6rem">Enjoy the show, kid.</div>' +
+     '<div style="color:rgba(255,255,255,0.75);font-size:0.9rem;line-height:1.7;font-style:italic">' +
+     '"Turn the lights low, pour something good, and let it take you there.<br><br>' +
+     'This is The Boss at his finest — raw, real, and full of heart.<br><br>' +
+     'Happy Birthday, Joel." 🤘</div>' +
+     '</div>' +
+     '<button class="next-btn" onclick="closeModal()">Let\'s go! 🎬</button>';
+ };
+ window.bruceMusicNote = function() {
+   var bc = document.getElementById('boss-close');
+   if (bc) bc.innerHTML =
+     '<div style="background:linear-gradient(135deg,#0d0800,#1a1208);border-radius:16px;padding:1.4rem;text-align:center;margin-bottom:1.2rem;border:1px solid rgba(200,169,110,0.3)">' +
+     '<div style="font-size:2rem;margin-bottom:0.6rem">🎵🎸</div>' +
+     '<div style="font-family:\'Cormorant Garamond\',serif;font-size:1.2rem;font-weight:700;color:#C8A96E;margin-bottom:0.6rem">Turn it up, Joel.</div>' +
+     '<div style="color:rgba(255,255,255,0.75);font-size:0.9rem;line-height:1.7;font-style:italic">' +
+     '"Born to Run. Darkness on the Edge of Town. Born in the USA.<br><br>' +
+     'Let The Boss carry you through the night — this is your birthday soundtrack.<br><br>' +
+     'Enjoy every track, kid. You\'ve earned it." 🤘</div>' +
+     '</div>' +
+     '<button class="next-btn" onclick="closeModal()">Cranking it! 🎵</button>';
+ };
 }
 
 // ── HEAD TICKLES ──────────────────────────────────────────────────────
