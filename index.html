@@ -1467,32 +1467,29 @@ function renderCheese(el) {
          '<button class="next-btn" onclick="closeModal()">YES! Let\'s go! 🎉</button>';
        launchConfetti();
      };
-     // Second shake — require actual shake, only show tap if permission denied
+     // Second shake — delay 1.5s so tap motion settles before we listen
+     function startSecondShakeListen() {
+       var s2={x:0,y:0,z:0},s2done=false;
+       function s2h(e){
+         if(s2done)return;
+         var a=e.accelerationIncludingGravity||e.acceleration||{};
+         var d=Math.abs((a.x||0)-s2.x)+Math.abs((a.y||0)-s2.y)+Math.abs((a.z||0)-s2.z);
+         s2={x:a.x||0,y:a.y||0,z:a.z||0};
+         if(d>20){s2done=true;window.removeEventListener('devicemotion',s2h);window.cheeseShowPrize2();}
+       }
+       window.addEventListener('devicemotion',s2h);
+     }
      if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
        DeviceMotionEvent.requestPermission().then(function(p) {
          if (p === 'granted') {
-           var s2={x:0,y:0,z:0},s2done=false;
-           window.addEventListener('devicemotion',function s2h(e){
-             if(s2done)return;
-             var a=e.accelerationIncludingGravity||e.acceleration||{};
-             var d=Math.abs((a.x||0)-s2.x)+Math.abs((a.y||0)-s2.y)+Math.abs((a.z||0)-s2.z);
-             s2={x:a.x||0,y:a.y||0,z:a.z||0};
-             if(d>18){s2done=true;window.removeEventListener('devicemotion',s2h);window.cheeseShowPrize2();}
-           });
+           setTimeout(startSecondShakeListen, 1500);
          } else {
            var fb3=document.getElementById('cheese-fallback3');
            if(fb3)fb3.style.display='block';
          }
        }).catch(function(){var fb3=document.getElementById('cheese-fallback3');if(fb3)fb3.style.display='block';});
      } else {
-       var s2b={x:0,y:0,z:0},s2bdone=false;
-       window.addEventListener('devicemotion',function s2bh(e){
-         if(s2bdone)return;
-         var a=e.accelerationIncludingGravity||e.acceleration||{};
-         var d=Math.abs((a.x||0)-s2b.x)+Math.abs((a.y||0)-s2b.y)+Math.abs((a.z||0)-s2b.z);
-         s2b={x:a.x||0,y:a.y||0,z:a.z||0};
-         if(d>18){s2bdone=true;window.removeEventListener('devicemotion',s2bh);window.cheeseShowPrize2();}
-       });
+       setTimeout(startSecondShakeListen, 1500);
      }
    };
  }
@@ -1598,7 +1595,7 @@ function renderHeadTickles(el) {
      '<div style="color:rgba(255,255,255,0.88);font-size:0.95rem;line-height:1.7;font-style:italic">"' + f.fact.replace(/\n/g,'<br><br>') + '"</div>' +
      '</div>' +
      (isLast
-       ? '<button class="next-btn" onclick="closeModal()">Best. Birthday. Ever. 😌</button>'
+       ? '<button class="next-btn" onclick="closeModal()">Love it 💛</button>'
        : '<button class="play-btn" onclick="htNext()">Next ›</button>'
      );
    window.htNext = function() { fi++; showFact(fi); };
@@ -1606,13 +1603,13 @@ function renderHeadTickles(el) {
 
  // Start with the head tickles message, then tap to begin facts
  el.innerHTML =
-   '<div class="modal-title">Only for the Birthday Boy!</div>' +
+   '<div class="modal-title">Finally... 🤲</div>' +
    '<div class="love-note" style="text-align:center;margin-bottom:1.2rem">' +
-   'Sit back and relax, Joel...<br><br>' +
-   '<strong style="color:#C8A96E;font-size:1.2rem">Dani-Elle will now give you your hard earnt head tickles for 30 minutes. 🤲😌</strong><br><br>' +
-   'While you relax, let\'s talk about you turning 32...<br><br>' +
-   '<span style="font-size:0.85rem;color:rgba(200,169,110,0.7)">Tap below when you\'re ready to hear it 👇</span></div>' +
-   '<button class="play-btn" onclick="htStart()">FYI 👀</button>';
+   'Finally, it\'s head tickle time! 🎉<br><br>' +
+   '<strong style="color:#C8A96E;font-size:1.2rem">Sit back and relax Joel — Dani-Elle will now give you your hard earnt head tickles for 30 minutes. 🤲😌</strong><br><br>' +
+   'While you relax, let\'s have a little chat about you turning 32...<br><br>' +
+   '<span style="font-size:0.85rem;color:rgba(200,169,110,0.7)">Tap below when you\'re ready 👇</span></div>' +
+   '<button class="play-btn" onclick="htStart()">Let\'s chat 💬</button>';
 
  window.htStart = function() { showFact(0); };
 }
