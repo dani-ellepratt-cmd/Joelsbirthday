@@ -147,10 +147,10 @@
  .home-go-btn:hover{transform:scale(1.03);}
  .home-footer{font-size:0.58rem;letter-spacing:3.5px;text-transform:uppercase;color:rgba(92,61,30,0.4);text-align:center;}
  /* Main page header — matches home screen style */
- .header h1{font-family:'Cormorant Garamond',serif;text-align:center;line-height:1.05;margin:0.2rem 0;font-weight:700;}
+ .header h1{font-family:'Cormorant Garamond',serif;text-align:center;line-height:1.0;margin:0.2rem 0;font-weight:700;display:flex;align-items:baseline;justify-content:center;flex-wrap:nowrap;gap:0.18em;}
  .header h1 .hb{display:block;font-size:clamp(1.8rem,7vw,3.2rem);font-weight:700;color:rgba(45,24,4,0.82);line-height:1.0;font-style:normal;}
- .header h1 .hb2{display:block;font-size:clamp(2rem,8vw,3.8rem);font-style:italic;font-weight:400;color:rgba(200,169,110,0.42);line-height:1.0;}
- .header h1 .hn{display:block;font-size:clamp(4rem,15vw,7.5rem);font-style:italic;font-weight:700;line-height:1.05;background:linear-gradient(90deg,#9a7040 15%,#C8A96E 38%,#d4b878 47%,#ddc882 50%,#d4b878 53%,#C8A96E 62%,#9a7040 85%);background-size:280% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:goldShimmer 3.5s linear infinite;}
+ .header h1 .hb2{display:inline-block;font-size:clamp(1.8rem,7vw,3.4rem);font-style:italic;font-weight:600;color:#7a5228;line-height:1.0;}
+ .header h1 .hn{display:inline-block;font-size:clamp(3.2rem,12vw,6.2rem);font-style:italic;font-weight:700;line-height:1.0;background:linear-gradient(90deg,#9a7040 15%,#C8A96E 38%,#d4b878 47%,#ddc882 50%,#d4b878 53%,#C8A96E 62%,#9a7040 85%);background-size:280% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:goldShimmer 3.5s linear infinite;}
  /* NEXT WIDGET */
  #next-widget{display:none;position:fixed;top:0.8rem;right:0.8rem;background:rgba(240,232,218,0.95);border:1px solid rgba(200,169,110,0.45);border-radius:12px;padding:0.45rem 0.75rem;z-index:500;text-align:center;box-shadow:0 2px 10px rgba(0,0,0,0.08);}
  .nw-lbl{font-size:0.54rem;letter-spacing:1.5px;text-transform:uppercase;color:rgba(200,169,110,0.8);}
@@ -1203,16 +1203,26 @@ function renderMystery(el) {
    '<div style="font-size:0.7rem;letter-spacing:2px;text-transform:uppercase;color:rgba(200,169,110,0.55);margin-bottom:0.5rem">Miss even one?</div>' +
    '<div style="color:#ef4444;font-size:1.1rem;font-weight:700">Dani-Elle gets $100 💸</div>' +
    '</div>' +
-   '<button class="play-btn" onclick="startBballGame()">I\'m ready — let\'s go!</button>';
+   '<button class="play-btn" onclick="startBballPractice()">Warm up first →</button>';
+
+ window._bballIsPractice = false;
+
+ window.startBballPractice = function() {
+   window._bballIsPractice = true;
+   window.startBballGame();
+ };
 
  window.startBballGame = function() {
+ var isPractice = window._bballIsPractice || false;
+ window._bballIsPractice = false;
+ var totalShots = isPractice ? 3 : 5;
  // Shrink modal padding so canvas gets maximum space
  var mbox = document.getElementById('modal-box');
  if (mbox) mbox.style.padding = '0.75rem 0.75rem 1rem';
  el.innerHTML =
    '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem;padding:0 0.1rem">' +
-   '<div style="font-family:\'Cormorant Garamond\',serif;font-size:1.2rem;font-weight:700;color:#C8A96E">🏀 The Challenge</div>' +
-   '<div id="bball-shots" style="font-size:0.85rem;color:var(--muted);font-weight:600">5 shots left</div>' +
+   '<div style="font-family:\'Cormorant Garamond\',serif;font-size:1.2rem;font-weight:700;color:#C8A96E">🏀 ' + (isPractice ? 'Warm Up' : 'The Challenge') + '</div>' +
+   '<div id="bball-shots" style="font-size:0.85rem;color:var(--muted);font-weight:600">' + totalShots + ' shots left</div>' +
    '</div>' +
    '<canvas id="bball-canvas" style="display:block;width:100%;border-radius:14px;cursor:crosshair;touch-action:none"></canvas>' +
    '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:0.5rem;padding:0 0.2rem">' +
@@ -1234,7 +1244,7 @@ function renderMystery(el) {
    canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
    ctx.scale(dpr, dpr);
 
-   var score = 0, shotsTaken = 0, shotsLeft = 5, shooting = false, animId = null;
+   var score = 0, shotsTaken = 0, shotsLeft = totalShots, shooting = false, animId = null;
    var floorY = H * 0.84;
    var hoopX = W * 0.5, hoopY = H * 0.3, rimW = W * 0.12;
    var ballR = W * 0.06;
@@ -1471,17 +1481,29 @@ function renderMystery(el) {
      ctx.beginPath();if(ctx.roundRect)ctx.roundRect(W*0.15,H*0.35,W*0.7,H*0.3,12);else ctx.rect(W*0.15,H*0.35,W*0.7,H*0.3);ctx.fill();
      ctx.strokeStyle='rgba(200,169,110,0.4)';ctx.lineWidth=1.5;ctx.stroke();
      ctx.fillStyle='#C8A96E';ctx.font='bold 48px Cormorant Garamond,serif';ctx.textAlign='center';
-     ctx.fillText(score+' / 5',W/2,H*0.52);
+     ctx.fillText(score+' / '+totalShots,W/2,H*0.52);
      ctx.fillStyle='rgba(255,255,255,0.75)';ctx.font='15px Inter,sans-serif';
-     var tag=score===5?'PERFECT! 🔥':score>=3?'Not bad... 😬':'Needs work! 😂';
-     ctx.fillText(tag,W/2,H*0.6);
-     var won=score===5;
-     document.getElementById('bball-result').innerHTML=
-       '<div class="love-note" style="text-align:center;margin-top:0.8rem">'+(
-         won?'🏆 <strong style="color:#C8A96E">5/5 — PERFECT SCORE!</strong><br><br>Joel\'s got serious game! 🏀🔥<br><br><strong style="color:#C8A96E;font-size:1.1rem">Lolly bags for everyone! 🍬🎉</strong>':
-             '😅 <strong style="color:#ef4444">'+score+'/5 — Not good enough!</strong><br><br>Joel owes <strong style="color:#C8A96E">Dani-Elle $100! 💸</strong><br><br>Pay up birthday boy! 😂'
-       )+'</div><button class="next-btn" style="margin-top:0.8rem" onclick="closeModal()">'+(won?'Lolly bags!':'Fine...')+'</button>';
-     if(won)launchConfetti();
+     if(isPractice){
+       var ptag=score===3?'Warm up complete! 🔥':score>=2?'Not bad! 😏':'Keep going! 💪';
+       ctx.fillText(ptag,W/2,H*0.6);
+       document.getElementById('bball-result').innerHTML=
+         '<div class="love-note" style="text-align:center;margin-top:0.8rem">'+
+         (score===3?'🔥 <strong style="color:#C8A96E">3/3 — warm up done!</strong>':
+                    score>=2?'😏 <strong style="color:#C8A96E">'+score+'/3 — not bad for a warm up!</strong>':
+                             '😅 <strong style="color:#C8A96E">'+score+'/3 — that\'s okay, just warming up!</strong>')+
+         '<br><br>Now for the <strong style="color:#C8A96E">real thing...</strong> 🏀</div>'+
+         '<button class="play-btn" style="margin-top:0.8rem" onclick="window.startBballGame()">Start real game →</button>';
+     } else {
+       var tag=score===5?'PERFECT! 🔥':score>=3?'Not bad... 😬':'Needs work! 😂';
+       ctx.fillText(tag,W/2,H*0.6);
+       var won=score===5;
+       document.getElementById('bball-result').innerHTML=
+         '<div class="love-note" style="text-align:center;margin-top:0.8rem">'+(
+           won?'🏆 <strong style="color:#C8A96E">5/5 — PERFECT SCORE!</strong><br><br>Joel\'s got serious game! 🏀🔥<br><br><strong style="color:#C8A96E;font-size:1.1rem">Lolly bags for everyone! 🍬🎉</strong>':
+               '😅 <strong style="color:#ef4444">'+score+'/5 — Not good enough!</strong><br><br>Joel owes <strong style="color:#C8A96E">Dani-Elle $100! 💸</strong><br><br>Pay up birthday boy! 😂'
+         )+'</div><button class="next-btn" style="margin-top:0.8rem" onclick="closeModal()">'+(won?'Lolly bags!':'Fine...')+'</button>';
+       if(won)launchConfetti();
+     }
    }
 
    drawScene(ballStartX,ballStartY,0);
