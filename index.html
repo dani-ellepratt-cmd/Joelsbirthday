@@ -173,8 +173,6 @@
 </head>
 <body>
 <div id="home-screen">
- <div class="home-avatar-sm">J</div>
- <div class="home-avatar">J</div>
  <div class="home-who">The Birthday Boy</div>
  <div class="home-h1">
    <span class="hb">Happy</span>
@@ -247,8 +245,8 @@ var slots = [
  { id:'s12', hour:12, half:false, label:'12pm', emoji:'🍽️', title:'Lunch Time!',                   desc:'Time to head out — we are going for a birthday lunch!', type:'lunch' },
  { id:'s13', hour:13, half:false, label:'1pm',  emoji:'🤲', title:'Congratulations',               desc:'Open to find out what you have won!', type:'tickles' },
  { id:'s14', hour:14, half:false, label:'2pm',  emoji:'🎡', title:'Lets Play a Game',             desc:'Spin the wheel and complete your challenge!', type:'wheel' },
- { id:'s15', hour:15, half:false, label:'3pm',  emoji:'🎱', title:'8 Ball Time',                   desc:'You vs Dani-Elle — rack them up! Winner takes all.', type:'eightball' },
- { id:'s16', hour:16, half:false, label:'4pm',  emoji:'🏀', title:"Let's find out 🏀",           desc:"Let's find out how good you really are...", type:'mystery' },
+ { id:'s15', hour:15, half:false, label:'3pm',  emoji:'🏀', title:"Let's find out 🏀",           desc:"Let's find out how good you really are...", type:'mystery' },
+ { id:'s16', hour:16, half:false, label:'4pm',  emoji:'🎱', title:'8 Ball Time',                   desc:'You vs Dani-Elle — rack them up! Winner takes all.', type:'eightball' },
  { id:'s17', hour:17, half:false, label:'5pm',  emoji:'🧀', title:'The Perfect Combo',             desc:'Sit back and enjoy this one!', type:'cheese' },
  { id:'s18', hour:18, half:false, label:'6pm',  emoji:'🎸', title:'Springsteen Time',              desc:'Settle in — it is movie time with The Boss.', type:'movie' },
  { id:'s19', hour:19, half:false, label:'7pm',  emoji:'🤲', title:'Only for the Birthday Boy',    desc:'This one is exclusively for Joel...', type:'headtickles' },
@@ -1040,6 +1038,24 @@ function renderEightBall(el) {
 
 // ── MYSTERY ───────────────────────────────────────────────────────────
 function renderMystery(el) {
+ // Show stakes intro first
+ el.innerHTML =
+   '<div class="modal-title">Let\'s find out how good you really are 🏀</div>' +
+   '<div style="text-align:center;margin-bottom:1.4rem;color:rgba(200,169,110,0.75);font-size:0.88rem">Here\'s what\'s on the line...</div>' +
+   '<div style="background:linear-gradient(135deg,#0d0800,#1a1000);border-radius:20px;padding:1.8rem 1.4rem;text-align:center;margin-bottom:1.4rem;border:1px solid rgba(200,169,110,0.3)">' +
+   '<div style="font-size:2.8rem;margin-bottom:0.8rem">🏀</div>' +
+   '<div style="font-family:\'Cormorant Garamond\',serif;font-size:1.3rem;font-weight:700;color:#C8A96E;margin-bottom:1.2rem">The Challenge</div>' +
+   '<div style="color:rgba(255,255,255,0.85);font-size:0.95rem;line-height:1.8">' +
+   'Sink <strong style="color:#C8A96E">5/5 balls</strong> and you win 🏆<br>' +
+   '<span style="font-size:0.75rem;opacity:0.6">(oh and the hoop moves after every shot 👀)</span>' +
+   '</div>' +
+   '<div style="margin:1.2rem 0;height:1px;background:rgba(200,169,110,0.2)"></div>' +
+   '<div style="font-size:0.7rem;letter-spacing:2px;text-transform:uppercase;color:rgba(200,169,110,0.55);margin-bottom:0.5rem">Miss even one?</div>' +
+   '<div style="color:#ef4444;font-size:1.1rem;font-weight:700">Dani-Elle gets $100 💸</div>' +
+   '</div>' +
+   '<button class="play-btn" onclick="startBballGame()">I\'m ready — let\'s go! 🏀</button>';
+
+ window.startBballGame = function() {
  el.innerHTML =
    '<div class="modal-title">Let\'s find out how good you really are 🏀</div>' +
    '<div style="text-align:center;color:rgba(200,169,110,0.8);font-size:0.88rem;margin-bottom:0.5rem"><span style="font-size:0.78rem;opacity:0.7">Tap to aim and shoot — 5 balls, need 5 to win. The hoop moves after every shot! 👀</span></div>' +
@@ -1330,6 +1346,7 @@ function renderMystery(el) {
      if(!shooting&&shotsLeft>0){var p=getPos(e);shoot(p.x,p.y);}
    },{passive:false});
  },100);
+ }; // end startBballGame
 }
 
 // ── CHEESE AND WINE ───────────────────────────────────────────────────
