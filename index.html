@@ -149,8 +149,8 @@
  /* Main page header — matches home screen style */
  .header h1{font-family:'Cormorant Garamond',serif;text-align:center;line-height:1.05;margin:0.2rem 0;font-weight:700;}
  .header h1 .hb{display:block;font-size:clamp(1.8rem,7vw,3.2rem);font-weight:700;color:rgba(45,24,4,0.82);line-height:1.0;font-style:normal;}
- .header h1 .hb2{display:block;font-size:clamp(1.6rem,6.5vw,2.9rem);font-style:italic;font-weight:400;color:rgba(200,169,110,0.42);line-height:1.0;}
- .header h1 .hn{display:block;font-size:clamp(2.8rem,11vw,5rem);font-style:italic;font-weight:700;line-height:1.05;background:linear-gradient(90deg,#9a7040 15%,#C8A96E 38%,#d4b878 47%,#ddc882 50%,#d4b878 53%,#C8A96E 62%,#9a7040 85%);background-size:280% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:goldShimmer 3.5s linear infinite;}
+ .header h1 .hb2{display:block;font-size:clamp(2rem,8vw,3.8rem);font-style:italic;font-weight:400;color:rgba(200,169,110,0.42);line-height:1.0;}
+ .header h1 .hn{display:block;font-size:clamp(4rem,15vw,7.5rem);font-style:italic;font-weight:700;line-height:1.05;background:linear-gradient(90deg,#9a7040 15%,#C8A96E 38%,#d4b878 47%,#ddc882 50%,#d4b878 53%,#C8A96E 62%,#9a7040 85%);background-size:280% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:goldShimmer 3.5s linear infinite;}
  /* NEXT WIDGET */
  #next-widget{display:none;position:fixed;top:0.8rem;right:0.8rem;background:rgba(240,232,218,0.95);border:1px solid rgba(200,169,110,0.45);border-radius:12px;padding:0.45rem 0.75rem;z-index:500;text-align:center;box-shadow:0 2px 10px rgba(0,0,0,0.08);}
  .nw-lbl{font-size:0.54rem;letter-spacing:1.5px;text-transform:uppercase;color:rgba(200,169,110,0.8);}
@@ -199,6 +199,23 @@
  @keyframes danceL{0%,100%{transform:rotate(-13deg) translateY(0px)}50%{transform:rotate(9deg) translateY(-6px)}}
  @keyframes danceR{0%,100%{transform:rotate(13deg) translateY(0px)}50%{transform:rotate(-9deg) translateY(-6px)}}
  @keyframes scSpot{0%,100%{opacity:0.18;transform:skewX(-4deg)}50%{opacity:0.48;transform:skewX(4deg)}}
+
+ /* === HOUR-BASED BACKGROUND EMOJIS === */
+ @keyframes floatEmoji{0%{transform:translateY(0) rotate(-3deg);opacity:0.55}45%{transform:translateY(-50vh) rotate(3deg);opacity:0.4}100%{transform:translateY(-115vh) rotate(-2deg);opacity:0}}
+ @keyframes floatEmojiSpin{0%{transform:translateY(0) rotate(0deg);opacity:0.55}100%{transform:translateY(-115vh) rotate(720deg);opacity:0}}
+ @keyframes ballBounce{
+   0%,100%{transform:translateY(0) scaleX(1.12) scaleY(0.88);animation-timing-function:ease-out}
+   18%{transform:translateY(-30vh) scaleX(0.93) scaleY(1.07);animation-timing-function:ease-in}
+   33%{transform:translateY(-40vh) scaleX(1) scaleY(1);animation-timing-function:ease-in}
+   48%{transform:translateY(-30vh) scaleX(0.95) scaleY(1.05);animation-timing-function:ease-in}
+   62%{transform:translateY(0) scaleX(1.1) scaleY(0.9);animation-timing-function:ease-out}
+   74%{transform:translateY(-18vh) scaleX(0.96) scaleY(1.04);animation-timing-function:ease-in}
+   84%{transform:translateY(-24vh) scaleX(1) scaleY(1);animation-timing-function:ease-in}
+   93%{transform:translateY(-18vh) scaleX(0.97) scaleY(1.03);animation-timing-function:ease-in}
+ }
+ .bg-emoji{position:fixed;font-size:1.3rem;pointer-events:none;z-index:0;user-select:none;bottom:-55px;animation:floatEmoji linear infinite;}
+ .bg-emoji-spin{position:fixed;font-size:1.25rem;pointer-events:none;z-index:0;user-select:none;bottom:-55px;animation:floatEmojiSpin linear infinite;}
+ .bg-ball{position:fixed;font-size:1.2rem;pointer-events:none;z-index:0;user-select:none;bottom:6px;animation:ballBounce ease-in-out infinite;}
 </style>
 </head>
 <body>
@@ -216,7 +233,7 @@
  </div>
  <div class="home-divider"></div>
  <button class="home-go-btn" onclick="enterApp()">Are you ready?</button>
- <div class="home-footer">With love — Dani-Elle 💛</div>
+ <div class="home-footer">With love — Dani-Elle 🤍</div>
 </div>
 <canvas id="confetti-canvas"></canvas>
 <div id="balloon-layer" aria-hidden="true">
@@ -235,9 +252,8 @@
 </div>
 <div class="header">
  <h1>
-   <span class="hb">Happy</span>
-   <span class="hb2">birthday,</span>
-   <span class="hn">Joel.</span>
+   <span class="hn">Joel's</span>
+   <span class="hb2">Day</span>
  </h1>
  <p>Big 32 year old 🎈</p>
 </div>
@@ -274,7 +290,7 @@ var slots = [
  { id:'s22', hour:22, half:false, label:'10pm', emoji:'🕹️', title:'Birthday Dash',                  desc:'Joel vs the world — how far can you run?', type:'game' },
  { id:'s19', hour:19, half:false, label:'7pm',  emoji:'🤲', title:'Only for the Birthday Boy',    desc:'This one is exclusively for Joel...', type:'headtickles' },
  { id:'s20', hour:20, half:false, label:'8pm',  emoji:'🍰', title:'Dessert Time',                  desc:'Time for something sweet — place your dessert order!', type:'dessert' },
- { id:'s21', hour:21, half:false, label:'9pm',  emoji:'💛', title:'Love Note',              desc:'Something special to end the day.', type:'lovenote' }
+ { id:'s21', hour:21, half:false, label:'9pm',  emoji:'🤍', title:'Love Note',              desc:'Something special to end the day.', type:'lovenote' }
 ];
 
 function isUnlocked(slot) {
@@ -360,8 +376,8 @@ function renderBreakfast(el) {
    document.getElementById('brekkie-result').innerHTML =
      '<div class="love-note" style="margin-top:1rem;text-align:center"><div style="font-size:1.8rem;margin-bottom:0.5rem">🛎️</div>' +
      '<strong style="color:#C8A96E">Order received, birthday boy!</strong><br><br>' +
-     fl + '<br>' + dl + '<br><br>Coming right up — give me 10 mins! 🍳❤️</div>' +
-     '<button class="next-btn" style="margin-top:1rem" onclick="closeModal();openTikTokFeed()">All done! ✅</button>';
+     fl + '<br>' + dl + '<br><br>Coming right up — give me 10 mins! 🍳🤍</div>' +
+     '<button class="next-btn" style="margin-top:1rem" onclick="closeModal();openTikTokFeed()">All done! →</button>';
  }
 }
 
@@ -379,8 +395,8 @@ function renderGift(el) {
    document.getElementById('gift-reveal').innerHTML =
      '<div class="love-note" style="text-align:center;margin-top:1rem">' +
      '<strong style="color:#C8A96E;font-size:1.1rem">🎁 Present unlocked!</strong><br><br>' +
-     'Go get it! ❤️</div>' +
-     '<button class="next-btn" onclick="closeModal()">Woohoo! 🎉</button>';
+     'Go get it! 🤍</div>' +
+     '<button class="next-btn" onclick="closeModal()">Woohoo!</button>';
    launchConfetti();
  });
 }
@@ -405,7 +421,7 @@ function renderSpinWheel(el) {
    '<div style="display:flex;justify-content:center;margin-bottom:1rem;background:#e8dcc8;border-radius:20px;padding:1rem">'+
    '<canvas id="wheel-canvas" style="max-width:100%"></canvas>'+
    '</div>'+
-   '<button class="play-btn" id="spin-btn" onclick="doSpin()" style="max-width:180px;margin:0 auto;display:block;background:linear-gradient(135deg,#8B5E3C,#C49A6C);color:#fff;font-size:1rem">🎡 Spin!</button>'+
+   '<button class="play-btn" id="spin-btn" onclick="doSpin()" style="max-width:180px;margin:0 auto;display:block;background:linear-gradient(135deg,#8B5E3C,#C49A6C);color:#fff;font-size:1rem">Spin!</button>'+
    '<div id="wheel-result" style="margin-top:0.8rem"></div>';
 
  var canvas=document.getElementById('wheel-canvas');
@@ -507,7 +523,7 @@ function renderSpinWheel(el) {
          '<strong style="color:#FFD700;font-size:1.2rem">Birthday Present!</strong><br><br>'+
          'You need to kiss your wife to receive your present! \uD83D\uDC8B<br><br>'+
          'Dani-Elle is waiting\u2026 \uD83D\uDE18</div>'+
-         '<button class="next-btn" onclick="closeModal()" style="margin-top:0.8rem">Woohoo! \uD83C\uDF89</button>';
+         '<button class="next-btn" onclick="closeModal()" style="margin-top:0.8rem">Woohoo!</button>';
        launchConfetti();
      }
    }
@@ -650,7 +666,7 @@ function renderSlots(el) {
          };
          document.getElementById('maker-result').innerHTML=
            '<div class="love-note" style="text-align:center;margin-top:0.8rem">'+msgs[who]+'</div>'+
-           '<button class="next-btn" onclick="closeModal()" style="margin-top:0.8rem">YES! \uD83C\uDF79</button>';
+           '<button class="next-btn" onclick="closeModal()" style="margin-top:0.8rem">YES!</button>';
          launchConfetti();
        };
      } else {
@@ -658,8 +674,8 @@ function renderSlots(el) {
        var prizeMsg=prizes[res[0]].prize;
        document.getElementById('jackpot-result').innerHTML=
          '<div class="love-note" style="text-align:center;margin-top:0.5rem">'+
-         '\uD83C\uDF89 <strong style="color:#FFD700;font-size:1.1rem">WINNER! '+prizeName+'!</strong><br><br>'+prizeMsg+'<br><br>Dani-Elle will sort it today! \u2764\ufe0f</div>'+
-         '<button class="next-btn" onclick="closeModal()" style="margin-top:0.8rem">LETS GO! \uD83C\uDF89</button>';
+         '<strong style="color:#FFD700;font-size:1.1rem">WINNER! '+prizeName+'!</strong><br><br>'+prizeMsg+'<br><br>Dani-Elle will sort it today! \uD83E\uDD0D</div>'+
+         '<button class="next-btn" onclick="closeModal()" style="margin-top:0.8rem">LETS GO!</button>';
        launchConfetti();
      }
    } else {
@@ -707,14 +723,14 @@ function renderLunch(el) {
    '<div class="modal-title">Lunch Time!</div>' +
    '<div class="love-note">Time to get dressed, birthday boy! 🌅<br><br>' +
    'We are going OUT for a birthday lunch today. Get ready — it is going to be a great afternoon!<br><br>' +
-   'More details coming very soon... 👀<br><br>— Dani-Elle ❤️</div>' +
+   'More details coming very soon... 👀<br><br>— Dani-Elle 🤍</div>' +
    '<div id="bonus-countdown-wrap" style="margin-top:1.2rem;background:linear-gradient(160deg,#C8A96E,#9a7040);border-radius:14px;padding:1.2rem;text-align:center;border:2px solid rgba(255,230,150,0.4);box-shadow:0 4px 20px rgba(200,169,110,0.3)">' +
    '<div style="font-size:0.8rem;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:rgba(80,40,0,0.85);margin-bottom:0.4rem">⭐ A bonus surprise unlocks in...</div>' +
    '<div id="bonus-countdown" style="font-family:Bangers,cursive;font-size:3rem;color:#3a2000;letter-spacing:4px;text-shadow:0 1px 0 rgba(255,220,100,0.4)">--:--</div>' +
    '<div style="font-size:0.8rem;color:rgba(80,40,0,0.75);font-weight:700;margin-top:0.3rem">Keep an eye on this... 👀</div>' +
    '</div>' +
-   '<button class="next-btn" onclick="closeModal()">Lets go! 🎉</button>' +
-   '<button class="grey-btn" style="margin-top:0.8rem" onclick="closeModal();openBonus()">👀 Preview 12:30 Surprise</button>';
+   '<button class="next-btn" onclick="closeModal()">Lets go!</button>' +
+   '<button class="grey-btn" style="margin-top:0.8rem" onclick="closeModal();openBonus()">Preview 12:30 Surprise →</button>';
  startBonusCountdown();
 }
 
@@ -752,12 +768,12 @@ function renderImessage(el) {
    '<div class="imessage-header"><div class="imessage-avatar">👫</div><div><div class="imessage-name">Mike, Liv and Baby</div><div class="imessage-status">● Online</div></div></div>' +
    '<div class="bubble-wrap" id="bubble-wrap"><div class="typing-dots" id="typing"><span></span><span></span><span></span></div></div>' +
    '</div>' +
-   '<button class="next-btn" style="display:none" id="imsg-close" onclick="closeModal()">Cannot wait! 🎉</button>';
+   '<button class="next-btn" style="display:none" id="imsg-close" onclick="closeModal()">Cannot wait!</button>';
  var msgs = [
    { text:'SURPRISE!!! 🎉🎉🎉', type:'incoming', delay:1200 },
    { text:'Happy Birthday Joel!! 🏀🎂', type:'incoming', delay:2800 },
    { text:'We are crashing your lunch plans... 😉', type:'incoming', delay:4000 },
-   { text:'See you soon!! 😉❤️', type:'incoming', delay:5800 }
+   { text:'See you soon!! 😉🤍', type:'incoming', delay:5800 }
  ];
  msgs.forEach(function(m) {
    setTimeout(function() {
@@ -791,7 +807,7 @@ function renderTickles(el) {
    '<div class="scratch-wrap" id="scratch-wrap">' +
    '<div class="scratch-prize">' +
    '<div class="prize-text">HEAD TICKLES!</div>' +
-   '<div class="prize-sub">30 mins from Dani-Elle 💛</div>' +
+   '<div class="prize-sub">30 mins from Dani-Elle 🤍</div>' +
    '</div>' +
    '<canvas class="scratch-canvas" id="scratch-canvas"></canvas>' +
    '</div>' +
@@ -803,15 +819,15 @@ function renderTickles(el) {
    '<div style="font-family:\'Cormorant Garamond\',serif;font-size:2.1rem;font-weight:700;color:#6b4c0a;line-height:1.2;margin:0.8rem 0">30 Minutes of<br>Head Tickles</div>' +
    '<div style="width:60%;height:1px;background:linear-gradient(90deg,transparent,#C8A96E,transparent);margin:0.7rem auto"></div>' +
    '<div style="font-size:0.78rem;color:#9a7040;margin-bottom:0.25rem">Redeemable from Dani-Elle</div>' +
-   '<div style="font-size:0.7rem;color:#b89050;font-style:italic">Valid: 2nd May 2026 ❤️</div>' +
+   '<div style="font-size:0.7rem;color:#b89050;font-style:italic">Valid: 2nd May 2026 🤍</div>' +
    '</div></div>' +
    '<div class="purple-box">' +
    '<div style="font-size:0.85rem;font-weight:900;letter-spacing:1px;color:#C8A96E;text-transform:uppercase;margin-bottom:0.6rem">⭐ Or risk it for something bigger...</div>' +
    '<div style="font-weight:800;color:white;font-size:0.95rem;line-height:1.7">Answer 3 questions about Dani-Elle correctly and you will win a brand new pair of <strong style="color:#C8A96E">Basketball Shoes</strong> instead! 👟🏀</div>' +
    '</div>' +
    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:0.8rem;margin-top:0.8rem">' +
-   '<button class="grey-btn" onclick="closeModal()">😌 Take the tickles</button>' +
-   '<button class="play-btn" onclick="startGamble()">🎲 Risk it!</button>' +
+   '<button class="grey-btn" onclick="closeModal()">Take the tickles</button>' +
+   '<button class="play-btn" onclick="startGamble()">Risk it!</button>' +
    '</div>' +
    '</div>';
 
@@ -904,9 +920,9 @@ function renderTickles(el) {
          '<div class="modal-title">' + (won ? 'WINNER!' : 'So Close!') + '</div>' +
          '<div class="game-score">You got ' + score + ' / 3 correct</div>' +
          '<div class="love-note" style="margin-top:1rem;text-align:center">' +
-         (won ? '🎉 You know your wife! 💛<br><br><strong style="color:#C8A96E;font-size:1.2rem">BRAND NEW BASKETBALL SHOES! 👟🏀</strong><br><br>Dani-Elle will hand them over right now!'
-              : 'Nice try birthday boy! 😄<br><br><strong style="color:#C8A96E;font-size:1.1rem">You still get your half hour of head tickles! 🤲😌</strong><br><br>Not a bad consolation! ❤️') +
-         '</div><button class="next-btn" onclick="closeModal()">' + (won ? '👟 YES!! Thank you!' : '😌 I will take it!') + '</button>';
+         (won ? '🎉 You know your wife! 🤍<br><br><strong style="color:#C8A96E;font-size:1.2rem">BRAND NEW BASKETBALL SHOES! 👟🏀</strong><br><br>Dani-Elle will hand them over right now!'
+              : 'Nice try birthday boy! 😄<br><br><strong style="color:#C8A96E;font-size:1.1rem">You still get your half hour of head tickles! 🤲😌</strong><br><br>Not a bad consolation! 🤍') +
+         '</div><button class="next-btn" onclick="closeModal()">' + (won ? 'YES!! Thank you!' : 'I will take it!') + '</button>';
        return;
      }
      var q = qs[qi];
@@ -936,9 +952,9 @@ function renderTickles(el) {
 function renderWheel(el) {
  // Fixed prizes — A=$5, B=Lotto, C=Scratchies
  var cases = [
-   { id:'A', emoji:'💵', title:'$5 Cash',       sub:'A little something from Dani-Elle!',  reveal:'Dani-Elle will hand you the $5 right now! 💵',                           btn:'Thanks! 💵' },
-   { id:'B', emoji:'🎰', title:'Lotto Ticket',  sub:'Could win $10,000,000!',               reveal:'You\'ve got a shot at $10 MILLION! Dani-Elle has the ticket ready! 🎰',  btn:'Let\'s go! 🎰' },
-   { id:'C', emoji:'🎫', title:'Scratchies',    sub:'Get scratching birthday boy!',         reveal:'Dani-Elle has your scratchies ready to go! 🎫',                          btn:'Let\'s scratch! 🎫' }
+   { id:'A', emoji:'💵', title:'$5 Cash',       sub:'A little something from Dani-Elle!',  reveal:'Dani-Elle will hand you the $5 right now! 💵',                           btn:'Thanks!' },
+   { id:'B', emoji:'🎰', title:'Lotto Ticket',  sub:'Could win $10,000,000!',               reveal:'You\'ve got a shot at $10 MILLION! Dani-Elle has the ticket ready! 🎰',  btn:'Let\'s go!' },
+   { id:'C', emoji:'🎫', title:'Scratchies',    sub:'Get scratching birthday boy!',         reveal:'Dani-Elle has your scratchies ready to go! 🎫',                          btn:'Let\'s scratch!' }
  ];
  var chosen = null;
 
@@ -1012,8 +1028,8 @@ function renderWheel(el) {
      '<div style="color:rgba(255,255,255,0.65);font-size:0.85rem">Are you sure about this one?</div>' +
      '</div>' +
      '<div style="display:flex;flex-direction:column;gap:0.7rem">' +
-     '<button class="next-btn" style="background:linear-gradient(135deg,#FFD700,#b8860b);color:#000;font-weight:900;font-size:1rem" onclick="confirmCase()">Yes, I\'m sure! Open it! 🎰</button>' +
-     '<button class="play-btn" style="background:transparent;border:1px solid rgba(200,169,110,0.35);color:rgba(200,169,110,0.7);font-size:0.85rem" onclick="resetPick()">Actually... let me switch 🔄</button>' +
+     '<button class="next-btn" style="background:linear-gradient(135deg,#FFD700,#b8860b);color:#000;font-weight:900;font-size:1rem" onclick="confirmCase()">Yes, I\'m sure! Open it!</button>' +
+     '<button class="play-btn" style="background:transparent;border:1px solid rgba(200,169,110,0.35);color:rgba(200,169,110,0.7);font-size:0.85rem" onclick="resetPick()">Actually... let me switch</button>' +
      '</div>';
 
    window.resetPick = function() {
@@ -1029,7 +1045,7 @@ function renderWheel(el) {
        '<div style="font-size:0.6rem;letter-spacing:3px;text-transform:uppercase;color:rgba(255,215,0,0.6);margin-bottom:0.5rem">📞 The Banker is calling...</div>' +
        '<div style="font-family:\'Cormorant Garamond\',serif;font-size:1.1rem;color:#FFD700;font-style:italic;line-height:1.6">"Great choice, Joel...<br>Let\'s open suitcase '+cases[idx].id+'!"</div>' +
        '</div>' +
-       '<button class="next-btn" style="background:linear-gradient(135deg,#FFD700,#b8860b);color:#000;font-weight:900" onclick="openFinalCase()">OPEN IT! 🎰</button>';
+       '<button class="next-btn" style="background:linear-gradient(135deg,#FFD700,#b8860b);color:#000;font-weight:900" onclick="openFinalCase()">OPEN IT!</button>';
      window.openFinalCase = function() {
        var cnt = document.getElementById('money-result');
        var n = 3;
@@ -1114,10 +1130,10 @@ function renderEightBall(el) {
    '<div style="font-size:0.75rem;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:rgba(255,105,180,0.7);margin-bottom:0.8rem">🏆 WIN and you get...</div>' +
    '<div id="stake-box">' +
    '<div style="font-size:4rem;margin:0.5rem 0">🎁</div>' +
-   '<button class="play-btn" style="max-width:180px;margin:0.3rem auto 0;display:block;background:linear-gradient(135deg,#ff1a6e,#cc0055);border:none" onclick="revealEightStake(this)">Find out 👀</button>' +
+   '<button class="play-btn" style="max-width:180px;margin:0.3rem auto 0;display:block;background:linear-gradient(135deg,#ff1a6e,#cc0055);border:none" onclick="revealEightStake(this)">Find out →</button>' +
    '</div>' +
    '</div>' +
-   '<button class="play-btn" id="start-eight" onclick="startEight()" style="display:none;background:linear-gradient(135deg,#C8A96E,#9a7040);color:#000;font-weight:900">Let\'s play! 🎱</button>' +
+   '<button class="play-btn" id="start-eight" onclick="startEight()" style="display:none;background:linear-gradient(135deg,#C8A96E,#9a7040);color:#000;font-weight:900">Let\'s play!</button>' +
    '<div id="eight-result"></div>';
 
  window.revealEightStake = function(btn) {
@@ -1132,8 +1148,8 @@ function renderEightBall(el) {
    document.getElementById('eight-result').innerHTML =
      '<div class="love-note" style="text-align:center;margin-bottom:1rem">May the best player win... 😏</div>' +
      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:0.8rem">' +
-     '<button class="play-btn" onclick="eightResult(\'win\')">🏆 I won!</button>' +
-     '<button class="grey-btn" onclick="eightResult(\'lose\')">😅 She won...</button>' +
+     '<button class="play-btn" onclick="eightResult(\'win\')">I won!</button>' +
+     '<button class="grey-btn" onclick="eightResult(\'lose\')">She won...</button>' +
      '</div>';
  };
 
@@ -1145,7 +1161,7 @@ function renderEightBall(el) {
      '<div style="font-size:0.88rem;color:rgba(255,255,255,0.8)">Your night at the Strip Club is locked in!</div>' +
      '<div style="font-size:0.8rem;color:#C8A96E;font-weight:700;margin-top:0.3rem">Dani-Elle will sort it out! 🎰🥂</div>' +
      '</div>' +
-     '<button class="next-btn" style="background:linear-gradient(135deg,#C8A96E,#9a7040);color:#000;font-weight:900" onclick="closeModal()">LETS GO! 🎉</button>';
+     '<button class="next-btn" style="background:linear-gradient(135deg,#C8A96E,#9a7040);color:#000;font-weight:900" onclick="closeModal()">LETS GO!</button>';
    launchConfetti();
  };
 
@@ -1158,14 +1174,14 @@ function renderEightBall(el) {
        '<div style="font-family:\'Cormorant Garamond\',serif;font-size:1.5rem;font-weight:700;color:#C8A96E;margin-bottom:0.3rem">You won!</div>' +
        '<div style="font-size:0.85rem;color:var(--muted);margin-bottom:1.2rem">Tap to reveal your prize...</div>' +
        '</div>' +
-       '<button class="next-btn" style="margin-top:0.2rem;background:linear-gradient(135deg,#C8A96E,#9a7040);color:#000;font-weight:900" onclick="showEightWin()">Reveal my prize! 🎱</button>';
+       '<button class="next-btn" style="margin-top:0.2rem;background:linear-gradient(135deg,#C8A96E,#9a7040);color:#000;font-weight:900" onclick="showEightWin()">Reveal my prize! →</button>';
    } else {
      document.getElementById('eight-result').innerHTML =
        '<div class="love-note" style="margin-top:1rem;text-align:center">' +
        '<div style="font-size:2.5rem">😂🎱</div><br>' +
        'Dani-Elle wins this time! Better luck next time birthday boy. 😄<br><br>' +
-       'Rematch accepted at any time! ❤️</div>' +
-       '<button class="next-btn" onclick="closeModal()">Rematch! 😤</button>';
+       'Rematch accepted at any time! 🤍</div>' +
+       '<button class="next-btn" onclick="closeModal()">Rematch!</button>';
    }
  };
 }
@@ -1187,7 +1203,7 @@ function renderMystery(el) {
    '<div style="font-size:0.7rem;letter-spacing:2px;text-transform:uppercase;color:rgba(200,169,110,0.55);margin-bottom:0.5rem">Miss even one?</div>' +
    '<div style="color:#ef4444;font-size:1.1rem;font-weight:700">Dani-Elle gets $100 💸</div>' +
    '</div>' +
-   '<button class="play-btn" onclick="startBballGame()">I\'m ready — let\'s go! 🏀</button>';
+   '<button class="play-btn" onclick="startBballGame()">I\'m ready — let\'s go!</button>';
 
  window.startBballGame = function() {
  el.innerHTML =
@@ -1457,7 +1473,7 @@ function renderMystery(el) {
        '<div class="love-note" style="text-align:center;margin-top:0.8rem">'+(
          won?'🏆 <strong style="color:#C8A96E">5/5 — PERFECT SCORE!</strong><br><br>Joel\'s got serious game! 🏀🔥<br><br><strong style="color:#C8A96E;font-size:1.1rem">Lolly bags for everyone! 🍬🎉</strong>':
              '😅 <strong style="color:#ef4444">'+score+'/5 — Not good enough!</strong><br><br>Joel owes <strong style="color:#C8A96E">Dani-Elle $100! 💸</strong><br><br>Pay up birthday boy! 😂'
-       )+'</div><button class="next-btn" style="margin-top:0.8rem" onclick="closeModal()">'+(won?'Lolly bags! 🍬':'Fine... 💸')+'</button>';
+       )+'</div><button class="next-btn" style="margin-top:0.8rem" onclick="closeModal()">'+(won?'Lolly bags!':'Fine...')+'</button>';
      if(won)launchConfetti();
    }
 
@@ -1532,7 +1548,7 @@ function renderCheese(el) {
      '<div style="font-size:0.75rem;letter-spacing:2px;text-transform:uppercase;color:rgba(200,169,110,0.6);margin-top:0.4rem">Shake your phone!</div>' +
      '</div>' +
      '<div id="cheese-fallback" style="display:none;margin-top:0.5rem">' +
-     '<button class="play-btn" onclick="cheeseDoShake()">Tap to reveal! 🎁</button>' +
+     '<button class="play-btn" onclick="cheeseDoShake()">Tap to reveal! →</button>' +
      '</div>';
    window.cheeseDoShake = function() { doFirstReveal(); };
    setupShakeListener(doFirstReveal);
@@ -1577,8 +1593,8 @@ function renderCheese(el) {
      '<div style="color:rgba(0,0,0,0.75);font-size:0.85rem;font-weight:600">Shake <strong>one more time</strong> to gamble it for something bigger...</div>' +
      '</div>' +
      '<div style="display:flex;flex-direction:column;gap:0.8rem">' +
-     '<button class="next-btn" onclick="cheeseTakeIt()">I\'ll take it! 🍷</button>' +
-     '<button class="play-btn" onclick="cheeseShakeAgain()" style="background:linear-gradient(135deg,#3d1a00,#1a0800);border:1px solid rgba(200,169,110,0.4);color:#C8A96E">Shake for something bigger... 🤞</button>' +
+     '<button class="next-btn" onclick="cheeseTakeIt()">I\'ll take it!</button>' +
+     '<button class="play-btn" onclick="cheeseShakeAgain()" style="background:linear-gradient(135deg,#3d1a00,#1a0800);border:1px solid rgba(200,169,110,0.4);color:#C8A96E">Shake again →</button>' +
      '</div>' +
      '<div id="cheese-fallback2" style="display:none"></div>';
    launchConfetti();
@@ -1589,8 +1605,8 @@ function renderCheese(el) {
        '<div class="love-note" style="text-align:center">' +
        '<div style="font-size:3.5rem;margin-bottom:0.8rem">🍷</div>' +
        'Smart man! Sit back and enjoy your glass of wine, birthday boy 🥂<br><br>' +
-       '<strong style="color:#C8A96E">Dani-Elle will pour it for you right now!</strong> ❤️</div>' +
-       '<button class="next-btn" onclick="closeModal()">Cheers! 🥂</button>';
+       '<strong style="color:#C8A96E">Dani-Elle will pour it for you right now!</strong> 🤍</div>' +
+       '<button class="next-btn" onclick="closeModal()">Cheers!</button>';
    };
    window.cheeseShakeAgain = function() {
      el.innerHTML =
@@ -1601,7 +1617,7 @@ function renderCheese(el) {
        '<div style="color:rgba(255,255,255,0.6);font-size:0.85rem">Give it everything you\'ve got to win the upgrade...</div>' +
        '</div>' +
        '<div id="cheese-fallback3" style="display:none">' +
-       '<button class="play-btn" onclick="cheeseShowPrize2()">Tap to reveal! 🤞</button>' +
+       '<button class="play-btn" onclick="cheeseShowPrize2()">Tap to reveal! →</button>' +
        '</div>';
      window.cheeseShowPrize2 = function() {
        el.innerHTML =
@@ -1622,8 +1638,8 @@ function renderCheese(el) {
          '</div>' +
          '<div class="love-note" style="text-align:center;margin-bottom:1.2rem">' +
          '<strong style="color:#C8A96E">Dani-Elle is on it right now!</strong><br><br>' +
-         'Sit back and relax — you\'ve earned it birthday boy ❤️</div>' +
-         '<button class="next-btn" onclick="closeModal()">YES! Let\'s go! 🎉</button>';
+         'Sit back and relax — you\'ve earned it birthday boy 🤍</div>' +
+         '<button class="next-btn" onclick="closeModal()">YES! Let\'s go!</button>';
        launchConfetti();
        }); // end spinThenReveal callback
      };
@@ -1668,8 +1684,8 @@ function renderMovie(el) {
    '<div id="boss-close" style="display:none;margin-top:1.2rem">' +
   '<div style="text-align:center;font-size:0.75rem;letter-spacing:2px;color:rgba(200,169,110,0.6);text-transform:uppercase;margin-bottom:0.8rem">What do you want to do?</div>' +
   '<div style="display:flex;gap:0.8rem;justify-content:center">' +
-  '<button class="play-btn" style="flex:1" onclick="bruceMovieNote()">🎬 Watch the Movie</button>' +
-  '<button class="next-btn" style="flex:1" onclick="bruceMusicNote()">🎵 Listen to His Music</button>' +
+  '<button class="play-btn" style="flex:1" onclick="bruceMovieNote()">Watch the Movie →</button>' +
+  '<button class="next-btn" style="flex:1" onclick="bruceMusicNote()">Listen to His Music →</button>' +
   '</div>' +
   '</div>';
 
@@ -1712,7 +1728,7 @@ function renderMovie(el) {
      'This is The Boss at his finest — raw, real, and full of heart.<br><br>' +
      'Happy Birthday, Joel." 🤘</div>' +
      '</div>' +
-     '<button class="next-btn" onclick="closeModal()">Let\'s go! 🎬</button>';
+     '<button class="next-btn" onclick="closeModal()">Let\'s go!</button>';
  };
  window.bruceMusicNote = function() {
    var bc = document.getElementById('boss-close');
@@ -1725,7 +1741,7 @@ function renderMovie(el) {
      'Let The Boss carry you through the night — this is your birthday soundtrack.<br><br>' +
      'Enjoy every track, kid. You\'ve earned it." 🤘</div>' +
      '</div>' +
-     '<button class="next-btn" onclick="closeModal()">Cranking it! 🎵</button>';
+     '<button class="next-btn" onclick="closeModal()">Cranking it!</button>';
  };
 }
 
@@ -1737,7 +1753,7 @@ function renderHeadTickles(el) {
    { icon:'🏠', name:'Brian Chesky', age:'Age 32', fact:'Was 32 when Airbnb started scaling globally after surviving its early struggles.' },
    { icon:'🏀', name:'LeBron James', age:'Age 32', fact:'Was still dominating and winning championships at 32 — arguably becoming a more complete player than ever.' },
    { icon:'⚽', name:'Cristiano Ronaldo', age:'Age 32', fact:'Won the Ballon d\'Or at 32, proving that elite performance only gets sharper with time.' },
-   { icon:'💛', name:'Joel', age:'Age 32', fact:'32 is where experience meets clarity. You\'ve lived enough to know what works, what matters, and where you\'re going. You\'ve laid the foundations — now it\'s about executing, backing yourself, and turning everything you\'ve been building into something real.\n\nThis isn\'t just another year... this is YOUR year. 🔥' }
+   { icon:'🤍', name:'Joel', age:'Age 32', fact:'32 is where experience meets clarity. You\'ve lived enough to know what works, what matters, and where you\'re going. You\'ve laid the foundations — now it\'s about executing, backing yourself, and turning everything you\'ve been building into something real.\n\nThis isn\'t just another year... this is YOUR year. 🔥' }
  ];
  var fi = 0;
 
@@ -1755,7 +1771,7 @@ function renderHeadTickles(el) {
      '<div style="color:rgba(255,255,255,0.88);font-size:0.95rem;line-height:1.7;font-style:italic">"' + f.fact.replace(/\n/g,'<br><br>') + '"</div>' +
      '</div>' +
      (isLast
-       ? '<button class="next-btn" onclick="closeModal()">Love it 💛</button>'
+       ? '<button class="next-btn" onclick="closeModal()">Love it 🤍</button>'
        : '<button class="play-btn" onclick="htNext()">Next ›</button>'
      );
    window.htNext = function() { fi++; showFact(fi); };
@@ -1766,10 +1782,10 @@ function renderHeadTickles(el) {
    '<div class="modal-title">Finally... 🤲</div>' +
    '<div class="love-note" style="text-align:center;margin-bottom:1.2rem">' +
    'Finally, it\'s head tickle time! 🎉<br><br>' +
-   '<strong style="color:#C8A96E;font-size:1.2rem">Sit back and relax Joel — Dani-Elle will now give you your hard earnt head tickles for 30 minutes. 🤲😌</strong><br><br>' +
+   '<strong style="color:#C8A96E;font-size:1.2rem">Sit back and relax Joel — Dani-Elle will now give you your hard earnt head tickles for 30 minutes.</strong><br><br>' +
    'While you relax, let\'s have a little chat about you turning 32...<br><br>' +
    '<span style="font-size:0.85rem;color:rgba(200,169,110,0.7)">Tap below when you\'re ready 👇</span></div>' +
-   '<button class="play-btn" onclick="htStart()">Let\'s chat 💬</button>';
+   '<button class="play-btn" onclick="htStart()">Let\'s chat →</button>';
 
  window.htStart = function() { showFact(0); };
 }
@@ -1793,8 +1809,8 @@ function renderDessert(el) {
    document.getElementById('dessert-result').innerHTML =
      '<div class="love-note" style="margin-top:1rem;text-align:center"><div style="font-size:1.8rem;margin-bottom:0.5rem">🛎️</div>' +
      '<strong style="color:#C8A96E">Order received!</strong><br><br>' +
-     labels[c] + ' coming right up! 🍰<br><br>Happy Birthday Joel. ❤️</div>' +
-     '<button class="next-btn" onclick="closeModal()">Yes please! 😋</button>';
+     labels[c] + ' coming right up! 🍰<br><br>Happy Birthday Joel. 🤍</div>' +
+     '<button class="next-btn" onclick="closeModal()">Yes please!</button>';
    launchConfetti();
  };
 }
@@ -1817,9 +1833,9 @@ function renderLoveNote(el) {
    '<div class="love-note" style="text-align:center;margin-bottom:1.2rem">' +
    'Happy Birthday, Joel. 🎂<br><br>' +
    'Being your wife is my favourite thing in the world. Thank you for making every single day better just by being you.<br><br>' +
-   'Here is to 32 — and every year after it. I love you. 💛<br><br>' +
+   'Here is to 32 — and every year after it. I love you. 🤍<br><br>' +
    '— Dani-Elle</div>' +
-   '<button class="next-btn" onclick="closeModal()">What a day. 💛</button>';
+   '<button class="next-btn" onclick="closeModal()">What a day. 🤍</button>';
 
  window._photos = photos;
  window._current = 0;
@@ -1852,10 +1868,10 @@ function autoPlay() {
 function openTikTokFeed() {
  var reels = [
    { name:'Mike & Liv', handle:'@mikandliv', avatar:'👫', msg:'HAPPY BIRTHDAY JOEL!! 🎂🏀 32 looks SO good on you!! We are so excited to celebrate with you today!! Love you legend!! 🎉🎉', bg:'linear-gradient(160deg,#1a0800,#3d1500,#1a0500)', hearts:44 },
-   { name:'Mum', handle:'@joels_mum', avatar:'👩', msg:'Happy Birthday my beautiful boy! 32 years old already! I am so proud of the incredible man you have become. Love you to the moon and back! 💛🎂', bg:'linear-gradient(160deg,#0a0018,#1a0035,#0a000f)', hearts:91 },
+   { name:'Mum', handle:'@joels_mum', avatar:'👩', msg:'Happy Birthday my beautiful boy! 32 years old already! I am so proud of the incredible man you have become. Love you to the moon and back! 🤍🎂', bg:'linear-gradient(160deg,#0a0018,#1a0035,#0a000f)', hearts:91 },
    { name:'Dad', handle:'@joels_dad', avatar:'👨', msg:'Happy Birthday son! 32 years old — hope it\'s a ripper one! So proud of you mate. Have a brilliant birthday!! 🍺🏀🎉', bg:'linear-gradient(160deg,#00080f,#001228,#000508)', hearts:67 },
    { name:'The Boys 🏀', handle:'@theboys_crew', avatar:'🤙', msg:'JOEL!! HAPPY BIRTHDAY LEGEND!! 32 and you\'re still the man!! Cannot wait to celebrate you today. You\'re an absolute gun!! 🎉🎉', bg:'linear-gradient(160deg,#001800,#002800,#000f00)', hearts:83 },
-   { name:'Grandma & Grandpa', handle:'@nan_and_pop', avatar:'🥰', msg:'Happy Birthday darling Joel! We hope you have the most wonderful day. We love you so very much! Happy 32nd birthday sweetheart! 💛🎂', bg:'linear-gradient(160deg,#1a1000,#2d1800,#100800)', hearts:58 }
+   { name:'Grandma & Grandpa', handle:'@nan_and_pop', avatar:'🥰', msg:'Happy Birthday darling Joel! We hope you have the most wonderful day. We love you so very much! Happy 32nd birthday sweetheart! 🤍🎂', bg:'linear-gradient(160deg,#1a1000,#2d1800,#100800)', hearts:58 }
  ];
 
  if (document.getElementById('tiktok-overlay')) return;
@@ -1867,7 +1883,7 @@ function openTikTokFeed() {
    '<div style="height:100vh;scroll-snap-align:start;position:relative;background:linear-gradient(160deg,#1a1208,#2d1a00,#0a0800);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2.5rem 2rem;text-align:center;">' +
    '<div style="font-size:4rem;margin-bottom:1.2rem">🍳</div>' +
    '<div style="font-family:\'Cormorant Garamond\',serif;font-size:2.2rem;font-weight:700;color:#C8A96E;line-height:1.25;margin-bottom:1rem">While breakfast is cooking...</div>' +
-   '<div style="color:rgba(255,255,255,0.8);font-size:1rem;line-height:1.7;margin-bottom:2.5rem">Here\'s a little something special<br>from the people who love you most 💛</div>' +
+   '<div style="color:rgba(255,255,255,0.8);font-size:1rem;line-height:1.7;margin-bottom:2.5rem">Here\'s a little something special<br>from the people who love you most 🤍</div>' +
    '<div style="display:flex;flex-direction:column;align-items:center;gap:0.3rem;animation:tkPulse 1.5s ease-in-out infinite">' +
    '<div style="color:rgba(200,169,110,0.8);font-size:0.72rem;letter-spacing:3px;text-transform:uppercase">Scroll down</div>' +
    '<div style="color:#C8A96E;font-size:1.2rem">↓</div>' +
@@ -1884,7 +1900,7 @@ function openTikTokFeed() {
      '<div id="tk-msg-' + i + '" style="color:#fff;font-size:1rem;line-height:1.7;font-weight:400;opacity:0;transform:translateY(18px);transition:opacity 0.55s ease,transform 0.55s ease">' + r.msg + '</div>' +
      '</div>' +
      '<div style="position:absolute;right:1rem;bottom:5rem;display:flex;flex-direction:column;gap:1.4rem;align-items:center">' +
-     '<div style="text-align:center;cursor:pointer"><div style="font-size:2rem">❤️</div><div style="color:#fff;font-size:0.7rem;margin-top:3px">' + r.hearts + '</div></div>' +
+     '<div style="text-align:center;cursor:pointer"><div style="font-size:2rem">🤍</div><div style="color:#fff;font-size:0.7rem;margin-top:3px">' + r.hearts + '</div></div>' +
      '<div style="text-align:center;cursor:pointer"><div style="font-size:2rem">💬</div><div style="color:#fff;font-size:0.7rem;margin-top:3px">1</div></div>' +
      '<div style="text-align:center;cursor:pointer"><div style="font-size:2rem">↗️</div><div style="color:#fff;font-size:0.7rem;margin-top:3px">Share</div></div>' +
      '</div>' +
@@ -2098,7 +2114,7 @@ function renderGame(el) {
  var gs = 'idle', score = 0, best = parseInt(localStorage.getItem('jdashBest')||'0');
  var spd = 4, frame = 0, raf, obstTimer = 0, obstInterval = 105;
  var obstacles = [], groundX = 0, newBest = false;
- var speechText = 'Go Joel! 💛', speechTimer = 0;
+ var speechText = 'Go Joel! 🤍', speechTimer = 0;
  var joel = { x:75, y:GROUND, vy:0, jumps:0, lf:0 };
 
  if (best > 0) document.getElementById('gd-best').textContent = 'Best: ' + best;
@@ -2113,138 +2129,259 @@ function renderGame(el) {
  }
 
  function drawJoel(jx,jy,lf,dead) {
-   // Light blue #5 jersey, tall, brown-grey short hair
-   var sk='#d4906a', jer='#5db8e0', jerDark='#3a9fc8';
-   ctx.fillStyle='rgba(0,0,0,0.12)';
-   ctx.beginPath(); ctx.ellipse(jx,GROUND+3,15,4,0,0,Math.PI*2); ctx.fill();
+   // Joel — tall, athletic, dark brown hair, olive skin, basketball jersey + shorts
+   var sk='#c8805a', jer='#5db8e0', jerDark='#3a9fc8', shorts='#1a2855', shortsLine='#2a3e7a';
+   // ground shadow
+   ctx.fillStyle='rgba(0,0,0,0.13)';
+   ctx.beginPath(); ctx.ellipse(jx,GROUND+3,16,4,0,0,Math.PI*2); ctx.fill();
    var la = dead ? 0.4 : Math.sin(lf*0.32)*0.44;
-   // long legs (tall build)
-   ctx.strokeStyle=jerDark; ctx.lineWidth=7; ctx.lineCap='round';
-   ctx.beginPath(); ctx.moveTo(jx-3,jy-10);
-   ctx.lineTo(jx-3+Math.sin(la)*22, jy-10+Math.cos(la)*22); ctx.stroke();
-   ctx.beginPath(); ctx.moveTo(jx+3,jy-10);
-   ctx.lineTo(jx+3+Math.sin(-la)*22, jy-10+Math.cos(-la)*22); ctx.stroke();
-   // shoes (white sneakers)
-   ctx.fillStyle='#f4f4f4';
-   ctx.beginPath(); ctx.ellipse(jx-3+Math.sin(la)*24,jy-10+Math.cos(la)*23,9,4,la,0,Math.PI*2); ctx.fill();
-   ctx.strokeStyle='#ccc'; ctx.lineWidth=1; ctx.stroke();
-   ctx.fillStyle='#f4f4f4';
-   ctx.beginPath(); ctx.ellipse(jx+3+Math.sin(-la)*24,jy-10+Math.cos(-la)*23,9,4,-la,0,Math.PI*2); ctx.fill();
-   ctx.strokeStyle='#ccc'; ctx.lineWidth=1; ctx.stroke();
-   // jersey body (tall torso)
-   ctx.fillStyle=jer; rr(jx-13,jy-44,26,32,5); ctx.fill();
-   // jersey side stripe
-   ctx.fillStyle=jerDark; ctx.fillRect(jx+9,jy-44,4,32);
-   // number 5
-   ctx.fillStyle='white'; ctx.font='bold 11px Inter'; ctx.textAlign='center';
-   ctx.fillText('5',jx-1,jy-24);
-   // arms
+
+   // ── LEGS: split into shorts portion (upper) + bare skin (lower) ──
+   // Upper leg — shorts fabric (navy, slightly wider)
+   ctx.strokeStyle=shorts; ctx.lineWidth=9; ctx.lineCap='round';
+   ctx.beginPath(); ctx.moveTo(jx-4,jy-10);
+   ctx.lineTo(jx-4+Math.sin(la)*12, jy-10+Math.cos(la)*12); ctx.stroke();
+   ctx.beginPath(); ctx.moveTo(jx+4,jy-10);
+   ctx.lineTo(jx+4+Math.sin(-la)*12, jy-10+Math.cos(-la)*12); ctx.stroke();
+   // Shorts side stripe (white)
+   ctx.strokeStyle='rgba(255,255,255,0.45)'; ctx.lineWidth=2;
+   ctx.beginPath(); ctx.moveTo(jx-4,jy-10);
+   ctx.lineTo(jx-4+Math.sin(la)*11, jy-10+Math.cos(la)*11); ctx.stroke();
+   // Lower leg — bare skin
+   ctx.strokeStyle=sk; ctx.lineWidth=7; ctx.lineCap='round';
+   ctx.beginPath();
+   ctx.moveTo(jx-4+Math.sin(la)*12, jy-10+Math.cos(la)*12);
+   ctx.lineTo(jx-4+Math.sin(la)*24, jy-10+Math.cos(la)*24); ctx.stroke();
+   ctx.beginPath();
+   ctx.moveTo(jx+4+Math.sin(-la)*12, jy-10+Math.cos(-la)*12);
+   ctx.lineTo(jx+4+Math.sin(-la)*24, jy-10+Math.cos(-la)*24); ctx.stroke();
+   // Socks (white cuff above shoe)
+   ctx.strokeStyle='#f8f8f8'; ctx.lineWidth=6;
+   ctx.beginPath();
+   ctx.moveTo(jx-4+Math.sin(la)*22, jy-10+Math.cos(la)*22);
+   ctx.lineTo(jx-4+Math.sin(la)*25, jy-10+Math.cos(la)*25); ctx.stroke();
+   ctx.beginPath();
+   ctx.moveTo(jx+4+Math.sin(-la)*22, jy-10+Math.cos(-la)*22);
+   ctx.lineTo(jx+4+Math.sin(-la)*25, jy-10+Math.cos(-la)*25); ctx.stroke();
+   // Shoes (white with gold stripe)
+   ctx.fillStyle='#f0f0f0';
+   ctx.beginPath(); ctx.ellipse(jx-4+Math.sin(la)*26,jy-10+Math.cos(la)*25,10,4,la,0,Math.PI*2); ctx.fill();
+   ctx.strokeStyle='#C8A96E'; ctx.lineWidth=1.5; ctx.stroke();
+   ctx.fillStyle='#f0f0f0';
+   ctx.beginPath(); ctx.ellipse(jx+4+Math.sin(-la)*26,jy-10+Math.cos(-la)*25,10,4,-la,0,Math.PI*2); ctx.fill();
+   ctx.strokeStyle='#C8A96E'; ctx.lineWidth=1.5; ctx.stroke();
+
+   // ── JERSEY BODY ──
+   ctx.fillStyle=jer; rr(jx-13,jy-46,26,34,6); ctx.fill();
+   ctx.fillStyle=jerDark; ctx.fillRect(jx+9,jy-46,4,34); // side stripe
+   // jersey neck
+   ctx.fillStyle=jerDark; ctx.beginPath(); ctx.arc(jx,jy-44,5,Math.PI,0); ctx.fill();
+   // number
+   ctx.fillStyle='white'; ctx.font='bold 10px Inter'; ctx.textAlign='center';
+   ctx.fillText('5',jx,jy-25);
+
+   // ── ARMS ──
    var aa = dead ? 0.3 : Math.sin(lf*0.32)*0.38;
    ctx.strokeStyle=sk; ctx.lineWidth=5; ctx.lineCap='round';
-   ctx.beginPath(); ctx.moveTo(jx-13,jy-37); ctx.lineTo(jx-22,jy-37+Math.sin(aa)*14); ctx.stroke();
-   ctx.beginPath(); ctx.moveTo(jx+13,jy-37); ctx.lineTo(jx+22,jy-37-Math.sin(aa)*14); ctx.stroke();
-   // head (taller build — higher)
-   ctx.fillStyle=sk; ctx.beginPath(); ctx.arc(jx,jy-60,14,0,Math.PI*2); ctx.fill();
-   // brown-grey short hair (salt & pepper)
-   var hairBrown='#6b4a2a', hairGrey='#9a9090';
-   // grey base
-   ctx.fillStyle=hairGrey; ctx.beginPath(); ctx.arc(jx,jy-64,12,Math.PI,0); ctx.fill();
-   // brown patches over grey
-   ctx.fillStyle=hairBrown;
-   ctx.beginPath(); ctx.arc(jx-4,jy-64,7,Math.PI,0); ctx.fill();
-   ctx.beginPath(); ctx.arc(jx+5,jy-64,5,Math.PI,0); ctx.fill();
-   // short hair top (not spiky, short crop)
-   ctx.fillStyle=hairGrey;
-   ctx.beginPath(); ctx.arc(jx,jy-72,5,0,Math.PI*2); ctx.fill();
-   ctx.fillStyle=hairBrown;
-   ctx.beginPath(); ctx.arc(jx-3,jy-72,3.5,0,Math.PI*2); ctx.fill();
-   // eyes / expression
+   ctx.beginPath(); ctx.moveTo(jx-13,jy-39); ctx.lineTo(jx-23,jy-37+Math.sin(aa)*15); ctx.stroke();
+   ctx.beginPath(); ctx.moveTo(jx+13,jy-39); ctx.lineTo(jx+23,jy-37-Math.sin(aa)*15); ctx.stroke();
+
+   // ── HEAD (slightly larger, more realistic oval) ──
+   ctx.fillStyle=sk;
+   ctx.beginPath(); ctx.ellipse(jx,jy-62,13,15,0,0,Math.PI*2); ctx.fill();
+   // jaw definition (slightly square jaw from photo)
+   ctx.fillStyle=sk;
+   ctx.beginPath(); ctx.ellipse(jx,jy-55,10,7,0,0,Math.PI); ctx.fill();
+
+   // ── DARK BROWN HAIR — short crop, slightly longer on top ──
+   var hair='#362010', hairHi='#5a3518';
+   // Hair cap
+   ctx.fillStyle=hair; ctx.beginPath(); ctx.ellipse(jx,jy-68,13,10,0,Math.PI,0); ctx.fill();
+   // Short sides
+   ctx.fillStyle=hair;
+   ctx.beginPath(); ctx.arc(jx-12,jy-63,5,Math.PI*0.5,Math.PI*1.5); ctx.fill();
+   ctx.beginPath(); ctx.arc(jx+12,jy-63,5,-Math.PI*0.5,Math.PI*0.5); ctx.fill();
+   // Top — slight texture
+   ctx.fillStyle=hairHi;
+   ctx.beginPath(); ctx.ellipse(jx-3,jy-71,6,4,0.2,0,Math.PI*2); ctx.fill();
+   // slight fade / hairline
+   ctx.fillStyle=sk; ctx.beginPath(); ctx.ellipse(jx,jy-59,11,3,0,0,Math.PI*2); ctx.fill();
+
+   // ── EYES ──
    if (dead) {
-     ctx.strokeStyle='rgba(255,255,255,0.85)'; ctx.lineWidth=2;
-     [[jx-6,jy-62],[jx+5,jy-62]].forEach(function(ep){
-       ctx.beginPath(); ctx.moveTo(ep[0]-3,ep[1]-3); ctx.lineTo(ep[0]+3,ep[1]+3); ctx.stroke();
-       ctx.beginPath(); ctx.moveTo(ep[0]+3,ep[1]-3); ctx.lineTo(ep[0]-3,ep[1]+3); ctx.stroke();
+     ctx.strokeStyle='rgba(0,0,0,0.7)'; ctx.lineWidth=2;
+     [[jx-5,jy-64],[jx+5,jy-64]].forEach(function(ep){
+       ctx.beginPath(); ctx.moveTo(ep[0]-3,ep[1]-2); ctx.lineTo(ep[0]+3,ep[1]+2); ctx.stroke();
+       ctx.beginPath(); ctx.moveTo(ep[0]+3,ep[1]-2); ctx.lineTo(ep[0]-3,ep[1]+2); ctx.stroke();
      });
-     ctx.strokeStyle='#3a2010'; ctx.lineWidth=2;
-     ctx.beginPath(); ctx.arc(jx,jy-52,5,Math.PI+0.3,-0.3); ctx.stroke();
+     ctx.strokeStyle='#3a2010'; ctx.lineWidth=1.5;
+     ctx.beginPath(); ctx.arc(jx,jy-55,4,Math.PI+0.3,-0.3); ctx.stroke();
    } else {
-     ctx.fillStyle='#1a0a00';
-     ctx.beginPath(); ctx.arc(jx-5,jy-62,2.5,0,Math.PI*2); ctx.fill();
-     ctx.beginPath(); ctx.arc(jx+5,jy-62,2.5,0,Math.PI*2); ctx.fill();
+     // eyebrows (dark, defined)
+     ctx.strokeStyle=hair; ctx.lineWidth=2; ctx.lineCap='round';
+     ctx.beginPath(); ctx.moveTo(jx-8,jy-67); ctx.lineTo(jx-2,jy-68); ctx.stroke();
+     ctx.beginPath(); ctx.moveTo(jx+2,jy-68); ctx.lineTo(jx+8,jy-67); ctx.stroke();
+     // whites
      ctx.fillStyle='white';
-     ctx.beginPath(); ctx.arc(jx-4,jy-63,1,0,Math.PI*2); ctx.fill();
-     ctx.beginPath(); ctx.arc(jx+6,jy-63,1,0,Math.PI*2); ctx.fill();
-     ctx.strokeStyle='#1a0a00'; ctx.lineWidth=2;
-     ctx.beginPath(); ctx.arc(jx,jy-56,5,0.3,Math.PI-0.3); ctx.stroke();
+     ctx.beginPath(); ctx.ellipse(jx-5,jy-64,3.5,2.5,0,0,Math.PI*2); ctx.fill();
+     ctx.beginPath(); ctx.ellipse(jx+5,jy-64,3.5,2.5,0,0,Math.PI*2); ctx.fill();
+     // irises (dark brown)
+     ctx.fillStyle='#3d1e08';
+     ctx.beginPath(); ctx.arc(jx-5,jy-64,2,0,Math.PI*2); ctx.fill();
+     ctx.beginPath(); ctx.arc(jx+5,jy-64,2,0,Math.PI*2); ctx.fill();
+     // pupils
+     ctx.fillStyle='#0a0500';
+     ctx.beginPath(); ctx.arc(jx-5,jy-64,1,0,Math.PI*2); ctx.fill();
+     ctx.beginPath(); ctx.arc(jx+5,jy-64,1,0,Math.PI*2); ctx.fill();
+     // eye shine
+     ctx.fillStyle='rgba(255,255,255,0.9)';
+     ctx.beginPath(); ctx.arc(jx-4.2,jy-64.8,0.8,0,Math.PI*2); ctx.fill();
+     ctx.beginPath(); ctx.arc(jx+5.8,jy-64.8,0.8,0,Math.PI*2); ctx.fill();
+     // slight smile
+     ctx.strokeStyle='#7a3a1a'; ctx.lineWidth=1.5;
+     ctx.beginPath(); ctx.arc(jx,jy-57,5,0.25,Math.PI-0.25); ctx.stroke();
+     // nose bridge (subtle)
+     ctx.strokeStyle='rgba(160,90,40,0.4)'; ctx.lineWidth=1.2;
+     ctx.beginPath(); ctx.moveTo(jx,jy-63); ctx.lineTo(jx-1,jy-59); ctx.stroke();
    }
  }
 
  function drawDani(dead) {
+   // Dani — shorter, olive skin, very long dark brown hair, rust/terracotta top, big smile
    var dx=CW-58, dy=GROUND;
-   var bounce = dead ? 0 : Math.sin(frame*0.12)*7;
+   var bounce = dead ? 0 : Math.sin(frame*0.12)*6;
+   var sk='#c47850', hair='#2a1408', hairHi='#4a2210', top='#b85c3a', topDark='#943e22';
+
+   // ground shadow
    ctx.fillStyle='rgba(0,0,0,0.1)';
-   ctx.beginPath(); ctx.ellipse(dx,GROUND+3,12,3,0,0,Math.PI*2); ctx.fill();
-   // legs
-   ctx.strokeStyle='#e8a0b0'; ctx.lineWidth=5; ctx.lineCap='round';
-   ctx.beginPath(); ctx.moveTo(dx-4,dy-8); ctx.lineTo(dx-7,dy+10); ctx.stroke();
-   ctx.beginPath(); ctx.moveTo(dx+4,dy-8); ctx.lineTo(dx+7,dy+10); ctx.stroke();
-   // dress
-   ctx.fillStyle='#e8748a';
-   ctx.beginPath(); ctx.moveTo(dx-14,dy-8); ctx.lineTo(dx+14,dy-8);
-   ctx.lineTo(dx+10,dy-38); ctx.lineTo(dx-10,dy-38); ctx.closePath(); ctx.fill();
-   // arms
-   var armY = dead ? -4 : -18+bounce;
-   ctx.strokeStyle='#d4906a'; ctx.lineWidth=4; ctx.lineCap='round';
-   ctx.beginPath(); ctx.moveTo(dx-10,dy-32); ctx.lineTo(dx-20,dy+armY); ctx.stroke();
-   ctx.beginPath(); ctx.moveTo(dx+10,dy-32); ctx.lineTo(dx+20,dy+armY); ctx.stroke();
-   // pom poms
+   ctx.beginPath(); ctx.ellipse(dx,GROUND+3,11,3,0,0,Math.PI*2); ctx.fill();
+
+   // ── LEGS — bare skin (shorter than Joel) ──
+   ctx.strokeStyle=sk; ctx.lineWidth=5; ctx.lineCap='round';
+   ctx.beginPath(); ctx.moveTo(dx-4,dy-8); ctx.lineTo(dx-5,dy+8); ctx.stroke();
+   ctx.beginPath(); ctx.moveTo(dx+4,dy-8); ctx.lineTo(dx+5,dy+8); ctx.stroke();
+   // gold sandals
+   ctx.fillStyle='#c8a96e';
+   ctx.beginPath(); ctx.ellipse(dx-5,dy+9,7,3,0,0,Math.PI*2); ctx.fill();
+   ctx.beginPath(); ctx.ellipse(dx+5,dy+9,7,3,0,0,Math.PI*2); ctx.fill();
+   ctx.strokeStyle='#9a7040'; ctx.lineWidth=1;
+   ctx.beginPath(); ctx.ellipse(dx-5,dy+9,7,3,0,0,Math.PI*2); ctx.stroke();
+   ctx.beginPath(); ctx.ellipse(dx+5,dy+9,7,3,0,0,Math.PI*2); ctx.stroke();
+
+   // ── RUST/TERRACOTTA TOP (spaghetti strap — from photo) ──
+   ctx.fillStyle=top;
+   ctx.beginPath();
+   ctx.moveTo(dx-11,dy-10); ctx.lineTo(dx+11,dy-10);
+   ctx.lineTo(dx+9,dy-36); ctx.lineTo(dx-9,dy-36); ctx.closePath(); ctx.fill();
+   ctx.fillStyle=topDark; ctx.fillRect(dx+6,dy-36,3,26);
+   // spaghetti straps
+   ctx.strokeStyle=top; ctx.lineWidth=2.5; ctx.lineCap='round';
+   ctx.beginPath(); ctx.moveTo(dx-7,dy-36); ctx.lineTo(dx-5,dy-44); ctx.stroke();
+   ctx.beginPath(); ctx.moveTo(dx+7,dy-36); ctx.lineTo(dx+5,dy-44); ctx.stroke();
+
+   // ── ARMS ──
+   var armY = dead ? -4 : -16+bounce;
+   ctx.strokeStyle=sk; ctx.lineWidth=4; ctx.lineCap='round';
+   ctx.beginPath(); ctx.moveTo(dx-9,dy-30); ctx.lineTo(dx-19,dy+armY); ctx.stroke();
+   ctx.beginPath(); ctx.moveTo(dx+9,dy-30); ctx.lineTo(dx+19,dy+armY); ctx.stroke();
+   // gold pom poms
    if (!dead) {
-     ctx.fillStyle='#FFD700';
-     for (var pi=0;pi<6;pi++){
-       var pa=(pi/6)*Math.PI*2;
-       ctx.beginPath(); ctx.arc(dx-20+Math.cos(pa)*6,dy+armY+Math.sin(pa)*6,3,0,Math.PI*2); ctx.fill();
-       ctx.beginPath(); ctx.arc(dx+20+Math.cos(pa)*6,dy+armY+Math.sin(pa)*6,3,0,Math.PI*2); ctx.fill();
+     for (var pi=0;pi<7;pi++){
+       var pa=(pi/7)*Math.PI*2;
+       ctx.fillStyle= pi%2===0 ? '#FFD700' : '#C8A96E';
+       ctx.beginPath(); ctx.arc(dx-19+Math.cos(pa)*5.5,dy+armY+Math.sin(pa)*5.5,2.5,0,Math.PI*2); ctx.fill();
+       ctx.beginPath(); ctx.arc(dx+19+Math.cos(pa)*5.5,dy+armY+Math.sin(pa)*5.5,2.5,0,Math.PI*2); ctx.fill();
      }
    }
-   // head
-   ctx.fillStyle='#d4906a'; ctx.beginPath(); ctx.arc(dx,dy-50,12,0,Math.PI*2); ctx.fill();
-   // hair top (rich brown)
-   ctx.fillStyle='#3a1a08'; ctx.beginPath(); ctx.arc(dx,dy-56,12,Math.PI,0); ctx.fill();
-   // long wavy hair — left side (3 wavy strands for volume)
-   ctx.fillStyle='#3a1a08';
-   ctx.beginPath(); ctx.moveTo(dx-12,dy-56);
-   ctx.bezierCurveTo(dx-20,dy-38,dx-14,dy-20,dx-18,dy-2);
-   ctx.lineTo(dx-22,dy-2); ctx.bezierCurveTo(dx-18,dy-20,ctx.bezierCurveTo,dx-25,dy-40,dx-15,dy-56);
-   ctx.fill();
-   // simpler stroke approach for wavy hair strands
-   ctx.strokeStyle='#3a1a08'; ctx.lineWidth=8; ctx.lineCap='round';
-   ctx.beginPath(); ctx.moveTo(dx-11,dy-55);
-   ctx.bezierCurveTo(dx-20,dy-38,dx-12,dy-22,dx-18,dy-4); ctx.stroke();
-   ctx.lineWidth=6;
-   ctx.beginPath(); ctx.moveTo(dx-8,dy-56);
-   ctx.bezierCurveTo(dx-16,dy-36,dx-8,dy-18,dx-14,dy-1); ctx.stroke();
-   // right side strands (shorter, tucked behind)
-   ctx.strokeStyle='#4a2810'; ctx.lineWidth=5;
-   ctx.beginPath(); ctx.moveTo(dx+10,dy-55);
-   ctx.bezierCurveTo(dx+18,dy-38,dx+12,dy-22,dx+14,dy-8); ctx.stroke();
-   ctx.lineWidth=7;
-   ctx.beginPath(); ctx.moveTo(dx+12,dy-55);
-   ctx.bezierCurveTo(dx+22,dy-36,dx+16,dy-18,dx+18,dy-3); ctx.stroke();
-   // highlight strand (lighter brown)
-   ctx.strokeStyle='#7a4020'; ctx.lineWidth=2.5;
+
+   // ── LONG DARK HAIR behind body ──
+   ctx.fillStyle=hair;
+   ctx.beginPath(); ctx.moveTo(dx-10,dy-54);
+   ctx.bezierCurveTo(dx-22,dy-38,dx-20,dy-18,dx-22,dy-2);
+   ctx.lineTo(dx-16,dy-2);
+   ctx.bezierCurveTo(dx-14,dy-18,dx-16,dy-38,dx-8,dy-54);
+   ctx.closePath(); ctx.fill();
+   ctx.beginPath(); ctx.moveTo(dx+8,dy-54);
+   ctx.bezierCurveTo(dx+18,dy-36,dx+16,dy-16,dx+18,dy);
+   ctx.lineTo(dx+12,dy);
+   ctx.bezierCurveTo(dx+10,dy-16,dx+12,dy-36,dx+6,dy-54);
+   ctx.closePath(); ctx.fill();
+
+   // ── HEAD ──
+   ctx.fillStyle=sk;
+   ctx.beginPath(); ctx.ellipse(dx,dy-50,11,13,0,0,Math.PI*2); ctx.fill();
+
+   // ── HAIR cap + front strands ──
+   ctx.fillStyle=hair; ctx.beginPath(); ctx.ellipse(dx,dy-56,11,9,0,Math.PI,0); ctx.fill();
+   ctx.fillStyle=hair;
+   ctx.beginPath(); ctx.arc(dx-10,dy-52,4,Math.PI*0.5,Math.PI*1.5); ctx.fill();
+   ctx.beginPath(); ctx.arc(dx+10,dy-52,4,-Math.PI*0.5,Math.PI*0.5); ctx.fill();
+   ctx.strokeStyle=hairHi; ctx.lineWidth=1; ctx.lineCap='round';
+   ctx.beginPath(); ctx.moveTo(dx,dy-62); ctx.lineTo(dx,dy-57); ctx.stroke();
+   // Left shoulder strands
+   ctx.strokeStyle=hair; ctx.lineWidth=7; ctx.lineCap='round';
+   ctx.beginPath(); ctx.moveTo(dx-9,dy-55);
+   ctx.bezierCurveTo(dx-18,dy-40,dx-14,dy-24,dx-18,dy-8); ctx.stroke();
+   ctx.lineWidth=5;
    ctx.beginPath(); ctx.moveTo(dx-7,dy-56);
-   ctx.bezierCurveTo(dx-14,dy-38,dx-7,dy-20,dx-11,dy-5); ctx.stroke();
-   // eyes
-   ctx.fillStyle='#1a0a00';
-   ctx.beginPath(); ctx.arc(dx-4,dy-51,1.8,0,Math.PI*2); ctx.fill();
-   ctx.beginPath(); ctx.arc(dx+4,dy-51,1.8,0,Math.PI*2); ctx.fill();
-   // mouth
-   ctx.strokeStyle='#1a0a00'; ctx.lineWidth=1.5;
-   ctx.beginPath();
-   if (dead) { ctx.arc(dx,dy-44,4,Math.PI+0.35,-0.35); }
-   else { ctx.arc(dx,dy-47,3.5,0.3,Math.PI-0.3); }
-   ctx.stroke();
-   // speech bubble
+   ctx.bezierCurveTo(dx-15,dy-38,dx-10,dy-22,dx-14,dy-6); ctx.stroke();
+   ctx.strokeStyle=hairHi; ctx.lineWidth=2;
+   ctx.beginPath(); ctx.moveTo(dx-6,dy-56);
+   ctx.bezierCurveTo(dx-12,dy-38,dx-8,dy-22,dx-11,dy-8); ctx.stroke();
+   // Right side strands
+   ctx.strokeStyle=hair; ctx.lineWidth=6; ctx.lineCap='round';
+   ctx.beginPath(); ctx.moveTo(dx+9,dy-55);
+   ctx.bezierCurveTo(dx+16,dy-38,dx+13,dy-20,dx+15,dy-5); ctx.stroke();
+   ctx.lineWidth=4;
+   ctx.beginPath(); ctx.moveTo(dx+7,dy-56);
+   ctx.bezierCurveTo(dx+14,dy-36,dx+11,dy-18,dx+13,dy-3); ctx.stroke();
+
+   // ── FACE ──
+   if (dead) {
+     ctx.strokeStyle='rgba(0,0,0,0.65)'; ctx.lineWidth=1.8;
+     [[dx-4,dy-51],[dx+4,dy-51]].forEach(function(ep){
+       ctx.beginPath(); ctx.moveTo(ep[0]-2.5,ep[1]-2); ctx.lineTo(ep[0]+2.5,ep[1]+2); ctx.stroke();
+       ctx.beginPath(); ctx.moveTo(ep[0]+2.5,ep[1]-2); ctx.lineTo(ep[0]-2.5,ep[1]+2); ctx.stroke();
+     });
+     ctx.strokeStyle='#7a2010'; ctx.lineWidth=1.5;
+     ctx.beginPath(); ctx.arc(dx,dy-43,4,Math.PI+0.3,-0.3); ctx.stroke();
+   } else {
+     // eyebrows
+     ctx.strokeStyle=hair; ctx.lineWidth=1.8; ctx.lineCap='round';
+     ctx.beginPath(); ctx.moveTo(dx-7,dy-55); ctx.quadraticCurveTo(dx-4,dy-57,dx-1,dy-55); ctx.stroke();
+     ctx.beginPath(); ctx.moveTo(dx+1,dy-55); ctx.quadraticCurveTo(dx+4,dy-57,dx+7,dy-55); ctx.stroke();
+     // eye whites
+     ctx.fillStyle='white';
+     ctx.beginPath(); ctx.ellipse(dx-4,dy-52,3,2,0,0,Math.PI*2); ctx.fill();
+     ctx.beginPath(); ctx.ellipse(dx+4,dy-52,3,2,0,0,Math.PI*2); ctx.fill();
+     // irises
+     ctx.fillStyle='#3d1a08';
+     ctx.beginPath(); ctx.arc(dx-4,dy-52,1.8,0,Math.PI*2); ctx.fill();
+     ctx.beginPath(); ctx.arc(dx+4,dy-52,1.8,0,Math.PI*2); ctx.fill();
+     ctx.fillStyle='#060200';
+     ctx.beginPath(); ctx.arc(dx-4,dy-52,0.9,0,Math.PI*2); ctx.fill();
+     ctx.beginPath(); ctx.arc(dx+4,dy-52,0.9,0,Math.PI*2); ctx.fill();
+     ctx.fillStyle='rgba(255,255,255,0.9)';
+     ctx.beginPath(); ctx.arc(dx-3.2,dy-52.7,0.7,0,Math.PI*2); ctx.fill();
+     ctx.beginPath(); ctx.arc(dx+4.8,dy-52.7,0.7,0,Math.PI*2); ctx.fill();
+     // nose
+     ctx.strokeStyle='rgba(140,70,30,0.35)'; ctx.lineWidth=1.2;
+     ctx.beginPath(); ctx.moveTo(dx,dy-50); ctx.lineTo(dx-1,dy-47); ctx.stroke();
+     // big bright smile
+     ctx.fillStyle='#c8504a';
+     ctx.beginPath(); ctx.arc(dx,dy-44,4.5,0.1,Math.PI-0.1); ctx.fill();
+     ctx.fillStyle='white';
+     ctx.beginPath(); ctx.arc(dx,dy-44,3.5,0.3,Math.PI-0.3); ctx.fill();
+     // dimple hints
+     ctx.strokeStyle='rgba(180,90,50,0.4)'; ctx.lineWidth=1;
+     ctx.beginPath(); ctx.arc(dx-6,dy-44,1.5,0,Math.PI*2); ctx.stroke();
+     ctx.beginPath(); ctx.arc(dx+6,dy-44,1.5,0,Math.PI*2); ctx.stroke();
+     // necklace (she has one in the photo)
+     ctx.strokeStyle='#C8A96E'; ctx.lineWidth=1;
+     ctx.beginPath(); ctx.arc(dx,dy-40,5,Math.PI+0.4,-0.4); ctx.stroke();
+   }
+
+   // ── SPEECH BUBBLE ──
    var sw = Math.max(68, speechText.length*6.5+16), bh=26;
    var bx=dx-sw-16, by=dy-96;
    ctx.fillStyle='rgba(255,255,255,0.95)';
@@ -2313,7 +2450,7 @@ function renderGame(el) {
        obstacles[i].x-=spd;
        if (Math.abs(joel.x-obstacles[i].x)<17 && Math.abs(joel.y-obstacles[i].y)<22){
          gs='dead';
-         if (score>best){best=score;localStorage.setItem('jdashBest',best);newBest=true;speechText='NEW RECORD! 🏆💛';}
+         if (score>best){best=score;localStorage.setItem('jdashBest',best);newBest=true;speechText='NEW RECORD! 🏆🤍';}
          else{newBest=false;speechText='Get up babe! 💪';}
        }
        if (obstacles[i].x<-40){obstacles.splice(i,1);continue;}
@@ -2322,7 +2459,7 @@ function renderGame(el) {
      }
      speechTimer++;
      if (speechTimer>110){speechTimer=0;
-       var ph=['Go Joel! 💛','Jump! ❤️','You got this! 🏃','Woooo! 🎊','Keep going! 💨','Dodge it! 😱'];
+       var ph=['Go Joel! 🤍','Jump! 🤍','You got this! 🏃','Woooo! 🎊','Keep going! 💨','Dodge it! 😱'];
        speechText=ph[Math.floor(Math.random()*ph.length)];
      }
      drawJoel(joel.x,joel.y,joel.lf,false);
@@ -2353,11 +2490,11 @@ function renderGame(el) {
 
  function handleInput() {
    if (gs==='idle'){
-     gs='playing';frame=0;score=0;spd=4;obstacles=[];obstTimer=0;speechText='Go Joel! 💛';
+     gs='playing';frame=0;score=0;spd=4;obstacles=[];obstTimer=0;speechText='Go Joel! 🤍';
    } else if (gs==='playing'){
      if (joel.jumps<2){joel.vy=-14;joel.jumps++;}
    } else if (gs==='dead'){
-     gs='playing';frame=0;score=0;spd=4;joel.y=GROUND;joel.vy=0;joel.jumps=0;obstacles=[];obstTimer=0;newBest=false;speechText='Go Joel! 💛';
+     gs='playing';frame=0;score=0;spd=4;joel.y=GROUND;joel.vy=0;joel.jumps=0;obstacles=[];obstTimer=0;newBest=false;speechText='Go Joel! 🤍';
    }
  }
  canvas.addEventListener('click', handleInput);
@@ -2371,6 +2508,88 @@ function renderGame(el) {
  };
  loop();
 }
+
+// ── HOUR-BASED BACKGROUND SYSTEM ──────────────────────────────────────
+var _origBalloonHTML = '';
+var _lastBgHour = -1;
+
+// Config: emoji + animation type per hour
+var _hourBgConfig = {
+  9:  null, // original balloons
+  10: { emoji:'🎡', type:'spin',   count:7 },
+  11: { emoji:'💸', type:'float',  count:8 },
+  12: { emoji:'🎉', type:'float',  count:7 },
+  13: { emoji:'🤲', type:'float',  count:6 },
+  14: { emoji:'💰', type:'float',  count:8 },
+  15: { emoji:'🏀', type:'bounce', count:9 },
+  16: { emoji:'🎱', type:'float',  count:7 },
+  17: { emoji:'🎁', type:'float',  count:7 },
+  18: { emoji:'🎸', type:'float',  count:6 },
+  19: { emoji:'🤲', type:'float',  count:6 },
+  20: { emoji:'🍰', type:'float',  count:7 },
+  21: { emoji:'🤍', type:'float',  count:8 },
+  22: { emoji:'🕹️', type:'float',  count:7 }
+};
+
+// Varied positions, durations and delays for natural spread
+var _bgLeftPos  = [5,  14, 22, 32, 42, 52, 62, 72, 83];
+var _bgDurs     = [13, 10, 16, 11, 14, 9,  15, 12, 17];
+var _bgDelays   = [0,   5,  9,  2,  7, 11,  1,  6,  3];
+
+function setHourBackground(hour) {
+  if (hour === _lastBgHour) return;
+  _lastBgHour = hour;
+  var layer = document.getElementById('balloon-layer');
+  if (!layer) return;
+
+  var cfg = _hourBgConfig[hour];
+
+  // Hour 9 (or no config): restore original balloons
+  if (!cfg) {
+    layer.innerHTML = _origBalloonHTML;
+    return;
+  }
+
+  var html = '';
+  var count = cfg.count;
+
+  if (cfg.type === 'bounce') {
+    // Basketballs: small, bouncing from positions across both sides of screen
+    for (var i = 0; i < count; i++) {
+      var left = _bgLeftPos[i % _bgLeftPos.length];
+      var dur  = (_bgDurs[i % _bgDurs.length] * 0.45 + 0.5).toFixed(1);
+      var del  = (_bgDelays[i % _bgDelays.length] * -0.8).toFixed(1);
+      html += '<span class="bg-ball" style="left:' + left + '%;animation-duration:' + dur + 's;animation-delay:' + del + 's">' + cfg.emoji + '</span>';
+    }
+  } else if (cfg.type === 'spin') {
+    // Spin wheel: rotate while floating up
+    for (var i = 0; i < count; i++) {
+      var left = _bgLeftPos[i % _bgLeftPos.length];
+      var dur  = _bgDurs[i % _bgDurs.length];
+      var del  = _bgDelays[i % _bgDelays.length];
+      html += '<span class="bg-emoji-spin" style="left:' + left + '%;animation-duration:' + dur + 's;animation-delay:' + del + 's">' + cfg.emoji + '</span>';
+    }
+  } else {
+    // Default: gentle float up (same rhythm as balloons)
+    for (var i = 0; i < count; i++) {
+      var left = _bgLeftPos[i % _bgLeftPos.length];
+      var dur  = _bgDurs[i % _bgDurs.length];
+      var del  = _bgDelays[i % _bgDelays.length];
+      html += '<span class="bg-emoji" style="left:' + left + '%;animation-duration:' + dur + 's;animation-delay:' + del + 's">' + cfg.emoji + '</span>';
+    }
+  }
+
+  layer.innerHTML = html;
+}
+
+// Capture original balloon HTML once DOM is ready, then set background for current hour
+(function initHourBg() {
+  var layer = document.getElementById('balloon-layer');
+  if (layer) _origBalloonHTML = layer.innerHTML;
+  setHourBackground(new Date().getHours());
+  // Re-check every minute in case the hour rolls over
+  setInterval(function() { setHourBackground(new Date().getHours()); }, 60000);
+})();
 
 </script>
 </body>
