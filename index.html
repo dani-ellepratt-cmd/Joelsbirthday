@@ -1068,11 +1068,21 @@ function renderEightBall(el) {
    'But first... here is what is at stake 👇</div>' +
    '<div style="background:linear-gradient(160deg,#0a0a0a,#1a1208);border-radius:14px;padding:1.2rem;text-align:center;margin-bottom:1.2rem">' +
    '<div style="font-size:0.8rem;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:#C8A96E;margin-bottom:0.5rem">🏆 WIN and you get...</div>' +
+   '<div style="font-size:3rem;margin:0.4rem 0">🎁</div>' +
+   '<button class="play-btn" style="max-width:200px;margin:0.5rem auto 0;display:block" onclick="revealEightStake()">Tap and find out 👀</button>' +
+   '<div id="eight-stake-reveal" style="display:none;margin-top:0.8rem">' +
    '<div style="font-weight:900;color:white;font-size:1.2rem">A night at the Strip Club! 🎰🥂</div>' +
    '<div style="font-size:0.85rem;color:#C8A96E;font-weight:700;margin-top:0.4rem">Dani-Elle will take you! 🎰</div>' +
    '</div>' +
-   '<button class="play-btn" id="start-eight" onclick="startEight()">Rack them up! 🎱</button>' +
+   '</div>' +
+   '<button class="play-btn" id="start-eight" onclick="startEight()" style="display:none">Rack them up! 🎱</button>' +
    '<div id="eight-result"></div>';
+
+ window.revealEightStake = function() {
+   document.getElementById('eight-stake-reveal').style.display = 'block';
+   document.getElementById('start-eight').style.display = 'block';
+   event.target.style.display = 'none';
+ };
 
  window.startEight = function() {
    document.getElementById('start-eight').style.display = 'none';
