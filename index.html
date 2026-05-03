@@ -912,38 +912,46 @@ function renderTickles(el) {
 
 // ── BIRTHDAY DARE ─────────────────────────────────────────────────────
 function renderWheel(el) {
- var cases = [{id:'A'},{id:'B'},{id:'C'}];
+ // Fixed prizes — A=$5, B=Lotto, C=Scratchies
+ var cases = [
+   { id:'A', emoji:'💵', title:'$5 Cash',       sub:'A little something from Dani-Elle!',  reveal:'Dani-Elle will hand you the $5 right now! 💵',                           btn:'Thanks! 💵' },
+   { id:'B', emoji:'🎰', title:'Lotto Ticket',  sub:'Could win $10,000,000!',               reveal:'You\'ve got a shot at $10 MILLION! Dani-Elle has the ticket ready! 🎰',  btn:'Let\'s go! 🎰' },
+   { id:'C', emoji:'🎫', title:'Scratchies',    sub:'Get scratching birthday boy!',         reveal:'Dani-Elle has your scratchies ready to go! 🎫',                          btn:'Let\'s scratch! 🎫' }
+ ];
  var chosen = null;
- var winIdx = Math.floor(Math.random() * 3);
- var decoys = [['🦶','A foot rub','from Dani-Elle'],['🍳','A home cooked dinner','Birthday boy\'s choice']];
- var di = 0;
- cases.forEach(function(c,i){
-   if(i===winIdx){c.emoji='🎰';c.title='Cross Lotto Tickets';c.decoy=false;}
-   else{c.emoji=decoys[di][0];c.title=decoys[di][1];c.decoy=true;di++;}
- });
 
- function caseCard(i, pickedIdx, open) {
+ function caseCard(i, state) {
+   // state: 'idle'|'chosen'|'open'|'dim'
    var c = cases[i];
-   var isChosen = i === pickedIdx;
-   var cursor = (pickedIdx === null) ? 'pointer' : 'default';
-   var bg = isChosen ? 'linear-gradient(160deg,#2a1500,#5a2e00)' : 'linear-gradient(160deg,#0f0a00,#1f1500)';
-   var border = isChosen ? '2px solid #FFD700' : '2px solid rgba(200,169,110,0.25)';
-   var shadow = isChosen ? '0 0 20px rgba(255,215,0,0.35)' : 'none';
-   if (open) {
-     return '<div id="case-'+i+'" style="background:linear-gradient(160deg,#0f0a00,#1a1000);border-radius:16px;padding:1rem 0.5rem;text-align:center;border:1px solid rgba(200,169,110,0.2)">' +
+   var s = state || 'idle';
+   if (s === 'open') {
+     return '<div id="case-'+i+'" style="background:linear-gradient(160deg,#0f0a00,#1a1000);border-radius:16px;height:130px;display:flex;flex-direction:column;align-items:center;justify-content:center;border:1px solid rgba(200,169,110,0.25);padding:0.5rem">' +
        '<div style="font-size:2rem;margin-bottom:0.3rem">'+c.emoji+'</div>' +
-       '<div style="font-size:0.7rem;color:#C8A96E;font-weight:700;line-height:1.3">'+c.title+'</div></div>';
+       '<div style="font-size:0.68rem;color:#C8A96E;font-weight:700;line-height:1.3;text-align:center;padding:0 4px">'+c.title+'</div></div>';
    }
-   return '<div id="case-'+i+'" onclick="pickCase('+i+')" style="cursor:'+cursor+';background:'+bg+';border-radius:16px;padding:1.2rem 0.5rem 1rem;text-align:center;border:'+border+';box-shadow:'+shadow+';transition:all 0.25s;position:relative">' +
-     (isChosen?'<div style="position:absolute;top:-8px;left:50%;transform:translateX(-50%);background:#FFD700;color:#000;font-size:0.55rem;font-weight:900;letter-spacing:1.5px;padding:2px 8px;border-radius:20px;text-transform:uppercase">YOUR PICK</div>':'')+
-     '<div style="font-size:3rem;margin-bottom:0.4rem;filter:drop-shadow(0 2px 8px rgba(200,169,110,0.4))">💼</div>' +
-     '<div style="font-family:\'Cormorant Garamond\',serif;font-size:2rem;font-weight:700;color:'+(isChosen?'#FFD700':'#C8A96E')+'">'+c.id+'</div>' +
+   var bg   = s==='chosen' ? 'linear-gradient(160deg,#2a1500,#5a2e00)' : s==='dim' ? 'linear-gradient(160deg,#0a0600,#120d00)' : 'linear-gradient(160deg,#0f0a00,#1f1500)';
+   var bord = s==='chosen' ? '2px solid #FFD700' : '2px solid rgba(200,169,110,0.2)';
+   var shad = s==='chosen' ? '0 0 22px rgba(255,215,0,0.4)' : 'none';
+   var cur  = s==='idle' ? 'pointer' : 'default';
+   var op   = s==='dim' ? '0.45' : '1';
+   return '<div id="case-'+i+'" onclick="pickCase('+i+')" style="cursor:'+cur+';background:'+bg+';border-radius:16px;height:130px;display:flex;flex-direction:column;align-items:center;justify-content:center;border:'+bord+';box-shadow:'+shad+';transition:all 0.25s;position:relative;opacity:'+op+'">' +
+     (s==='chosen'?'<div style="position:absolute;top:-9px;left:50%;transform:translateX(-50%);background:#FFD700;color:#000;font-size:0.5rem;font-weight:900;letter-spacing:1.5px;padding:2px 8px;border-radius:20px;white-space:nowrap;text-transform:uppercase">YOUR PICK</div>':'')+
+     '<div style="font-size:2.8rem;filter:drop-shadow(0 2px 8px rgba(200,169,110,0.4));margin-bottom:0.3rem">💼</div>' +
+     '<div style="font-family:\'Cormorant Garamond\',serif;font-size:2rem;font-weight:700;color:'+(s==='chosen'?'#FFD700':'#C8A96E')+'">'+c.id+'</div>' +
      '</div>';
  }
 
- function renderGrid(pickedIdx, openSet) {
-   openSet = openSet || {};
-   return cases.map(function(c,i){ return openSet[i] ? caseCard(i,pickedIdx,true) : caseCard(i,pickedIdx,false); }).join('');
+ function renderGrid(states) {
+   return cases.map(function(c,i){ return caseCard(i, states ? states[i] : 'idle'); }).join('');
+ }
+
+ function getStates(pickedIdx, openSet) {
+   return cases.map(function(c,i){
+     if (openSet && openSet[i]) return 'open';
+     if (pickedIdx === null) return 'idle';
+     if (i === pickedIdx) return 'chosen';
+     return 'dim';
+   });
  }
 
  el.innerHTML =
@@ -954,11 +962,11 @@ function renderWheel(el) {
    '<span style="font-size:1.3rem">💵</span>' +
    '</div>' +
    '<div style="text-align:center;font-size:0.65rem;letter-spacing:3px;text-transform:uppercase;color:rgba(200,169,110,0.5);margin-bottom:1rem">2pm Surprise</div>' +
-   '<div style="background:rgba(255,215,0,0.06);border:1px solid rgba(255,215,0,0.15);border-radius:12px;padding:1rem 1rem 0.8rem;text-align:center;margin-bottom:1.2rem">' +
+   '<div style="background:rgba(255,215,0,0.06);border:1px solid rgba(255,215,0,0.15);border-radius:12px;padding:1rem;text-align:center;margin-bottom:1.2rem">' +
    '<div style="color:rgba(255,255,255,0.88);font-size:0.95rem;line-height:1.75">' +
    'Joel, everyone knows how much you love money. 💸<br>' +
    '<strong style="color:#FFD700">Let\'s see if you can win some today.</strong><br><br>' +
-   'One of these suitcases is hiding something very special...<br>' +
+   'Each suitcase has something inside...<br>' +
    '<span style="color:rgba(200,169,110,0.7);font-size:0.85rem">Which one will you pick?</span>' +
    '</div>' +
    '</div>' +
@@ -972,66 +980,87 @@ function renderWheel(el) {
  window.pickCase = function(idx) {
    if (chosen !== null) return;
    chosen = idx;
-   document.getElementById('case-grid').innerHTML = renderGrid(idx);
+   var openSet = {};
+   document.getElementById('case-grid').innerHTML = renderGrid(getStates(idx, openSet));
+   // Show "Are you sure?" prompt
    document.getElementById('money-result').innerHTML =
-     '<div style="background:rgba(255,215,0,0.08);border:1px solid rgba(255,215,0,0.2);border-radius:12px;padding:0.9rem;text-align:center;margin-top:0.5rem">' +
-     '<div style="font-size:1.5rem;margin-bottom:0.3rem">👀</div>' +
-     '<div style="font-family:\'Cormorant Garamond\',serif;font-size:1.1rem;color:#FFD700;font-style:italic">Interesting choice, Joel...</div>' +
+     '<div style="background:linear-gradient(135deg,#0d0800,#1a1000);border-radius:14px;padding:1.2rem;text-align:center;margin-top:0.6rem;margin-bottom:0.8rem;border:1px solid rgba(255,215,0,0.3)">' +
+     '<div style="font-size:1.5rem;margin-bottom:0.4rem">🤔</div>' +
+     '<div style="font-family:\'Cormorant Garamond\',serif;font-size:1.2rem;color:#FFD700;margin-bottom:0.2rem">Suitcase '+cases[idx].id+'...</div>' +
+     '<div style="color:rgba(255,255,255,0.65);font-size:0.85rem">Are you sure about this one?</div>' +
+     '</div>' +
+     '<div style="display:flex;flex-direction:column;gap:0.7rem">' +
+     '<button class="next-btn" style="background:linear-gradient(135deg,#FFD700,#b8860b);color:#000;font-weight:900;font-size:1rem" onclick="confirmCase()">Yes, I\'m sure! Open it! 🎰</button>' +
+     '<button class="play-btn" style="background:transparent;border:1px solid rgba(200,169,110,0.35);color:rgba(200,169,110,0.7);font-size:0.85rem" onclick="resetPick()">Actually... let me switch 🔄</button>' +
      '</div>';
-   var others = [0,1,2].filter(function(i){return i!==idx;});
-   var o1=others[0], o2=others[1], openSet={};
-   setTimeout(function() {
-     openSet[o1]=true;
-     document.getElementById('case-grid').innerHTML = renderGrid(idx,openSet);
+
+   window.resetPick = function() {
+     chosen = null;
+     document.getElementById('case-grid').innerHTML = renderGrid(null);
+     document.getElementById('money-result').innerHTML = '';
+   };
+
+   window.confirmCase = function() {
+     var others = [0,1,2].filter(function(i){return i!==idx;});
+     var o1=others[0], o2=others[1];
      document.getElementById('money-result').innerHTML =
-       '<div style="background:rgba(0,0,0,0.4);border:1px solid rgba(200,169,110,0.2);border-radius:12px;padding:0.9rem;text-align:center;margin-top:0.5rem">' +
-       '<div style="color:rgba(255,255,255,0.7);font-size:0.88rem">Suitcase <strong style="color:#C8A96E">'+cases[o1].id+'</strong> had... <strong style="color:rgba(200,169,110,0.85)">'+cases[o1].title+' '+cases[o1].emoji+'</strong></div>' +
+       '<div style="background:rgba(255,215,0,0.08);border:1px solid rgba(255,215,0,0.2);border-radius:12px;padding:0.8rem;text-align:center;margin-top:0.5rem">' +
+       '<div style="font-family:\'Cormorant Garamond\',serif;font-size:1rem;color:#FFD700;font-style:italic">Let\'s see what the other suitcases had... 👀</div>' +
        '</div>';
      setTimeout(function() {
-       openSet[o2]=true;
-       document.getElementById('case-grid').innerHTML = renderGrid(idx,openSet);
+       openSet[o1]=true;
+       document.getElementById('case-grid').innerHTML = renderGrid(getStates(idx,openSet));
        document.getElementById('money-result').innerHTML =
-         '<div style="background:rgba(0,0,0,0.4);border:1px solid rgba(200,169,110,0.2);border-radius:12px;padding:0.9rem;text-align:center;margin-top:0.5rem">' +
-         '<div style="color:rgba(255,255,255,0.7);font-size:0.88rem;margin-bottom:0.4rem">Suitcase <strong style="color:#C8A96E">'+cases[o2].id+'</strong> had... <strong style="color:rgba(200,169,110,0.85)">'+cases[o2].title+' '+cases[o2].emoji+'</strong></div>' +
-         '<div style="font-size:0.75rem;color:rgba(255,215,0,0.7);font-style:italic">That means your suitcase '+cases[idx].id+' has...</div>' +
+         '<div style="background:rgba(0,0,0,0.4);border:1px solid rgba(200,169,110,0.2);border-radius:12px;padding:0.8rem;text-align:center;margin-top:0.5rem">' +
+         '<div style="font-size:1.3rem;margin-bottom:0.2rem">'+cases[o1].emoji+'</div>' +
+         '<div style="color:rgba(255,255,255,0.7);font-size:0.88rem">Suitcase <strong style="color:#C8A96E">'+cases[o1].id+'</strong> had <strong style="color:#C8A96E">'+cases[o1].title+'</strong></div>' +
          '</div>';
        setTimeout(function() {
+         openSet[o2]=true;
+         document.getElementById('case-grid').innerHTML = renderGrid(getStates(idx,openSet));
          document.getElementById('money-result').innerHTML =
-           '<div style="background:linear-gradient(135deg,#0d0800,#1a1000);border-radius:14px;padding:1.2rem;text-align:center;margin-top:0.5rem;margin-bottom:0.8rem;border:1px solid rgba(255,215,0,0.3);box-shadow:0 0 20px rgba(255,215,0,0.1)">' +
-           '<div style="font-size:0.6rem;letter-spacing:3px;text-transform:uppercase;color:rgba(255,215,0,0.6);margin-bottom:0.5rem">📞 The Banker is calling...</div>' +
-           '<div style="font-family:\'Cormorant Garamond\',serif;font-size:1.1rem;color:#FFD700;font-style:italic;line-height:1.6">"Don\'t open it yet, Joel...<br>Are you SURE about suitcase '+cases[idx].id+'?"</div>' +
-           '</div>' +
-           '<button class="next-btn" style="background:linear-gradient(135deg,#FFD700,#b8860b);color:#000;font-weight:900" onclick="openFinalCase()">OPEN IT! 🎰</button>';
-         window.openFinalCase = function() {
-           var cnt = document.getElementById('money-result');
-           var n = 3;
-           function countdown() {
-             cnt.innerHTML = '<div style="text-align:center;font-family:\'Cormorant Garamond\',serif;font-size:6rem;font-weight:700;color:#FFD700;padding:0.5rem 0;text-shadow:0 0 30px rgba(255,215,0,0.6)">'+n+'</div>';
-             if(n>1){n--;setTimeout(countdown,750);}
-             else {
-               setTimeout(function(){
-                 openSet[idx]=true;
-                 document.getElementById('case-grid').innerHTML = renderGrid(idx,openSet);
-                 cnt.innerHTML =
-                   '<div style="background:linear-gradient(135deg,#FFD700,#c8860b);border-radius:20px;padding:1.8rem 1.4rem;text-align:center;margin-top:0.6rem;margin-bottom:1rem;box-shadow:0 0 40px rgba(255,215,0,0.5)">' +
-                   '<div style="font-size:3rem;margin-bottom:0.5rem">🎰🎫</div>' +
-                   '<div style="font-size:0.6rem;letter-spacing:3px;text-transform:uppercase;color:rgba(0,0,0,0.6);margin-bottom:0.3rem;font-weight:900">🎉 YOU WON 🎉</div>' +
-                   '<div style="font-family:\'Cormorant Garamond\',serif;font-size:1.9rem;font-weight:700;color:#000;margin-bottom:0.2rem">Cross Lotto Tickets!</div>' +
-                   '<div style="color:rgba(0,0,0,0.65);font-size:0.88rem;font-weight:700">Dani-Elle has them ready to scratch! 💸</div>' +
-                   '</div>' +
-                   '<div class="love-note" style="text-align:center;margin-bottom:1rem">' +
-                   'Birthday luck is REAL, Joel! 🍀<br><br>' +
-                   '<strong style="color:#C8A96E">Go get those tickets — scratch your way to riches!</strong> 💰</div>' +
-                   '<button class="next-btn" onclick="closeModal()">Let\'s get scratching! 🎫</button>';
-                 launchConfetti();
-               },400);
+           '<div style="background:rgba(0,0,0,0.4);border:1px solid rgba(200,169,110,0.2);border-radius:12px;padding:0.8rem;text-align:center;margin-top:0.5rem">' +
+           '<div style="font-size:1.3rem;margin-bottom:0.2rem">'+cases[o2].emoji+'</div>' +
+           '<div style="color:rgba(255,255,255,0.7);font-size:0.88rem;margin-bottom:0.5rem">Suitcase <strong style="color:#C8A96E">'+cases[o2].id+'</strong> had <strong style="color:#C8A96E">'+cases[o2].title+'</strong></div>' +
+           '<div style="font-size:0.8rem;color:rgba(255,215,0,0.75);font-style:italic">That means suitcase '+cases[idx].id+' has...</div>' +
+           '</div>';
+         setTimeout(function() {
+           document.getElementById('money-result').innerHTML =
+             '<div style="background:linear-gradient(135deg,#0d0800,#1a1000);border-radius:14px;padding:1.2rem;text-align:center;margin-top:0.5rem;margin-bottom:0.8rem;border:1px solid rgba(255,215,0,0.3);box-shadow:0 0 20px rgba(255,215,0,0.1)">' +
+             '<div style="font-size:0.6rem;letter-spacing:3px;text-transform:uppercase;color:rgba(255,215,0,0.6);margin-bottom:0.5rem">📞 The Banker is calling...</div>' +
+             '<div style="font-family:\'Cormorant Garamond\',serif;font-size:1.1rem;color:#FFD700;font-style:italic;line-height:1.6">"Are you ready, Joel?<br>Open suitcase '+cases[idx].id+'!"</div>' +
+             '</div>' +
+             '<button class="next-btn" style="background:linear-gradient(135deg,#FFD700,#b8860b);color:#000;font-weight:900" onclick="openFinalCase()">OPEN IT! 🎰</button>';
+           window.openFinalCase = function() {
+             var cnt = document.getElementById('money-result');
+             var n = 3;
+             function countdown() {
+               cnt.innerHTML = '<div style="text-align:center;font-family:\'Cormorant Garamond\',serif;font-size:6rem;font-weight:700;color:#FFD700;padding:0.5rem 0;text-shadow:0 0 30px rgba(255,215,0,0.6)">'+n+'</div>';
+               if(n>1){n--;setTimeout(countdown,750);}
+               else {
+                 setTimeout(function(){
+                   openSet[idx]=true;
+                   document.getElementById('case-grid').innerHTML = renderGrid(getStates(idx,openSet));
+                   var c = cases[idx];
+                   cnt.innerHTML =
+                     '<div style="background:linear-gradient(135deg,#FFD700,#c8860b);border-radius:20px;padding:1.8rem 1.4rem;text-align:center;margin-top:0.6rem;margin-bottom:1rem;box-shadow:0 0 40px rgba(255,215,0,0.5)">' +
+                     '<div style="font-size:3.5rem;margin-bottom:0.5rem">'+c.emoji+'</div>' +
+                     '<div style="font-size:0.6rem;letter-spacing:3px;text-transform:uppercase;color:rgba(0,0,0,0.55);margin-bottom:0.3rem;font-weight:900">🎉 YOU WON 🎉</div>' +
+                     '<div style="font-family:\'Cormorant Garamond\',serif;font-size:2rem;font-weight:700;color:#000;margin-bottom:0.2rem">'+c.title+'!</div>' +
+                     (idx===1?'<div style="color:rgba(0,0,0,0.7);font-size:0.88rem;font-weight:700">Could win you $10,000,000! 💰</div>':'')+
+                     '</div>' +
+                     '<div class="love-note" style="text-align:center;margin-bottom:1rem">'+c.reveal+'</div>' +
+                     '<button class="next-btn" onclick="closeModal()">'+c.btn+'</button>';
+                   launchConfetti();
+                 },400);
+               }
              }
-           }
-           countdown();
-         };
-       },1500);
-     },1400);
-   },1200);
+             countdown();
+           };
+         },1500);
+       },1400);
+     },1000);
+   };
  };
 }
 
