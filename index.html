@@ -251,7 +251,7 @@ var slots = [
  { id:'s16', hour:16, half:false, label:'4pm',  emoji:'🎱', title:'8 Ball Time',                   desc:'You vs Dani-Elle — rack them up! Winner takes all.', type:'eightball' },
  { id:'s17', hour:17, half:false, label:'5pm',  emoji:'🎁', title:'Shake to Win',                  desc:'Your 5pm prize is waiting...', type:'cheese' },
  { id:'s18', hour:18, half:false, label:'6pm',  emoji:'🎸', title:'Springsteen Time',              desc:'Settle in — it is movie time with The Boss.', type:'movie' },
- { id:'s18b',hour:18, half:true,  label:'6:30pm',emoji:'🕹️', title:'Birthday Dash',                  desc:'Joel vs the world — can you make it to 9pm?', type:'game' },
+ { id:'s22', hour:22, half:false, label:'10pm', emoji:'🕹️', title:'Birthday Dash',                  desc:'Joel vs the world — how far can you run?', type:'game' },
  { id:'s19', hour:19, half:false, label:'7pm',  emoji:'🤲', title:'Only for the Birthday Boy',    desc:'This one is exclusively for Joel...', type:'headtickles' },
  { id:'s20', hour:20, half:false, label:'8pm',  emoji:'🍰', title:'Dessert Time',                  desc:'Time for something sweet — place your dessert order!', type:'dessert' },
  { id:'s21', hour:21, half:false, label:'9pm',  emoji:'💛', title:'Love Note',              desc:'Something special to end the day.', type:'lovenote' }
@@ -1096,13 +1096,62 @@ function renderEightBall(el) {
  };
 
  window.showEightWin = function() {
-   document.getElementById('eight-result').innerHTML =
-     '<div class="love-note" style="margin-top:1rem;text-align:center">' +
-     '<strong style="color:#C8A96E;font-size:1.1rem">🏆 WINNER WINNER!</strong><br><br>' +
-     'Well done birthday boy! 🎱<br><br>' +
-     '<strong style="color:#C8A96E;font-size:1.3rem">A night at the Strip Club! 🎰🥂</strong><br><br>' +
-     'Dani-Elle will sort it out very soon!</div>' +
-     '<button class="next-btn" onclick="closeModal()">LETS GO! 🎉</button>';
+   var res = document.getElementById('eight-result');
+   res.innerHTML =
+     '<div id="strip-show" style="border-radius:16px;overflow:hidden;margin-top:0.8rem;position:relative;padding:1.6rem 1rem 1.4rem;text-align:center">' +
+     // flashing background layer
+     '<div id="strip-lights" style="position:absolute;inset:0;border-radius:16px;background:#1a0010;z-index:0"></div>' +
+     // neon sign
+     '<div style="position:relative;z-index:2;font-family:\'Cormorant Garamond\',serif;font-size:1rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;margin-bottom:0.6rem" id="strip-neon">✦ WELCOME ✦</div>' +
+     // pole dancers
+     '<div style="position:relative;z-index:2;display:flex;justify-content:center;gap:1.4rem;align-items:flex-end;margin-bottom:0.5rem">' +
+     '<div style="display:flex;flex-direction:column;align-items:center">' +
+     '<div id="d1" style="font-size:2rem;display:inline-block">💃</div>' +
+     '<div style="width:4px;height:60px;background:linear-gradient(180deg,#C8A96E,#9a7040);border-radius:2px"></div>' +
+     '</div>' +
+     '<div style="display:flex;flex-direction:column;align-items:center;margin-top:-20px">' +
+     '<div style="font-family:\'Cormorant Garamond\',serif;font-size:1.4rem;font-weight:700;color:#FFD700;text-shadow:0 0 20px #FFD700;line-height:1.2" id="strip-title">A Night at the<br>Strip Club!</div>' +
+     '</div>' +
+     '<div style="display:flex;flex-direction:column;align-items:center">' +
+     '<div id="d2" style="font-size:2rem;display:inline-block">💃</div>' +
+     '<div style="width:4px;height:60px;background:linear-gradient(180deg,#C8A96E,#9a7040);border-radius:2px"></div>' +
+     '</div>' +
+     '</div>' +
+     '<div style="position:relative;z-index:2;font-size:0.9rem;color:rgba(255,255,255,0.8);margin-bottom:0.4rem">Dani-Elle is taking you! 🥂🎉</div>' +
+     '</div>' +
+     '<button class="next-btn" style="margin-top:1rem;background:linear-gradient(135deg,#C8A96E,#9a7040);color:#000;font-weight:900" onclick="closeModal()">LETS GO! 🎉</button>';
+
+   // Flashing lights animation
+   var colours = ['#2d0020','#1a0030','#300010','#0d001a','#3a0028','#1a1000'];
+   var neonCols = ['#ff00cc','#ff6b6b','#C8A96E','#ff00ff','#FFD700','#ff4488'];
+   var li = 0;
+   var flashInterval = setInterval(function(){
+     var bg = document.getElementById('strip-lights');
+     var neon = document.getElementById('strip-neon');
+     if (!bg) { clearInterval(flashInterval); return; }
+     bg.style.background = colours[li % colours.length];
+     bg.style.boxShadow = '0 0 30px '+neonCols[li % neonCols.length]+' inset';
+     neon.style.color = neonCols[(li+2) % neonCols.length];
+     neon.style.textShadow = '0 0 12px '+neonCols[li % neonCols.length];
+     li++;
+   }, 180);
+
+   // Dancer animation
+   var d1el = document.getElementById('d1');
+   var d2el = document.getElementById('d2');
+   var dancers = ['💃','🕺','💃','🕺'];
+   var di = 0;
+   var danceInterval = setInterval(function(){
+     if (!document.getElementById('d1')) { clearInterval(danceInterval); return; }
+     d1el = document.getElementById('d1');
+     d2el = document.getElementById('d2');
+     d1el.textContent = dancers[di % dancers.length];
+     d2el.textContent = dancers[(di+2) % dancers.length];
+     d1el.style.transform = di%2===0 ? 'rotate(-15deg) scale(1.2)' : 'rotate(15deg) scale(0.9)';
+     d2el.style.transform = di%2===0 ? 'rotate(15deg) scale(0.9)' : 'rotate(-15deg) scale(1.2)';
+     di++;
+   }, 220);
+
    launchConfetti();
  };
 
@@ -1110,12 +1159,12 @@ function renderEightBall(el) {
    el.querySelectorAll('.play-btn,.grey-btn').forEach(function(b) { b.disabled = true; b.style.opacity = '0.5'; });
    if (r === 'win') {
      document.getElementById('eight-result').innerHTML =
-       '<div class="love-note" style="margin-top:1rem;text-align:center">' +
-       '<div style="font-size:3.5rem;margin-bottom:0.5rem">🎁</div>' +
-       '<strong style="color:#C8A96E;font-size:1.15rem">You won something special...</strong><br><br>' +
-       '<div style="font-size:0.85rem;color:var(--muted)">Tap below to find out what!</div>' +
+       '<div style="text-align:center;margin-top:1.2rem">' +
+       '<div style="font-size:4rem;margin-bottom:0.6rem">🏆</div>' +
+       '<div style="font-family:\'Cormorant Garamond\',serif;font-size:1.5rem;font-weight:700;color:#C8A96E;margin-bottom:0.3rem">You won!</div>' +
+       '<div style="font-size:0.85rem;color:var(--muted);margin-bottom:1.2rem">Tap to reveal your prize...</div>' +
        '</div>' +
-       '<button class="next-btn" style="margin-top:1rem" onclick="showEightWin()">Reveal my prize! 🎱</button>';
+       '<button class="next-btn" style="margin-top:0.2rem;background:linear-gradient(135deg,#C8A96E,#9a7040);color:#000;font-weight:900" onclick="showEightWin()">Reveal my prize! 🎱</button>';
    } else {
      document.getElementById('eight-result').innerHTML =
        '<div class="love-note" style="margin-top:1rem;text-align:center">' +
