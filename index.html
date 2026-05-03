@@ -244,7 +244,7 @@ var slots = [
  { id:'s11', hour:11, half:false, label:'11am', emoji:'🎰', title:'Hit the Jackpot!',               desc:'Pull the lever on the birthday pokies!', type:'slots' },
  { id:'s12', hour:12, half:false, label:'12pm', emoji:'🍽️', title:'Lunch Time!',                   desc:'Time to head out — we are going for a birthday lunch!', type:'lunch' },
  { id:'s13', hour:13, half:false, label:'1pm',  emoji:'🤲', title:'Congratulations',               desc:'Open to find out what you have won!', type:'tickles' },
- { id:'s14', hour:14, half:false, label:'2pm',  emoji:'🎡', title:'Lets Play a Game',             desc:'Spin the wheel and complete your challenge!', type:'wheel' },
+ { id:'s14', hour:14, half:false, label:'2pm',  emoji:'💰', title:'The Big Money Moment',          desc:'Joel, it\'s time to test your luck...', type:'wheel' },
  { id:'s15', hour:15, half:false, label:'3pm',  emoji:'🏀', title:"Let's find out 🏀",           desc:"Let's find out how good you really are...", type:'mystery' },
  { id:'s16', hour:16, half:false, label:'4pm',  emoji:'🎱', title:'8 Ball Time',                   desc:'You vs Dani-Elle — rack them up! Winner takes all.', type:'eightball' },
  { id:'s17', hour:17, half:false, label:'5pm',  emoji:'🎁', title:'Shake to Win',                  desc:'Your 5pm prize is waiting...', type:'cheese' },
@@ -912,48 +912,105 @@ function renderTickles(el) {
 
 // ── BIRTHDAY DARE ─────────────────────────────────────────────────────
 function renderWheel(el) {
- var dares = [
-   { emoji:'🕺', title:'Dance Break!', desc:'You have 30 seconds to bust out your best birthday dance move. Dani-Elle is judging. No skipping.' },
-   { emoji:'🎤', title:'Karaoke!', desc:'Sing the first verse of any song out loud — right now. Dani-Elle picks the song.' },
-   { emoji:'💌', title:'Say Something Nice!', desc:'Tell Dani-Elle three things you love about her. Make them good.' },
-   { emoji:'📸', title:'Photo Time!', desc:'You and Dani-Elle have to take the best birthday selfie possible. You have 3 attempts.' },
-   { emoji:'🤸', title:'Show Off!', desc:'Do 10 push-ups for the birthday boy gains. Dani-Elle is watching and counting.' },
-   { emoji:'🎲', title:'Truth Time!', desc:'Dani-Elle asks you one question and you HAVE to answer honestly. No getting out of it.' },
-   { emoji:'👑', title:'King for the Day!', desc:'You get to pick what you both do for the next hour. Birthday boy chooses!' }
+ var cases = [
+   { id:'A', decoy:true,  emoji:'🦶', title:'A foot rub', sub:'from Dani-Elle' },
+   { id:'B', decoy:false, emoji:'🎰', title:'Cross Lotto Tickets', sub:'Dani-Elle\'s got them ready!' },
+   { id:'C', decoy:true,  emoji:'🍳', title:'A home cooked dinner', sub:'Birthday boy\'s choice' }
  ];
- var picked = null;
- function buildCards() {
-   return dares.map(function(d, i) {
-     return '<div onclick="pickDare(' + i + ')" id="dare-card-' + i + '" style="background:#1c1c1c;border-radius:14px;padding:1rem 0.9rem;border:1px solid rgba(225,219,201,0.12);cursor:pointer;transition:all 0.2s;text-align:center">' +
-       '<div style="font-size:2rem;margin-bottom:0.3rem">' + d.emoji + '</div>' +
-       '<div style="color:#C8A96E;font-weight:800;font-size:0.82rem">' + d.title + '</div>' +
+ var chosen = null;
+ // Shuffle which case holds the lotto prize (always B in display, but pick randomly from A/B/C)
+ var winIdx = Math.floor(Math.random() * 3);
+ cases[0].decoy = true; cases[1].decoy = true; cases[2].decoy = true;
+ cases[winIdx].decoy = false; cases[winIdx].emoji = '🎰'; cases[winIdx].title = 'Cross Lotto Tickets'; cases[winIdx].sub = 'Dani-Elle\'s got them ready!';
+ var decoyTexts = [['🦶','A foot rub','from Dani-Elle'],['🍳','A home cooked dinner','Birthday boy\'s choice']];
+ var di = 0;
+ cases.forEach(function(c) { if(c.decoy){ c.emoji=decoyTexts[di][0];c.title=decoyTexts[di][1];c.sub=decoyTexts[di][2];di++; } });
+
+ function renderCases(pickedIdx) {
+   return cases.map(function(c, i) {
+     var isChosen = i === pickedIdx;
+     return '<div id="case-'+i+'" onclick="pickCase('+i+')" style="cursor:'+(pickedIdx===null?'pointer':'default')+';background:linear-gradient(160deg,'+(isChosen?'#1a0f00,#3d2200':'#0d0d0d,#1a1a1a')+';border-radius:16px;padding:1.2rem 0.8rem;text-align:center;border:2px solid '+(isChosen?'#C8A96E':'rgba(200,169,110,0.2)')+';transition:all 0.3s">' +
+       '<div style="font-size:2.5rem;margin-bottom:0.4rem">💼</div>' +
+       '<div style="font-family:\'Cormorant Garamond\',serif;font-size:1.4rem;font-weight:700;color:#C8A96E">Case '+c.id+'</div>' +
        '</div>';
    }).join('');
  }
- el.innerHTML =
-   '<div class="modal-title">🎲 Birthday Dare!</div>' +
-   '<div class="love-note" style="text-align:center;margin-bottom:1.2rem">' +
-   'Pick your dare, birthday boy...<br><strong style="color:#C8A96E">No chickening out! 😏</strong></div>' +
-   '<div style="display:grid;grid-template-columns:1fr 1fr;gap:0.7rem;margin-bottom:1rem" id="dare-grid">' +
-   buildCards() +
-   '</div>' +
-   '<div id="dare-result"></div>';
 
- window.pickDare = function(i) {
-   if (picked !== null) return;
-   picked = i;
-   var d = dares[i];
-   document.querySelectorAll('[id^="dare-card-"]').forEach(function(c, j) {
-     c.style.opacity = j === i ? '1' : '0.3';
-     c.style.border = j === i ? '2px solid #C8A96E' : '1px solid rgba(225,219,201,0.08)';
-   });
-   document.getElementById('dare-result').innerHTML =
-     '<div class="love-note" style="text-align:center;margin-top:0.5rem">' +
-     '<div style="font-size:3rem;margin-bottom:0.5rem">' + d.emoji + '</div>' +
-     '<strong style="color:#C8A96E;font-size:1.2rem">' + d.title + '</strong><br><br>' +
-     d.desc + '</div>' +
-     '<button class="next-btn" style="margin-top:1rem" onclick="closeModal()">Challenge accepted! 💪</button>';
-   launchConfetti();
+ el.innerHTML =
+   '<div class="modal-title">The Big Money Moment 💰</div>' +
+   '<div class="love-note" style="text-align:center;margin-bottom:1.2rem">' +
+   'Joel, you love money. You love winning.<br><br>' +
+   '<strong style="color:#C8A96E">One of these cases holds something very special.</strong><br><br>' +
+   'Pick your case... 👇</div>' +
+   '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.8rem;margin-bottom:1.2rem" id="case-grid">' +
+   renderCases(null) +
+   '</div>' +
+   '<div id="money-result"></div>';
+
+ window.pickCase = function(idx) {
+   if (chosen !== null) return;
+   chosen = idx;
+   // Update grid to show chosen highlighted
+   document.getElementById('case-grid').innerHTML = renderCases(idx);
+   // Step 1: Show "Interesting choice..." message
+   document.getElementById('money-result').innerHTML =
+     '<div class="love-note" style="text-align:center;font-style:italic;color:rgba(200,169,110,0.8)">Interesting choice, Joel... 👀</div>';
+   setTimeout(function() {
+     // Step 2: Reveal the other two cases one by one
+     var others = cases.map(function(c,i){return i;}).filter(function(i){return i!==idx;});
+     var o1 = others[0], o2 = others[1];
+     document.getElementById('case-'+o1).innerHTML =
+       '<div style="font-size:1.8rem;margin-bottom:0.3rem">'+cases[o1].emoji+'</div>' +
+       '<div style="font-size:0.75rem;color:#C8A96E;font-weight:700">'+cases[o1].title+'</div>';
+     document.getElementById('money-result').innerHTML =
+       '<div class="love-note" style="text-align:center">Case '+cases[o1].id+' was... <strong style="color:rgba(200,169,110,0.7)">'+cases[o1].title+' '+cases[o1].emoji+'</strong></div>';
+     setTimeout(function() {
+       document.getElementById('case-'+o2).innerHTML =
+         '<div style="font-size:1.8rem;margin-bottom:0.3rem">'+cases[o2].emoji+'</div>' +
+         '<div style="font-size:0.75rem;color:#C8A96E;font-weight:700">'+cases[o2].title+'</div>';
+       document.getElementById('money-result').innerHTML =
+         '<div class="love-note" style="text-align:center">Case '+cases[o2].id+' was... <strong style="color:rgba(200,169,110,0.7)">'+cases[o2].title+' '+cases[o2].emoji+'</strong><br><br>' +
+         '<div style="font-size:0.8rem;color:rgba(200,169,110,0.6)">That means your case has...</div></div>';
+       // Step 3: Banker call
+       setTimeout(function() {
+         document.getElementById('money-result').innerHTML =
+           '<div style="background:linear-gradient(135deg,#0a0a0a,#1a1208);border-radius:14px;padding:1.2rem;text-align:center;margin-bottom:1rem;border:1px solid rgba(200,169,110,0.3)">' +
+           '<div style="font-size:0.65rem;letter-spacing:3px;text-transform:uppercase;color:rgba(200,169,110,0.6);margin-bottom:0.4rem">📞 The Banker is calling...</div>' +
+           '<div style="font-family:\'Cormorant Garamond\',serif;font-size:1.1rem;color:#C8A96E;font-style:italic">"Don\'t open it yet, Joel... are you SURE about Case '+cases[idx].id+'?"</div>' +
+           '</div>' +
+           '<button class="next-btn" onclick="openFinalCase()">OPEN IT! 🎰</button>';
+         window.openFinalCase = function() {
+           // Countdown 3 2 1
+           var cnt = document.getElementById('money-result');
+           var n = 3;
+           function countdown() {
+             cnt.innerHTML = '<div style="text-align:center;font-family:\'Cormorant Garamond\',serif;font-size:5rem;font-weight:700;color:#C8A96E;padding:1rem 0">' + n + '</div>';
+             if (n > 1) { n--; setTimeout(countdown, 700); }
+             else {
+               setTimeout(function() {
+                 document.getElementById('case-'+idx).innerHTML =
+                   '<div style="font-size:1.8rem;margin-bottom:0.3rem">🎰</div>' +
+                   '<div style="font-size:0.7rem;color:#C8A96E;font-weight:700">LOTTO!</div>';
+                 cnt.innerHTML =
+                   '<div style="background:linear-gradient(135deg,#C8A96E,#9a7040);border-radius:20px;padding:1.8rem 1.4rem;text-align:center;margin-bottom:1.2rem;box-shadow:0 0 30px rgba(200,169,110,0.35)">' +
+                   '<div style="font-size:3rem;margin-bottom:0.6rem">🎰🎫</div>' +
+                   '<div style="font-size:0.65rem;letter-spacing:3px;text-transform:uppercase;color:rgba(0,0,0,0.6);margin-bottom:0.4rem;font-weight:700">YOU WON</div>' +
+                   '<div style="font-family:\'Cormorant Garamond\',serif;font-size:1.8rem;font-weight:700;color:#0a0a0a;margin-bottom:0.3rem">Cross Lotto Tickets!</div>' +
+                   '<div style="color:rgba(0,0,0,0.65);font-size:0.88rem;font-weight:600">Dani-Elle has them ready to scratch 🎉</div>' +
+                   '</div>' +
+                   '<div class="love-note" style="text-align:center;margin-bottom:1.2rem">' +
+                   'Birthday luck is REAL, Joel! 🍀<br><br>' +
+                   '<strong style="color:#C8A96E">Go get those tickets and scratch your way to riches!</strong> 💸</div>' +
+                   '<button class="next-btn" onclick="closeModal()">Let\'s get scratching! 🎫</button>';
+                 launchConfetti();
+               }, 400);
+             }
+           }
+           countdown();
+         };
+       }, 1500);
+     }, 1400);
+   }, 1200);
  };
 }
 
@@ -1410,10 +1467,32 @@ function renderCheese(el) {
    setupShakeListener(doFirstReveal);
  }
 
+ function spinThenReveal(spinEmojis, finalEmoji, onLand) {
+   var idx = 0, frame = 0, delay = 80;
+   var spinEl = document.getElementById('cheese-spinner');
+   if (!spinEl) return onLand();
+   function tick() {
+     frame++;
+     spinEl.textContent = spinEmojis[idx % spinEmojis.length]; idx++;
+     if (frame > 15) delay = 160;
+     if (frame > 22) delay = 320;
+     if (frame > 27) delay = 550;
+     if (frame < 31) { setTimeout(tick, delay); }
+     else { spinEl.textContent = finalEmoji; setTimeout(onLand, 600); }
+   }
+   tick();
+ }
+
  function doFirstReveal() {
    shakeCount = 1;
-   var icon = document.getElementById('prize-icon');
-   if (icon) { icon.style.transition = 'transform 0.1s'; icon.textContent = '🍷'; }
+   // Show spinner screen first
+   el.innerHTML =
+     '<div class="modal-title">Revealing... 🎁</div>' +
+     '<div style="background:linear-gradient(160deg,#1a0800,#3d1a00);border-radius:24px;padding:2.5rem 1.5rem;text-align:center;margin-bottom:1rem;border:2px solid #C8A96E;box-shadow:0 0 30px rgba(200,169,110,0.25)">' +
+     '<div id="cheese-spinner" style="font-size:5rem;display:block;margin-bottom:0.8rem;min-height:6rem;line-height:6rem">🎁</div>' +
+     '<div style="font-family:\'Cormorant Garamond\',serif;font-size:1.3rem;color:#C8A96E;font-weight:700">Finding out what you won...</div>' +
+     '</div>';
+   spinThenReveal(['🎁','🍕','🎂','🍺','🎊','🎈','🎁','🍕','🎂','🍺'],'🍷', function() {
    el.innerHTML =
      '<div class="modal-title">You won! 🎉</div>' +
      '<div style="background:linear-gradient(160deg,#1a0800,#3d1a00);border-radius:24px;padding:2rem 1.5rem;text-align:center;margin-bottom:1.4rem;border:2px solid #C8A96E;box-shadow:0 0 30px rgba(200,169,110,0.25)">' +
@@ -1431,6 +1510,8 @@ function renderCheese(el) {
      '<button class="play-btn" onclick="cheeseShakeAgain()" style="background:linear-gradient(135deg,#3d1a00,#1a0800);border:1px solid rgba(200,169,110,0.4);color:#C8A96E">Shake for something bigger... 🤞</button>' +
      '</div>' +
      '<div id="cheese-fallback2" style="display:none"></div>';
+   launchConfetti();
+   }); // end spinThenReveal callback
    window.cheeseTakeIt = function() {
      el.innerHTML =
        '<div class="modal-title">Enjoy it! 🍷</div>' +
@@ -1453,6 +1534,13 @@ function renderCheese(el) {
        '</div>';
      window.cheeseShowPrize2 = function() {
        el.innerHTML =
+         '<div class="modal-title">Revealing... 🤞</div>' +
+         '<div style="background:linear-gradient(160deg,#1a0800,#3d1a00);border-radius:24px;padding:2.5rem 1.5rem;text-align:center;margin-bottom:1rem;border:2px solid #C8A96E;box-shadow:0 0 30px rgba(200,169,110,0.25)">' +
+         '<div id="cheese-spinner" style="font-size:5rem;display:block;margin-bottom:0.8rem;min-height:6rem;line-height:6rem">🎁</div>' +
+         '<div style="font-family:\'Cormorant Garamond\',serif;font-size:1.3rem;color:#C8A96E;font-weight:700">Did you win the upgrade?</div>' +
+         '</div>';
+       spinThenReveal(['🍷','🎁','🍕','🍺','🧀','🎊','🍷','🎁','🍕','🧀'],'🧀🍷', function() {
+       el.innerHTML =
          '<div class="modal-title">JACKPOT! 🎉</div>' +
          '<div style="background:linear-gradient(160deg,#1a0800,#3d1a00);border-radius:24px;padding:2rem 1.5rem;text-align:center;margin-bottom:1.4rem;border:2px solid #C8A96E;box-shadow:0 0 40px rgba(200,169,110,0.35)">' +
          '<div style="font-size:0.65rem;letter-spacing:4px;text-transform:uppercase;color:rgba(200,169,110,0.6);margin-bottom:0.6rem">YOU WON THE UPGRADE</div>' +
@@ -1466,6 +1554,7 @@ function renderCheese(el) {
          'Sit back and relax — you\'ve earned it birthday boy ❤️</div>' +
          '<button class="next-btn" onclick="closeModal()">YES! Let\'s go! 🎉</button>';
        launchConfetti();
+       }); // end spinThenReveal callback
      };
      // Second shake — delay 1.5s so tap motion settles before we listen
      function startSecondShakeListen() {
