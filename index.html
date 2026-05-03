@@ -183,6 +183,14 @@
  /* Modal content fade for inner screen swaps */
  .modal-inner-fade{animation:innerFadeIn 0.22s ease forwards}
  @keyframes innerFadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+ /* === STRIP CLUB SHOW === */
+ @keyframes scBg{0%{background:radial-gradient(circle at 30% 60%,#2a0038 0%,#060010 65%)}33%{background:radial-gradient(circle at 72% 38%,#1e002c 0%,#04000e 65%)}66%{background:radial-gradient(circle at 48% 78%,#280022 0%,#06000e 65%)}100%{background:radial-gradient(circle at 30% 60%,#2a0038 0%,#060010 65%)}}
+ @keyframes neonPink{0%,82%,100%{text-shadow:0 0 7px #fff,0 0 16px #ff69b4,0 0 32px #ff1493,0 0 58px #ff1493;color:#ff9dc8}83%,85%,87%,89%{text-shadow:none;color:#cc0055;opacity:0.75}84%,86%,88%,90%{text-shadow:0 0 7px #fff,0 0 16px #ff69b4;color:#ff9dc8;opacity:1}}
+ @keyframes neonGold{0%,100%{text-shadow:0 0 5px #FFD700,0 0 12px #C8A96E;opacity:0.9}50%{text-shadow:0 0 9px #FFD700,0 0 24px #FFD700,0 0 44px #C8A96E;opacity:1}}
+ @keyframes danceL{0%,100%{transform:rotate(-13deg) translateY(0px)}50%{transform:rotate(9deg) translateY(-6px)}}
+ @keyframes danceR{0%,100%{transform:rotate(13deg) translateY(0px)}50%{transform:rotate(-9deg) translateY(-6px)}}
+ @keyframes scSpot{0%,100%{opacity:0.18;transform:skewX(-4deg)}50%{opacity:0.48;transform:skewX(4deg)}}
 </style>
 </head>
 <body>
@@ -1060,29 +1068,51 @@ function renderWheel(el) {
 }
 
 // ── 8 BALL ────────────────────────────────────────────────────────────
-// ── 8 BALL ────────────────────────────────────────────────────────────
+function buildStripShow() {
+ var d = '<svg width="44" height="118" viewBox="0 0 44 118" fill="none"><rect x="36" y="0" width="4.5" height="118" rx="2.25" fill="#b09060"/><rect x="37.5" y="0" width="1.2" height="118" rx="0.6" fill="rgba(255,245,200,0.75)"/><path d="M22 6 C26 14 28 34 24 58 C22 72 24 82 20 92" stroke="#7a3e18" stroke-width="7" fill="none" stroke-linecap="round"/><path d="M20 6 C16 14 14 36 18 58" stroke="#5a2a0c" stroke-width="4" fill="none" stroke-linecap="round" opacity="0.8"/><circle cx="22" cy="14" r="9" fill="#ff1a6e"/><rect x="19.5" y="22" width="5" height="7" rx="2.5" fill="#ff1a6e"/><path d="M10 30 Q22 25 34 31 Q30 48 28 60 Q22 57 16 60 Q14 48 10 30Z" fill="#ff1a6e"/><path d="M14 32 Q18 30 22 32 Q20 42 16 44Z" fill="rgba(255,255,255,0.13)"/><path d="M32 34 Q36 26 37 16" stroke="#ff1a6e" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M12 34 Q5 24 8 14" stroke="#ff1a6e" stroke-width="5" fill="none" stroke-linecap="round"/><circle cx="37" cy="16" r="4" fill="#ff1a6e"/><path d="M18 60 Q14 80 10 98 Q8 108 5 114" stroke="#ff1a6e" stroke-width="6" fill="none" stroke-linecap="round"/><path d="M5 114 Q2 118 7 118" stroke="#ff1a6e" stroke-width="3.5" fill="none" stroke-linecap="round"/><path d="M26 60 Q30 76 36 90 Q38 98 36 106" stroke="#ff1a6e" stroke-width="5" fill="none" stroke-linecap="round" opacity="0.9"/><path d="M36 106 Q40 110 38 115" stroke="#ff1a6e" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.9"/></svg>';
+ return (
+   '<div style="border-radius:18px;overflow:hidden;position:relative">' +
+   '<div style="position:absolute;inset:0;animation:scBg 2.5s ease-in-out infinite;z-index:0"></div>' +
+   '<div style="position:absolute;top:0;left:8%;width:88px;height:155px;background:linear-gradient(172deg,rgba(255,20,147,0.32) 0%,transparent 100%);border-radius:0 0 50% 50%;animation:scSpot 2s ease-in-out infinite;z-index:1"></div>' +
+   '<div style="position:absolute;top:0;right:8%;width:88px;height:155px;background:linear-gradient(188deg,rgba(200,169,110,0.26) 0%,transparent 100%);border-radius:0 0 50% 50%;animation:scSpot 2.5s ease-in-out infinite 0.8s;z-index:1"></div>' +
+   '<div style="position:relative;z-index:2;padding:1.1rem 0.5rem 1.2rem">' +
+   '<div style="font-size:0.55rem;letter-spacing:7px;color:rgba(255,105,180,0.42);text-align:center;margin-bottom:0.9rem">✦ ✦ ✦ ✦ ✦ ✦ ✦</div>' +
+   '<div style="display:flex;align-items:flex-end;justify-content:space-between">' +
+   '<div style="animation:danceL 1.5s ease-in-out infinite;transform-origin:50% 0%">' + d + '</div>' +
+   '<div style="flex:1;text-align:center;padding:0 0.3rem">' +
+   '<div style="font-size:0.5rem;letter-spacing:4px;color:rgba(255,105,180,0.58);text-transform:uppercase;font-weight:700;margin-bottom:0.5rem">YOU WON</div>' +
+   '<div style="font-family:\'Cormorant Garamond\',serif;font-size:1.1rem;font-weight:700;line-height:1.4;animation:neonPink 4s ease-in-out infinite">A Night at the<br>Strip Club</div>' +
+   '<div style="width:50%;height:1px;background:linear-gradient(90deg,transparent,rgba(255,105,180,0.55),transparent);margin:0.55rem auto"></div>' +
+   '<div style="font-size:0.7rem;font-weight:700;animation:neonGold 2.2s ease-in-out infinite">🍾 Dani-Elle is taking you 🍾</div>' +
+   '</div>' +
+   '<div style="transform:scaleX(-1)"><div style="animation:danceR 1.5s ease-in-out infinite 0.75s;transform-origin:50% 0%">' + d + '</div></div>' +
+   '</div>' +
+   '<div style="font-size:0.55rem;letter-spacing:7px;color:rgba(200,169,110,0.32);text-align:center;margin-top:0.9rem">✦ ✦ ✦ ✦ ✦ ✦ ✦</div>' +
+   '</div></div>'
+ );
+}
+
 function renderEightBall(el) {
  el.innerHTML =
    '<div class="modal-title">🎱 8 Ball Time!</div>' +
    '<div class="love-note" style="text-align:center;margin-bottom:1.2rem">' +
    'It is time, Joel — you vs Dani-Elle, one game of 8 Ball!<br><br>' +
    'But first... here is what is at stake 👇</div>' +
-   '<div style="background:linear-gradient(160deg,#0a0a0a,#1a1208);border-radius:14px;padding:1.2rem;text-align:center;margin-bottom:1.2rem">' +
-   '<div style="font-size:0.8rem;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:#C8A96E;margin-bottom:0.5rem">🏆 WIN and you get...</div>' +
-   '<div style="font-size:3rem;margin:0.4rem 0">🎁</div>' +
-   '<button class="play-btn" style="max-width:200px;margin:0.5rem auto 0;display:block" onclick="revealEightStake()">Tap and find out 👀</button>' +
-   '<div id="eight-stake-reveal" style="display:none;margin-top:0.8rem">' +
-   '<div style="font-weight:900;color:white;font-size:1.2rem">A night at the Strip Club! 🎰🥂</div>' +
-   '<div style="font-size:0.85rem;color:#C8A96E;font-weight:700;margin-top:0.4rem">Dani-Elle will take you! 🎰</div>' +
+   '<div style="background:linear-gradient(160deg,#0d0008,#1a0014);border-radius:16px;padding:1.2rem;text-align:center;margin-bottom:1.2rem;border:1px solid rgba(255,20,147,0.2)">' +
+   '<div style="font-size:0.75rem;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:rgba(255,105,180,0.7);margin-bottom:0.8rem">🏆 WIN and you get...</div>' +
+   '<div id="stake-box">' +
+   '<div style="font-size:4rem;margin:0.5rem 0">🎁</div>' +
+   '<button class="play-btn" style="max-width:180px;margin:0.3rem auto 0;display:block;background:linear-gradient(135deg,#ff1a6e,#cc0055);border:none" onclick="revealEightStake(this)">Find out 👀</button>' +
    '</div>' +
    '</div>' +
-   '<button class="play-btn" id="start-eight" onclick="startEight()" style="display:none">Rack them up! 🎱</button>' +
+   '<button class="play-btn" id="start-eight" onclick="startEight()" style="display:none;background:linear-gradient(135deg,#C8A96E,#9a7040);color:#000;font-weight:900">Let\'s play! 🎱</button>' +
    '<div id="eight-result"></div>';
 
- window.revealEightStake = function() {
-   document.getElementById('eight-stake-reveal').style.display = 'block';
+ window.revealEightStake = function(btn) {
+   btn.style.display = 'none';
+   document.getElementById('stake-box').innerHTML = buildStripShow();
    document.getElementById('start-eight').style.display = 'block';
-   event.target.style.display = 'none';
+   launchConfetti();
  };
 
  window.startEight = function() {
@@ -1096,62 +1126,14 @@ function renderEightBall(el) {
  };
 
  window.showEightWin = function() {
-   var res = document.getElementById('eight-result');
-   res.innerHTML =
-     '<div id="strip-show" style="border-radius:16px;overflow:hidden;margin-top:0.8rem;position:relative;padding:1.6rem 1rem 1.4rem;text-align:center">' +
-     // flashing background layer
-     '<div id="strip-lights" style="position:absolute;inset:0;border-radius:16px;background:#1a0010;z-index:0"></div>' +
-     // neon sign
-     '<div style="position:relative;z-index:2;font-family:\'Cormorant Garamond\',serif;font-size:1rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;margin-bottom:0.6rem" id="strip-neon">✦ WELCOME ✦</div>' +
-     // pole dancers
-     '<div style="position:relative;z-index:2;display:flex;justify-content:center;gap:1.4rem;align-items:flex-end;margin-bottom:0.5rem">' +
-     '<div style="display:flex;flex-direction:column;align-items:center">' +
-     '<div id="d1" style="font-size:2rem;display:inline-block">💃</div>' +
-     '<div style="width:4px;height:60px;background:linear-gradient(180deg,#C8A96E,#9a7040);border-radius:2px"></div>' +
+   document.getElementById('eight-result').innerHTML =
+     '<div style="text-align:center;padding:1.2rem 0 0.8rem">' +
+     '<div style="font-size:2.8rem;margin-bottom:0.4rem">🏆</div>' +
+     '<div style="font-family:\'Cormorant Garamond\',serif;font-size:1.5rem;font-weight:700;color:#C8A96E;margin-bottom:0.3rem">WINNER!</div>' +
+     '<div style="font-size:0.88rem;color:rgba(255,255,255,0.8)">Your night at the Strip Club is locked in!</div>' +
+     '<div style="font-size:0.8rem;color:#C8A96E;font-weight:700;margin-top:0.3rem">Dani-Elle will sort it out! 🎰🥂</div>' +
      '</div>' +
-     '<div style="display:flex;flex-direction:column;align-items:center;margin-top:-20px">' +
-     '<div style="font-family:\'Cormorant Garamond\',serif;font-size:1.4rem;font-weight:700;color:#FFD700;text-shadow:0 0 20px #FFD700;line-height:1.2" id="strip-title">A Night at the<br>Strip Club!</div>' +
-     '</div>' +
-     '<div style="display:flex;flex-direction:column;align-items:center">' +
-     '<div id="d2" style="font-size:2rem;display:inline-block">💃</div>' +
-     '<div style="width:4px;height:60px;background:linear-gradient(180deg,#C8A96E,#9a7040);border-radius:2px"></div>' +
-     '</div>' +
-     '</div>' +
-     '<div style="position:relative;z-index:2;font-size:0.9rem;color:rgba(255,255,255,0.8);margin-bottom:0.4rem">Dani-Elle is taking you! 🥂🎉</div>' +
-     '</div>' +
-     '<button class="next-btn" style="margin-top:1rem;background:linear-gradient(135deg,#C8A96E,#9a7040);color:#000;font-weight:900" onclick="closeModal()">LETS GO! 🎉</button>';
-
-   // Flashing lights animation
-   var colours = ['#2d0020','#1a0030','#300010','#0d001a','#3a0028','#1a1000'];
-   var neonCols = ['#ff00cc','#ff6b6b','#C8A96E','#ff00ff','#FFD700','#ff4488'];
-   var li = 0;
-   var flashInterval = setInterval(function(){
-     var bg = document.getElementById('strip-lights');
-     var neon = document.getElementById('strip-neon');
-     if (!bg) { clearInterval(flashInterval); return; }
-     bg.style.background = colours[li % colours.length];
-     bg.style.boxShadow = '0 0 30px '+neonCols[li % neonCols.length]+' inset';
-     neon.style.color = neonCols[(li+2) % neonCols.length];
-     neon.style.textShadow = '0 0 12px '+neonCols[li % neonCols.length];
-     li++;
-   }, 180);
-
-   // Dancer animation
-   var d1el = document.getElementById('d1');
-   var d2el = document.getElementById('d2');
-   var dancers = ['💃','🕺','💃','🕺'];
-   var di = 0;
-   var danceInterval = setInterval(function(){
-     if (!document.getElementById('d1')) { clearInterval(danceInterval); return; }
-     d1el = document.getElementById('d1');
-     d2el = document.getElementById('d2');
-     d1el.textContent = dancers[di % dancers.length];
-     d2el.textContent = dancers[(di+2) % dancers.length];
-     d1el.style.transform = di%2===0 ? 'rotate(-15deg) scale(1.2)' : 'rotate(15deg) scale(0.9)';
-     d2el.style.transform = di%2===0 ? 'rotate(15deg) scale(0.9)' : 'rotate(-15deg) scale(1.2)';
-     di++;
-   }, 220);
-
+     '<button class="next-btn" style="background:linear-gradient(135deg,#C8A96E,#9a7040);color:#000;font-weight:900" onclick="closeModal()">LETS GO! 🎉</button>';
    launchConfetti();
  };
 
@@ -2119,57 +2101,69 @@ function renderGame(el) {
  }
 
  function drawJoel(jx,jy,lf,dead) {
-   var sk='#d4906a', hair='#1a0a00', jer='#1a3a6e';
+   // Light blue #5 jersey, tall, brown-grey short hair
+   var sk='#d4906a', jer='#5db8e0', jerDark='#3a9fc8';
    ctx.fillStyle='rgba(0,0,0,0.12)';
-   ctx.beginPath(); ctx.ellipse(jx,GROUND+3,14,4,0,0,Math.PI*2); ctx.fill();
-   var la = dead ? 0.4 : Math.sin(lf*0.32)*0.42;
-   // legs
-   ctx.strokeStyle=jer; ctx.lineWidth=6; ctx.lineCap='round';
+   ctx.beginPath(); ctx.ellipse(jx,GROUND+3,15,4,0,0,Math.PI*2); ctx.fill();
+   var la = dead ? 0.4 : Math.sin(lf*0.32)*0.44;
+   // long legs (tall build)
+   ctx.strokeStyle=jerDark; ctx.lineWidth=7; ctx.lineCap='round';
    ctx.beginPath(); ctx.moveTo(jx-3,jy-10);
-   ctx.lineTo(jx-3+Math.sin(la)*18, jy-10+Math.cos(la)*18); ctx.stroke();
+   ctx.lineTo(jx-3+Math.sin(la)*22, jy-10+Math.cos(la)*22); ctx.stroke();
    ctx.beginPath(); ctx.moveTo(jx+3,jy-10);
-   ctx.lineTo(jx+3+Math.sin(-la)*18, jy-10+Math.cos(-la)*18); ctx.stroke();
-   // shoes
-   ctx.fillStyle='#f0f0f0';
-   ctx.beginPath(); ctx.ellipse(jx-3+Math.sin(la)*20,jy-10+Math.cos(la)*19,8,4,la,0,Math.PI*2); ctx.fill();
-   ctx.strokeStyle='#bbb'; ctx.lineWidth=1; ctx.stroke();
-   ctx.fillStyle='#f0f0f0';
-   ctx.beginPath(); ctx.ellipse(jx+3+Math.sin(-la)*20,jy-10+Math.cos(-la)*19,8,4,-la,0,Math.PI*2); ctx.fill();
-   ctx.strokeStyle='#bbb'; ctx.lineWidth=1; ctx.stroke();
-   // jersey body
-   ctx.fillStyle=jer; rr(jx-13,jy-40,26,28,5); ctx.fill();
-   ctx.fillStyle='#C8A96E'; ctx.font='bold 9px Inter'; ctx.textAlign='center';
-   ctx.fillText('32',jx,jy-24);
+   ctx.lineTo(jx+3+Math.sin(-la)*22, jy-10+Math.cos(-la)*22); ctx.stroke();
+   // shoes (white sneakers)
+   ctx.fillStyle='#f4f4f4';
+   ctx.beginPath(); ctx.ellipse(jx-3+Math.sin(la)*24,jy-10+Math.cos(la)*23,9,4,la,0,Math.PI*2); ctx.fill();
+   ctx.strokeStyle='#ccc'; ctx.lineWidth=1; ctx.stroke();
+   ctx.fillStyle='#f4f4f4';
+   ctx.beginPath(); ctx.ellipse(jx+3+Math.sin(-la)*24,jy-10+Math.cos(-la)*23,9,4,-la,0,Math.PI*2); ctx.fill();
+   ctx.strokeStyle='#ccc'; ctx.lineWidth=1; ctx.stroke();
+   // jersey body (tall torso)
+   ctx.fillStyle=jer; rr(jx-13,jy-44,26,32,5); ctx.fill();
+   // jersey side stripe
+   ctx.fillStyle=jerDark; ctx.fillRect(jx+9,jy-44,4,32);
+   // number 5
+   ctx.fillStyle='white'; ctx.font='bold 11px Inter'; ctx.textAlign='center';
+   ctx.fillText('5',jx-1,jy-24);
    // arms
    var aa = dead ? 0.3 : Math.sin(lf*0.32)*0.38;
    ctx.strokeStyle=sk; ctx.lineWidth=5; ctx.lineCap='round';
-   ctx.beginPath(); ctx.moveTo(jx-13,jy-34); ctx.lineTo(jx-22,jy-34+Math.sin(aa)*14); ctx.stroke();
-   ctx.beginPath(); ctx.moveTo(jx+13,jy-34); ctx.lineTo(jx+22,jy-34-Math.sin(aa)*14); ctx.stroke();
-   // head
-   ctx.fillStyle=sk; ctx.beginPath(); ctx.arc(jx,jy-53,14,0,Math.PI*2); ctx.fill();
-   // hair
-   ctx.fillStyle=hair; ctx.beginPath(); ctx.arc(jx,jy-58,12,Math.PI,0); ctx.fill();
-   [[jx-5,jy-70],[jx,jy-73],[jx+6,jy-70]].forEach(function(p){
-     ctx.beginPath(); ctx.arc(p[0],p[1],5,0,Math.PI*2); ctx.fill();
-   });
+   ctx.beginPath(); ctx.moveTo(jx-13,jy-37); ctx.lineTo(jx-22,jy-37+Math.sin(aa)*14); ctx.stroke();
+   ctx.beginPath(); ctx.moveTo(jx+13,jy-37); ctx.lineTo(jx+22,jy-37-Math.sin(aa)*14); ctx.stroke();
+   // head (taller build — higher)
+   ctx.fillStyle=sk; ctx.beginPath(); ctx.arc(jx,jy-60,14,0,Math.PI*2); ctx.fill();
+   // brown-grey short hair (salt & pepper)
+   var hairBrown='#6b4a2a', hairGrey='#9a9090';
+   // grey base
+   ctx.fillStyle=hairGrey; ctx.beginPath(); ctx.arc(jx,jy-64,12,Math.PI,0); ctx.fill();
+   // brown patches over grey
+   ctx.fillStyle=hairBrown;
+   ctx.beginPath(); ctx.arc(jx-4,jy-64,7,Math.PI,0); ctx.fill();
+   ctx.beginPath(); ctx.arc(jx+5,jy-64,5,Math.PI,0); ctx.fill();
+   // short hair top (not spiky, short crop)
+   ctx.fillStyle=hairGrey;
+   ctx.beginPath(); ctx.arc(jx,jy-72,5,0,Math.PI*2); ctx.fill();
+   ctx.fillStyle=hairBrown;
+   ctx.beginPath(); ctx.arc(jx-3,jy-72,3.5,0,Math.PI*2); ctx.fill();
    // eyes / expression
    if (dead) {
      ctx.strokeStyle='rgba(255,255,255,0.85)'; ctx.lineWidth=2;
-     [[jx-6,jy-56],[jx+5,jy-56]].forEach(function(ep){
+     [[jx-6,jy-62],[jx+5,jy-62]].forEach(function(ep){
        ctx.beginPath(); ctx.moveTo(ep[0]-3,ep[1]-3); ctx.lineTo(ep[0]+3,ep[1]+3); ctx.stroke();
        ctx.beginPath(); ctx.moveTo(ep[0]+3,ep[1]-3); ctx.lineTo(ep[0]-3,ep[1]+3); ctx.stroke();
      });
-     ctx.strokeStyle='#1a0a00'; ctx.lineWidth=2;
-     ctx.beginPath(); ctx.arc(jx,jy-44,5,Math.PI+0.3,-0.3); ctx.stroke();
+     ctx.strokeStyle='#3a2010'; ctx.lineWidth=2;
+     ctx.beginPath(); ctx.arc(jx,jy-52,5,Math.PI+0.3,-0.3); ctx.stroke();
    } else {
      ctx.fillStyle='#1a0a00';
-     ctx.beginPath(); ctx.arc(jx-5,jy-55,2.5,0,Math.PI*2); ctx.fill();
-     ctx.beginPath(); ctx.arc(jx+5,jy-55,2.5,0,Math.PI*2); ctx.fill();
+     ctx.beginPath(); ctx.arc(jx-5,jy-62,2.5,0,Math.PI*2); ctx.fill();
+     ctx.beginPath(); ctx.arc(jx+5,jy-62,2.5,0,Math.PI*2); ctx.fill();
      ctx.fillStyle='white';
-     ctx.beginPath(); ctx.arc(jx-4,jy-56,1,0,Math.PI*2); ctx.fill();
-     ctx.beginPath(); ctx.arc(jx+6,jy-56,1,0,Math.PI*2); ctx.fill();
+     ctx.beginPath(); ctx.arc(jx-4,jy-63,1,0,Math.PI*2); ctx.fill();
+     ctx.beginPath(); ctx.arc(jx+6,jy-63,1,0,Math.PI*2); ctx.fill();
      ctx.strokeStyle='#1a0a00'; ctx.lineWidth=2;
-     ctx.beginPath(); ctx.arc(jx,jy-49,5,0.3,Math.PI-0.3); ctx.stroke();
+     ctx.beginPath(); ctx.arc(jx,jy-56,5,0.3,Math.PI-0.3); ctx.stroke();
    }
  }
 
@@ -2202,16 +2196,32 @@ function renderGame(el) {
    }
    // head
    ctx.fillStyle='#d4906a'; ctx.beginPath(); ctx.arc(dx,dy-50,12,0,Math.PI*2); ctx.fill();
-   // hair top
-   ctx.fillStyle='#2a1205'; ctx.beginPath(); ctx.arc(dx,dy-55,11,Math.PI,0); ctx.fill();
-   // long hair
-   ctx.fillStyle='#2a1205';
+   // hair top (rich brown)
+   ctx.fillStyle='#3a1a08'; ctx.beginPath(); ctx.arc(dx,dy-56,12,Math.PI,0); ctx.fill();
+   // long wavy hair — left side (3 wavy strands for volume)
+   ctx.fillStyle='#3a1a08';
+   ctx.beginPath(); ctx.moveTo(dx-12,dy-56);
+   ctx.bezierCurveTo(dx-20,dy-38,dx-14,dy-20,dx-18,dy-2);
+   ctx.lineTo(dx-22,dy-2); ctx.bezierCurveTo(dx-18,dy-20,ctx.bezierCurveTo,dx-25,dy-40,dx-15,dy-56);
+   ctx.fill();
+   // simpler stroke approach for wavy hair strands
+   ctx.strokeStyle='#3a1a08'; ctx.lineWidth=8; ctx.lineCap='round';
    ctx.beginPath(); ctx.moveTo(dx-11,dy-55);
-   ctx.bezierCurveTo(dx-18,dy-35,dx-16,dy-16,dx-11,dy-5);
-   ctx.lineTo(dx-15,dy-5); ctx.bezierCurveTo(dx-20,dy-16,dx-22,dy-36,dx-14,dy-55); ctx.fill();
-   ctx.beginPath(); ctx.moveTo(dx+11,dy-55);
-   ctx.bezierCurveTo(dx+18,dy-35,dx+16,dy-16,dx+11,dy-5);
-   ctx.lineTo(dx+15,dy-5); ctx.bezierCurveTo(dx+20,dy-16,dx+22,dy-36,dx+14,dy-55); ctx.fill();
+   ctx.bezierCurveTo(dx-20,dy-38,dx-12,dy-22,dx-18,dy-4); ctx.stroke();
+   ctx.lineWidth=6;
+   ctx.beginPath(); ctx.moveTo(dx-8,dy-56);
+   ctx.bezierCurveTo(dx-16,dy-36,dx-8,dy-18,dx-14,dy-1); ctx.stroke();
+   // right side strands (shorter, tucked behind)
+   ctx.strokeStyle='#4a2810'; ctx.lineWidth=5;
+   ctx.beginPath(); ctx.moveTo(dx+10,dy-55);
+   ctx.bezierCurveTo(dx+18,dy-38,dx+12,dy-22,dx+14,dy-8); ctx.stroke();
+   ctx.lineWidth=7;
+   ctx.beginPath(); ctx.moveTo(dx+12,dy-55);
+   ctx.bezierCurveTo(dx+22,dy-36,dx+16,dy-18,dx+18,dy-3); ctx.stroke();
+   // highlight strand (lighter brown)
+   ctx.strokeStyle='#7a4020'; ctx.lineWidth=2.5;
+   ctx.beginPath(); ctx.moveTo(dx-7,dy-56);
+   ctx.bezierCurveTo(dx-14,dy-38,dx-7,dy-20,dx-11,dy-5); ctx.stroke();
    // eyes
    ctx.fillStyle='#1a0a00';
    ctx.beginPath(); ctx.arc(dx-4,dy-51,1.8,0,Math.PI*2); ctx.fill();
