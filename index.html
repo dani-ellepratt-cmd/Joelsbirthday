@@ -696,7 +696,7 @@ function renderSlots(el) {
              '</div>'+
              '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem">'+
              people.map(function(p){
-               return '<button id="'+btnId(p)+'" onclick="guessAnswer(\''+p+'\')" style="padding:0.65rem 0.2rem;background:rgba(255,255,255,0.07);border:1.5px solid rgba(200,169,110,0.35);border-radius:10px;color:rgba(255,255,255,0.85);font-size:0.8rem;font-weight:700;cursor:pointer;transition:background 0.25s,border-color 0.25s">'+p+'</button>';
+               return '<button id="'+btnId(p)+'" onclick="guessAnswer(\''+p+'\')" style="padding:0.65rem 0.2rem;background:linear-gradient(135deg,#3a2800,#2a1c00);border:1.5px solid rgba(200,169,110,0.6);border-radius:10px;color:#C8A96E;font-size:0.8rem;font-weight:700;cursor:pointer;transition:background 0.25s,border-color 0.25s">'+p+'</button>';
              }).join('')+
              '</div></div>';
 
