@@ -251,6 +251,7 @@ var slots = [
  { id:'s16', hour:16, half:false, label:'4pm',  emoji:'🎱', title:'8 Ball Time',                   desc:'You vs Dani-Elle — rack them up! Winner takes all.', type:'eightball' },
  { id:'s17', hour:17, half:false, label:'5pm',  emoji:'🎁', title:'Shake to Win',                  desc:'Your 5pm prize is waiting...', type:'cheese' },
  { id:'s18', hour:18, half:false, label:'6pm',  emoji:'🎸', title:'Springsteen Time',              desc:'Settle in — it is movie time with The Boss.', type:'movie' },
+ { id:'s18b',hour:18, half:true,  label:'6:30pm',emoji:'🕹️', title:'Birthday Dash',                  desc:'Joel vs the world — can you make it to 9pm?', type:'game' },
  { id:'s19', hour:19, half:false, label:'7pm',  emoji:'🤲', title:'Only for the Birthday Boy',    desc:'This one is exclusively for Joel...', type:'headtickles' },
  { id:'s20', hour:20, half:false, label:'8pm',  emoji:'🍰', title:'Dessert Time',                  desc:'Time for something sweet — place your dessert order!', type:'dessert' },
  { id:'s21', hour:21, half:false, label:'9pm',  emoji:'💛', title:'Love Note',              desc:'Something special to end the day.', type:'lovenote' }
@@ -294,7 +295,7 @@ function openSlot(id) {
  if (!slot || !isUnlocked(slot)) return;
  document.getElementById('modal-overlay').classList.add('active');
  var el = document.getElementById('modal-inner');
- var fns = { breakfast:renderBreakfast, gift:renderGift, spinwheel:renderSpinWheel, slots:renderSlots, lunch:renderLunch, tickles:renderTickles, wheel:renderWheel, eightball:renderEightBall, mystery:renderMystery, cheese:renderCheese, movie:renderMovie, headtickles:renderHeadTickles, dessert:renderDessert, lovenote:renderLoveNote };
+ var fns = { breakfast:renderBreakfast, gift:renderGift, spinwheel:renderSpinWheel, slots:renderSlots, lunch:renderLunch, tickles:renderTickles, wheel:renderWheel, eightball:renderEightBall, mystery:renderMystery, cheese:renderCheese, movie:renderMovie, headtickles:renderHeadTickles, dessert:renderDessert, lovenote:renderLoveNote, game:renderGame };
  if (fns[slot.type]) fns[slot.type](el);
  launchConfetti();
 }
@@ -2033,6 +2034,271 @@ function _triggerShakeReveal(){
 }
 function closeShake(){
   document.getElementById('shake-overlay').style.display='none';
+}
+
+// ── BIRTHDAY DASH GAME ──────────────────────────────────────────────────
+function renderGame(el) {
+ el.innerHTML =
+   '<div class="modal-title" style="margin-bottom:0.3rem">🕹️ Birthday Dash!</div>' +
+   '<div style="font-size:0.75rem;color:var(--muted);text-align:center;margin-bottom:0.8rem">Tap to jump • Double-tap to double-jump • Dodge everything!</div>' +
+   '<canvas id="gdash" style="width:100%;border-radius:16px;display:block;cursor:pointer;touch-action:manipulation"></canvas>' +
+   '<div style="display:flex;justify-content:space-between;margin-top:0.5rem;padding:0 4px">' +
+   '<div id="gd-score" style="font-size:0.75rem;color:var(--muted)">Score: 0</div>' +
+   '<div id="gd-best" style="font-size:0.75rem;color:#C8A96E"></div>' +
+   '</div>';
+
+ var canvas = document.getElementById('gdash');
+ var CW = 360, CH = 260;
+ canvas.width = CW; canvas.height = CH;
+ var ctx = canvas.getContext('2d');
+ var GROUND = CH - 48;
+ var gs = 'idle', score = 0, best = parseInt(localStorage.getItem('jdashBest')||'0');
+ var spd = 4, frame = 0, raf, obstTimer = 0, obstInterval = 105;
+ var obstacles = [], groundX = 0, newBest = false;
+ var speechText = 'Go Joel! 💛', speechTimer = 0;
+ var joel = { x:75, y:GROUND, vy:0, jumps:0, lf:0 };
+
+ if (best > 0) document.getElementById('gd-best').textContent = 'Best: ' + best;
+
+ function rr(x,y,w,h,r) {
+   ctx.beginPath();
+   ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y); ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+   ctx.lineTo(x+w,y+h-r); ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+   ctx.lineTo(x+r,y+h); ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+   ctx.lineTo(x,y+r); ctx.quadraticCurveTo(x,y,x+r,y);
+   ctx.closePath();
+ }
+
+ function drawJoel(jx,jy,lf,dead) {
+   var sk='#d4906a', hair='#1a0a00', jer='#1a3a6e';
+   ctx.fillStyle='rgba(0,0,0,0.12)';
+   ctx.beginPath(); ctx.ellipse(jx,GROUND+3,14,4,0,0,Math.PI*2); ctx.fill();
+   var la = dead ? 0.4 : Math.sin(lf*0.32)*0.42;
+   // legs
+   ctx.strokeStyle=jer; ctx.lineWidth=6; ctx.lineCap='round';
+   ctx.beginPath(); ctx.moveTo(jx-3,jy-10);
+   ctx.lineTo(jx-3+Math.sin(la)*18, jy-10+Math.cos(la)*18); ctx.stroke();
+   ctx.beginPath(); ctx.moveTo(jx+3,jy-10);
+   ctx.lineTo(jx+3+Math.sin(-la)*18, jy-10+Math.cos(-la)*18); ctx.stroke();
+   // shoes
+   ctx.fillStyle='#f0f0f0';
+   ctx.beginPath(); ctx.ellipse(jx-3+Math.sin(la)*20,jy-10+Math.cos(la)*19,8,4,la,0,Math.PI*2); ctx.fill();
+   ctx.strokeStyle='#bbb'; ctx.lineWidth=1; ctx.stroke();
+   ctx.fillStyle='#f0f0f0';
+   ctx.beginPath(); ctx.ellipse(jx+3+Math.sin(-la)*20,jy-10+Math.cos(-la)*19,8,4,-la,0,Math.PI*2); ctx.fill();
+   ctx.strokeStyle='#bbb'; ctx.lineWidth=1; ctx.stroke();
+   // jersey body
+   ctx.fillStyle=jer; rr(jx-13,jy-40,26,28,5); ctx.fill();
+   ctx.fillStyle='#C8A96E'; ctx.font='bold 9px Inter'; ctx.textAlign='center';
+   ctx.fillText('32',jx,jy-24);
+   // arms
+   var aa = dead ? 0.3 : Math.sin(lf*0.32)*0.38;
+   ctx.strokeStyle=sk; ctx.lineWidth=5; ctx.lineCap='round';
+   ctx.beginPath(); ctx.moveTo(jx-13,jy-34); ctx.lineTo(jx-22,jy-34+Math.sin(aa)*14); ctx.stroke();
+   ctx.beginPath(); ctx.moveTo(jx+13,jy-34); ctx.lineTo(jx+22,jy-34-Math.sin(aa)*14); ctx.stroke();
+   // head
+   ctx.fillStyle=sk; ctx.beginPath(); ctx.arc(jx,jy-53,14,0,Math.PI*2); ctx.fill();
+   // hair
+   ctx.fillStyle=hair; ctx.beginPath(); ctx.arc(jx,jy-58,12,Math.PI,0); ctx.fill();
+   [[jx-5,jy-70],[jx,jy-73],[jx+6,jy-70]].forEach(function(p){
+     ctx.beginPath(); ctx.arc(p[0],p[1],5,0,Math.PI*2); ctx.fill();
+   });
+   // eyes / expression
+   if (dead) {
+     ctx.strokeStyle='rgba(255,255,255,0.85)'; ctx.lineWidth=2;
+     [[jx-6,jy-56],[jx+5,jy-56]].forEach(function(ep){
+       ctx.beginPath(); ctx.moveTo(ep[0]-3,ep[1]-3); ctx.lineTo(ep[0]+3,ep[1]+3); ctx.stroke();
+       ctx.beginPath(); ctx.moveTo(ep[0]+3,ep[1]-3); ctx.lineTo(ep[0]-3,ep[1]+3); ctx.stroke();
+     });
+     ctx.strokeStyle='#1a0a00'; ctx.lineWidth=2;
+     ctx.beginPath(); ctx.arc(jx,jy-44,5,Math.PI+0.3,-0.3); ctx.stroke();
+   } else {
+     ctx.fillStyle='#1a0a00';
+     ctx.beginPath(); ctx.arc(jx-5,jy-55,2.5,0,Math.PI*2); ctx.fill();
+     ctx.beginPath(); ctx.arc(jx+5,jy-55,2.5,0,Math.PI*2); ctx.fill();
+     ctx.fillStyle='white';
+     ctx.beginPath(); ctx.arc(jx-4,jy-56,1,0,Math.PI*2); ctx.fill();
+     ctx.beginPath(); ctx.arc(jx+6,jy-56,1,0,Math.PI*2); ctx.fill();
+     ctx.strokeStyle='#1a0a00'; ctx.lineWidth=2;
+     ctx.beginPath(); ctx.arc(jx,jy-49,5,0.3,Math.PI-0.3); ctx.stroke();
+   }
+ }
+
+ function drawDani(dead) {
+   var dx=CW-58, dy=GROUND;
+   var bounce = dead ? 0 : Math.sin(frame*0.12)*7;
+   ctx.fillStyle='rgba(0,0,0,0.1)';
+   ctx.beginPath(); ctx.ellipse(dx,GROUND+3,12,3,0,0,Math.PI*2); ctx.fill();
+   // legs
+   ctx.strokeStyle='#e8a0b0'; ctx.lineWidth=5; ctx.lineCap='round';
+   ctx.beginPath(); ctx.moveTo(dx-4,dy-8); ctx.lineTo(dx-7,dy+10); ctx.stroke();
+   ctx.beginPath(); ctx.moveTo(dx+4,dy-8); ctx.lineTo(dx+7,dy+10); ctx.stroke();
+   // dress
+   ctx.fillStyle='#e8748a';
+   ctx.beginPath(); ctx.moveTo(dx-14,dy-8); ctx.lineTo(dx+14,dy-8);
+   ctx.lineTo(dx+10,dy-38); ctx.lineTo(dx-10,dy-38); ctx.closePath(); ctx.fill();
+   // arms
+   var armY = dead ? -4 : -18+bounce;
+   ctx.strokeStyle='#d4906a'; ctx.lineWidth=4; ctx.lineCap='round';
+   ctx.beginPath(); ctx.moveTo(dx-10,dy-32); ctx.lineTo(dx-20,dy+armY); ctx.stroke();
+   ctx.beginPath(); ctx.moveTo(dx+10,dy-32); ctx.lineTo(dx+20,dy+armY); ctx.stroke();
+   // pom poms
+   if (!dead) {
+     ctx.fillStyle='#FFD700';
+     for (var pi=0;pi<6;pi++){
+       var pa=(pi/6)*Math.PI*2;
+       ctx.beginPath(); ctx.arc(dx-20+Math.cos(pa)*6,dy+armY+Math.sin(pa)*6,3,0,Math.PI*2); ctx.fill();
+       ctx.beginPath(); ctx.arc(dx+20+Math.cos(pa)*6,dy+armY+Math.sin(pa)*6,3,0,Math.PI*2); ctx.fill();
+     }
+   }
+   // head
+   ctx.fillStyle='#d4906a'; ctx.beginPath(); ctx.arc(dx,dy-50,12,0,Math.PI*2); ctx.fill();
+   // hair top
+   ctx.fillStyle='#2a1205'; ctx.beginPath(); ctx.arc(dx,dy-55,11,Math.PI,0); ctx.fill();
+   // long hair
+   ctx.fillStyle='#2a1205';
+   ctx.beginPath(); ctx.moveTo(dx-11,dy-55);
+   ctx.bezierCurveTo(dx-18,dy-35,dx-16,dy-16,dx-11,dy-5);
+   ctx.lineTo(dx-15,dy-5); ctx.bezierCurveTo(dx-20,dy-16,dx-22,dy-36,dx-14,dy-55); ctx.fill();
+   ctx.beginPath(); ctx.moveTo(dx+11,dy-55);
+   ctx.bezierCurveTo(dx+18,dy-35,dx+16,dy-16,dx+11,dy-5);
+   ctx.lineTo(dx+15,dy-5); ctx.bezierCurveTo(dx+20,dy-16,dx+22,dy-36,dx+14,dy-55); ctx.fill();
+   // eyes
+   ctx.fillStyle='#1a0a00';
+   ctx.beginPath(); ctx.arc(dx-4,dy-51,1.8,0,Math.PI*2); ctx.fill();
+   ctx.beginPath(); ctx.arc(dx+4,dy-51,1.8,0,Math.PI*2); ctx.fill();
+   // mouth
+   ctx.strokeStyle='#1a0a00'; ctx.lineWidth=1.5;
+   ctx.beginPath();
+   if (dead) { ctx.arc(dx,dy-44,4,Math.PI+0.35,-0.35); }
+   else { ctx.arc(dx,dy-47,3.5,0.3,Math.PI-0.3); }
+   ctx.stroke();
+   // speech bubble
+   var sw = Math.max(68, speechText.length*6.5+16), bh=26;
+   var bx=dx-sw-16, by=dy-96;
+   ctx.fillStyle='rgba(255,255,255,0.95)';
+   rr(bx,by,sw,bh,7); ctx.fill();
+   ctx.beginPath(); ctx.moveTo(dx-16,by+bh); ctx.lineTo(dx-11,by+bh+11); ctx.lineTo(dx-27,by+bh); ctx.fill();
+   ctx.fillStyle='#222'; ctx.font='bold 9.5px Inter'; ctx.textAlign='center';
+   ctx.fillText(speechText, bx+sw/2, by+17);
+ }
+
+ function drawBG() {
+   var g=ctx.createLinearGradient(0,0,0,GROUND);
+   g.addColorStop(0,'#e8dcc8'); g.addColorStop(1,'#f2e8d8');
+   ctx.fillStyle=g; ctx.fillRect(0,0,CW,CH);
+   // clouds
+   ctx.fillStyle='rgba(255,255,255,0.55)';
+   [[55,38,28],[155,24,20],[268,32,17]].forEach(function(c){
+     var ox = ((groundX*0.06)+c[0])%380;
+     ctx.beginPath(); ctx.ellipse(ox,c[1],c[2],c[2]*0.55,0,0,Math.PI*2); ctx.fill();
+   });
+   // ground
+   ctx.fillStyle='#c8a96e'; ctx.fillRect(0,GROUND,CW,CH-GROUND);
+   ctx.fillStyle='#9a7040'; ctx.fillRect(0,GROUND,CW,4);
+   ctx.fillStyle='rgba(255,255,255,0.22)';
+   for (var gx=(groundX%50)-50; gx<CW; gx+=50){
+     ctx.fillRect(gx,GROUND+12,24,3);
+   }
+ }
+
+ function drawHUD() {
+   ctx.fillStyle='rgba(0,0,0,0.28)'; rr(8,8,95,24,12); ctx.fill();
+   ctx.fillStyle='white'; ctx.font='bold 12px Inter'; ctx.textAlign='left';
+   ctx.fillText('Score: '+score, 16, 24);
+   document.getElementById('gd-score').textContent = 'Score: '+score;
+ }
+
+ var obstTypes=[
+   {e:'🏀',h:28,oy:0},{e:'🎂',h:30,oy:0},{e:'🍷',h:26,oy:0},
+   {e:'🎸',h:30,oy:0},{e:'🎁',h:28,oy:0},{e:'🎈',h:24,oy:-44}
+ ];
+ function spawnObst() {
+   var t=obstTypes[Math.floor(Math.random()*obstTypes.length)];
+   obstacles.push({x:CW+24,y:GROUND-t.h/2+t.oy-2,emoji:t.e,size:t.h});
+ }
+
+ function loop() {
+   ctx.clearRect(0,0,CW,CH);
+   drawBG();
+   if (gs==='idle') {
+     drawJoel(joel.x,GROUND,0,false);
+     drawDani(false);
+     ctx.fillStyle='#C8A96E'; ctx.font='bold 20px "Cormorant Garamond",serif'; ctx.textAlign='center';
+     ctx.fillText('Birthday Dash! 🕹️', CW/2, 50);
+     ctx.fillStyle='rgba(0,0,0,0.5)'; ctx.font='13px Inter';
+     ctx.fillText('Tap to start — dodge everything!', CW/2, 74);
+     ctx.fillStyle='rgba(0,0,0,0.32)'; ctx.font='11px Inter';
+     ctx.fillText('Double-tap for double jump', CW/2, 94);
+   } else if (gs==='playing') {
+     frame++; groundX-=spd; score=Math.floor(frame/8);
+     joel.vy+=0.72; joel.y+=joel.vy;
+     if (joel.y>=GROUND){joel.y=GROUND;joel.vy=0;joel.jumps=0;}
+     if (joel.y<GROUND){joel.lf=joel.lf;}else{joel.lf++;}
+     if (frame%420===0 && spd<10) spd+=0.5;
+     obstTimer++;
+     if (obstTimer>obstInterval){ obstTimer=0; obstInterval=52+Math.random()*72; spawnObst(); }
+     for (var i=obstacles.length-1;i>=0;i--){
+       obstacles[i].x-=spd;
+       if (Math.abs(joel.x-obstacles[i].x)<17 && Math.abs(joel.y-obstacles[i].y)<22){
+         gs='dead';
+         if (score>best){best=score;localStorage.setItem('jdashBest',best);newBest=true;speechText='NEW RECORD! 🏆💛';}
+         else{newBest=false;speechText='Get up babe! 💪';}
+       }
+       if (obstacles[i].x<-40){obstacles.splice(i,1);continue;}
+       ctx.font=obstacles[i].size+'px serif'; ctx.textAlign='center';
+       ctx.fillText(obstacles[i].emoji,obstacles[i].x,obstacles[i].y);
+     }
+     speechTimer++;
+     if (speechTimer>110){speechTimer=0;
+       var ph=['Go Joel! 💛','Jump! ❤️','You got this! 🏃','Woooo! 🎊','Keep going! 💨','Dodge it! 😱'];
+       speechText=ph[Math.floor(Math.random()*ph.length)];
+     }
+     drawJoel(joel.x,joel.y,joel.lf,false);
+     drawDani(false);
+     drawHUD();
+   } else if (gs==='dead') {
+     for (var j=0;j<obstacles.length;j++){
+       ctx.font=obstacles[j].size+'px serif'; ctx.textAlign='center';
+       ctx.fillText(obstacles[j].emoji,obstacles[j].x,obstacles[j].y);
+     }
+     drawJoel(joel.x,joel.y,0,true);
+     drawDani(true);
+     ctx.fillStyle='rgba(0,0,0,0.45)'; ctx.fillRect(0,0,CW,CH);
+     ctx.fillStyle='white'; ctx.font='bold 22px "Cormorant Garamond",serif'; ctx.textAlign='center';
+     ctx.fillText('Game Over! 😅', CW/2, CH/2-36);
+     ctx.font='bold 14px Inter';
+     ctx.fillText('Score: '+score, CW/2, CH/2-10);
+     if (newBest){
+       ctx.fillStyle='#FFD700'; ctx.font='bold 14px Inter';
+       ctx.fillText('🏆 New Best: '+best+'!', CW/2, CH/2+14);
+       document.getElementById('gd-best').textContent='Best: '+best;
+     }
+     ctx.fillStyle='rgba(255,255,255,0.6)'; ctx.font='12px Inter';
+     ctx.fillText('Tap to try again', CW/2, CH/2+46);
+   }
+   raf=requestAnimationFrame(loop);
+ }
+
+ function handleInput() {
+   if (gs==='idle'){
+     gs='playing';frame=0;score=0;spd=4;obstacles=[];obstTimer=0;speechText='Go Joel! 💛';
+   } else if (gs==='playing'){
+     if (joel.jumps<2){joel.vy=-14;joel.jumps++;}
+   } else if (gs==='dead'){
+     gs='playing';frame=0;score=0;spd=4;joel.y=GROUND;joel.vy=0;joel.jumps=0;obstacles=[];obstTimer=0;newBest=false;speechText='Go Joel! 💛';
+   }
+ }
+ canvas.addEventListener('click', handleInput);
+ canvas.addEventListener('touchstart', function(e){e.preventDefault();handleInput();},{passive:false});
+
+ var _origClose=window.closeModal;
+ window.closeModal=function(){
+   cancelAnimationFrame(raf);
+   canvas.removeEventListener('click',handleInput);
+   window.closeModal=_origClose; _origClose();
+ };
+ loop();
 }
 
 </script>
