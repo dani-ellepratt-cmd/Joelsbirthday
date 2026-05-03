@@ -1208,7 +1208,7 @@ function renderMystery(el) {
  window.startBballGame = function() {
  el.innerHTML =
    '<div class="modal-title">Let\'s find out how good you really are 🏀</div>' +
-   '<div style="text-align:center;color:rgba(200,169,110,0.8);font-size:0.88rem;margin-bottom:0.5rem"><span style="font-size:0.78rem;opacity:0.7">Tap to aim and shoot — 5 balls, need 5 to win. The hoop moves after every shot! 👀</span></div>' +
+   '<div style="text-align:center;color:rgba(200,169,110,0.8);font-size:0.88rem;margin-bottom:0.5rem"><span style="font-size:0.78rem;opacity:0.7">Drag your finger in the direction you want to shoot — release to fire! 5 balls, need 5 to win.</span></div>' +
    '<canvas id="bball-canvas" style="display:block;width:100%;border-radius:16px;cursor:crosshair;touch-action:none"></canvas>' +
    '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:0.8rem;padding:0 0.2rem">' +
    '<div id="bball-score" style="font-family:\'Cormorant Garamond\',serif;font-size:1.4rem;color:#C8A96E;font-weight:700">0 / 0</div>' +
@@ -1481,20 +1481,89 @@ function renderMystery(el) {
 
    function getPos(e){
      var rect=canvas.getBoundingClientRect(),sx=W/rect.width,sy=H/rect.height;
-     if(e.touches)return{x:(e.touches[0].clientX-rect.left)*sx,y:(e.touches[0].clientY-rect.top)*sy};
+     if(e.touches&&e.touches.length)return{x:(e.touches[0].clientX-rect.left)*sx,y:(e.touches[0].clientY-rect.top)*sy};
+     if(e.changedTouches&&e.changedTouches.length)return{x:(e.changedTouches[0].clientX-rect.left)*sx,y:(e.changedTouches[0].clientY-rect.top)*sy};
      return{x:(e.clientX-rect.left)*sx,y:(e.clientY-rect.top)*sy};
    }
 
-   // Desktop: click to shoot (no trajectory shown)
+   // ── AIM PREVIEW — draws dotted arc trajectory while dragging ──
+   function drawAim(tx,ty){
+     ctx.clearRect(0,0,W,H);
+     drawArena();drawFloor();drawPoleAndBoard();
+     drawNetAndBackRim(netSway);drawFrontRim();
+     drawBall(ballStartX,ballStartY,ballR,0);
+     // Simulate physics to preview arc
+     var px=ballStartX,py=ballStartY,gravity=0.42,tSteps=58;
+     var pvx=(tx-px)/tSteps;
+     var pvy=(ty-py-0.5*gravity*tSteps*tSteps)/tSteps;
+     if(pvy>-5)pvy=-9;
+     ctx.save();
+     ctx.setLineDash([5,9]);
+     ctx.strokeStyle='rgba(200,169,110,0.6)';
+     ctx.lineWidth=2;
+     ctx.beginPath();
+     ctx.moveTo(px,py);
+     for(var i=0;i<90;i++){
+       px+=pvx;py+=pvy;pvy+=gravity;
+       if(py>H+20||px<-20||px>W+20)break;
+       ctx.lineTo(px,py);
+     }
+     ctx.stroke();
+     // Dot at tip of arc
+     ctx.setLineDash([]);
+     ctx.fillStyle='rgba(200,169,110,0.85)';
+     ctx.beginPath();ctx.arc(px,py,4,0,Math.PI*2);ctx.fill();
+     ctx.restore();
+   }
+
+   // ── DESKTOP: click to shoot ──
    canvas.addEventListener('click',function(e){
      if(!shooting&&shotsLeft>0){var p=getPos(e);shoot(p.x,p.y);}
    });
 
-   // Mobile: tap to shoot
+   // ── MOBILE: drag to aim + release to shoot ──
+   var _dragStart=null,_dragging=false;
+
+   function calcTarget(start,end){
+     var dx=end.x-start.x,dy=end.y-start.y;
+     var dist=Math.sqrt(dx*dx+dy*dy);
+     if(dist<6)return null;
+     var power=Math.min(dist,170);
+     var sc=power/dist;
+     return{x:ballStartX+dx*sc*2.9,y:ballStartY+dy*sc*2.9};
+   }
+
+   canvas.addEventListener('touchstart',function(e){
+     e.preventDefault();
+     if(shooting||shotsLeft<=0)return;
+     _dragging=true;
+     _dragStart=getPos(e);
+   },{passive:false});
+
+   canvas.addEventListener('touchmove',function(e){
+     e.preventDefault();
+     if(!_dragging||!_dragStart||shooting)return;
+     var cur=getPos(e);
+     var t=calcTarget(_dragStart,cur);
+     if(t)drawAim(t.x,t.y);
+   },{passive:false});
+
    canvas.addEventListener('touchend',function(e){
      e.preventDefault();
-     if(!shooting&&shotsLeft>0){var p=getPos(e);shoot(p.x,p.y);}
+     if(!_dragging||!_dragStart){_dragging=false;_dragStart=null;return;}
+     _dragging=false;
+     if(shooting||shotsLeft<=0){_dragStart=null;return;}
+     var cur=getPos(e);
+     var t=calcTarget(_dragStart,cur);
+     _dragStart=null;
+     if(!t){drawScene(ballStartX,ballStartY,0);return;} // tiny tap — ignore
+     shoot(t.x,t.y);
    },{passive:false});
+
+   canvas.addEventListener('touchcancel',function(){
+     _dragging=false;_dragStart=null;
+     if(!shooting)drawScene(ballStartX,ballStartY,0);
+   });
  },100);
  }; // end startBballGame
 }
