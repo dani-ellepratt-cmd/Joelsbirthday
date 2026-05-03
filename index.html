@@ -660,14 +660,74 @@ function renderSlots(el) {
          '</div><div id="maker-result"></div>';
        window.pickMaker=function(who){
          var msgs={
-           wife:'Your wife is on margarita duty! \uD83D\uDC8D\uD83C\uDF79 Enjoy, birthday boy!',
-           mike:'Mike\'s making the margarita! \uD83C\uDF7A This is going to be a big one.',
-           liv:'Liv\'s on cocktail duties! \uD83C\uDF38 You\'re in great hands.'
+           wife:'Your wife is on it! \uD83D\uDC8D\uD83C\uDF79',
+           mike:'Mike\'s on margarita duty! \uD83C\uDF7A',
+           liv:'Liv\'s making it! \uD83C\uDF38'
          };
          document.getElementById('maker-result').innerHTML=
-           '<div class="love-note" style="text-align:center;margin-top:0.8rem">'+msgs[who]+'</div>'+
-           '<button class="next-btn" onclick="closeModal()" style="margin-top:0.8rem">YES!</button>';
+           '<div class="love-note" style="text-align:center;margin-top:0.8rem">'+msgs[who]+'<br><br>While it\'s being made \u2014 can you guess who said these about you? \uD83D\uDC40</div>'+
+           '<button class="play-btn" style="margin-top:0.8rem" onclick="startGuessGame()">Let\'s find out \u2192</button>';
          launchConfetti();
+       };
+
+       window.startGuessGame=function(){
+         var quotes=[
+           {q:'You could say Joel is similar to an 11 year old',a:'Dani-Elle'},
+           {q:'Joel could eat the same meal every single day and genuinely be fine with it',a:'Mike'},
+           {q:'Joel is the only person I know who gets competitive about absolutely everything',a:'Liv'},
+           {q:'He doesn\'t just fall asleep \u2014 he disappears. Like actually gone',a:'Dani-Elle'},
+           {q:'Joel\'s idea of a quiet one always somehow turns into a big night',a:'Mike'},
+           {q:'Joel has the energy of someone ten years younger and the humour of someone ten years older',a:'Liv'}
+         ];
+         var current=0,score=0;
+         var people=['Dani-Elle','Mike','Liv'];
+         function btnId(p){return 'gb-'+p.replace(/[^a-zA-Z]/g,'');}
+         function showQ(){
+           var q=quotes[current];
+           document.getElementById('jackpot-result').innerHTML=
+             '<div style="margin-top:0.5rem">'+
+             '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.7rem">'+
+             '<div style="font-size:0.7rem;color:rgba(200,169,110,0.7);font-weight:700;letter-spacing:1px">'+(current+1)+' of '+quotes.length+'</div>'+
+             '<div style="font-size:0.7rem;color:rgba(200,169,110,0.7);font-weight:700">Score: '+score+'</div>'+
+             '</div>'+
+             '<div style="background:rgba(255,255,255,0.05);border:1px solid rgba(200,169,110,0.25);border-radius:14px;padding:1.1rem;text-align:center;margin-bottom:0.9rem">'+
+             '<div style="font-size:0.6rem;letter-spacing:2px;color:rgba(200,169,110,0.6);text-transform:uppercase;margin-bottom:0.6rem">Who said this about Joel?</div>'+
+             '<div style="font-family:\'Cormorant Garamond\',serif;font-size:1.2rem;font-weight:600;color:rgba(255,255,255,0.9);line-height:1.45;font-style:italic">&ldquo;'+q.q+'&rdquo;</div>'+
+             '</div>'+
+             '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem">'+
+             people.map(function(p){
+               return '<button id="'+btnId(p)+'" onclick="guessAnswer(\''+p+'\')" style="padding:0.65rem 0.2rem;background:rgba(255,255,255,0.07);border:1.5px solid rgba(200,169,110,0.35);border-radius:10px;color:rgba(255,255,255,0.85);font-size:0.8rem;font-weight:700;cursor:pointer;transition:background 0.25s,border-color 0.25s">'+p+'</button>';
+             }).join('')+
+             '</div></div>';
+
+           window.guessAnswer=function(picked){
+             people.forEach(function(p){var b=document.getElementById(btnId(p));if(b)b.style.pointerEvents='none';});
+             var correct=q.a;
+             var pb=document.getElementById(btnId(picked));
+             var cb=document.getElementById(btnId(correct));
+             if(picked===correct){
+               score++;
+               if(pb){pb.style.background='#16a34a';pb.style.borderColor='#16a34a';pb.style.color='#fff';}
+             } else {
+               if(pb){pb.style.background='#dc2626';pb.style.borderColor='#dc2626';pb.style.color='#fff';}
+               setTimeout(function(){if(cb){cb.style.background='#16a34a';cb.style.borderColor='#16a34a';cb.style.color='#fff';}},650);
+             }
+             current++;
+             setTimeout(function(){if(current<quotes.length){showQ();}else{showFinal();}},1700);
+           };
+         }
+         function showFinal(){
+           var t=quotes.length;
+           var tag=score===t?'You know your people! \uD83C\uDFC6':score>=4?'Pretty good! \uD83D\uDE0F':score>=2?'Could be worse... \uD83D\uDE05':'Do you even know these people Joel? \uD83D\uDE02';
+           document.getElementById('jackpot-result').innerHTML=
+             '<div style="text-align:center;padding:1.2rem 0 0.5rem">'+
+             '<div style="font-family:\'Cormorant Garamond\',serif;font-size:3.2rem;font-weight:700;color:#C8A96E">'+score+' / '+t+'</div>'+
+             '<div style="font-size:0.88rem;color:rgba(255,255,255,0.8);margin-top:0.4rem">'+tag+'</div>'+
+             '</div>'+
+             '<button class="next-btn" style="margin-top:0.8rem" onclick="closeModal()">Time for that margarita! \uD83C\uDF79</button>';
+           if(score===t)launchConfetti();
+         }
+         showQ();
        };
      } else {
        var prizeName=prizes[res[0]].name;
