@@ -278,11 +278,11 @@
 <script>
 var slots = [
  { id:'s9',  hour:9,  half:false, label:'9am',  emoji:'🍳', title:'Breakfast for the Birthday Boy', desc:'Your birthday starts with a cooked brekkie — place your order!', type:'breakfast' },
- { id:'s10', hour:10, half:false, label:'10am', emoji:'💰', title:'Money Moment',                   desc:'Joel, it\'s time to test your luck...', type:'wheel' },
- { id:'s11', hour:11, half:false, label:'11am', emoji:'🎰', title:'Hit the Jackpot!',               desc:'Pull the lever on the birthday pokies!', type:'slots' },
+ { id:'s10', hour:10, half:false, label:'10am', emoji:'🎡', title:'Spin to Win!',                   desc:'Spin the wheel and claim your prize!', type:'spinwheel' },
+ { id:'s11', hour:11, half:false, label:'11am', emoji:'💰', title:'Money Moment',                   desc:'Joel, it\'s time to test your luck...', type:'wheel' },
  { id:'s12', hour:12, half:false, label:'12pm', emoji:'🍽️', title:'Lunch Time!',                   desc:'Time to head out — we are going for a birthday lunch!', type:'lunch' },
  { id:'s13', hour:13, half:false, label:'1pm',  emoji:'🤲', title:'Congratulations',               desc:'Open to find out what you have won!', type:'tickles' },
- { id:'s14', hour:14, half:false, label:'2pm',  emoji:'🎡', title:'Spin to Win!',                   desc:'Spin the wheel and claim your prize!', type:'spinwheel' },
+ { id:'s14', hour:14, half:false, label:'2pm',  emoji:'🎰', title:'Hit the Jackpot!',               desc:'Pull the lever on the birthday pokies!', type:'slots' },
  { id:'s15', hour:15, half:false, label:'3pm',  emoji:'🏀', title:"Let's find out 🏀",           desc:"Let's find out how good you really are...", type:'mystery' },
  { id:'s16', hour:16, half:false, label:'4pm',  emoji:'🎱', title:'8 Ball Time',                   desc:'You vs Dani-Elle — rack them up! Winner takes all.', type:'eightball' },
  { id:'s17', hour:17, half:false, label:'5pm',  emoji:'🎁', title:'Shake to Win',                  desc:'Your 5pm prize is waiting...', type:'cheese' },
@@ -2600,11 +2600,11 @@ var _lastBgHour = -1;
 // Config: emoji + animation type per hour
 var _hourBgConfig = {
   9:  null, // original balloons
-  10: { emoji:'💰', type:'float',  count:8 },
-  11: { emoji:'💸', type:'float',  count:8 },
+  10: { emoji:'🎡', type:'spin',   count:7 },
+  11: { emoji:'💰', type:'float',  count:8 },
   12: { emoji:'🎉', type:'float',  count:7 },
   13: { emoji:'🤲', type:'float',  count:6 },
-  14: { emoji:'🎡', type:'spin',   count:7 },
+  14: { emoji:'💸', type:'float',  count:8 },
   15: { emoji:'🏀', type:'bounce', count:9 },
   16: { emoji:'🎱', type:'float',  count:7 },
   17: { emoji:'🎁', type:'float',  count:7 },
