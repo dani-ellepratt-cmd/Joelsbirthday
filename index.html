@@ -42,9 +42,9 @@
  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:1.2rem; padding:1.5rem; max-width:1000px; margin:0 auto; }
 
  .hour-card { background:linear-gradient(160deg,#C8A96E,#9a7540); border-radius:20px; overflow:hidden; border:1px solid rgba(139,100,60,0.15); transition:transform 0.2s,box-shadow 0.2s; }
- .hour-card.unlocked { border-color:#9a7040; box-shadow:0 0 20px rgba(139,100,60,0.12); }
- .hour-card.unlocked:hover { transform:translateY(-4px); box-shadow:0 8px 30px rgba(200,169,110,0.12); }
- .hour-card.locked { opacity:0.5; }
+ .hour-card.unlocked { border-color:#9a7040; box-shadow:0 4px 18px rgba(139,100,60,0.22), 0 1px 4px rgba(0,0,0,0.18), 0 0 0 1px rgba(200,169,110,0.06); }
+ .hour-card.unlocked:hover { transform:translateY(-5px); box-shadow:0 14px 40px rgba(200,169,110,0.28), 0 4px 12px rgba(0,0,0,0.15), 0 0 20px rgba(200,169,110,0.1); }
+ .hour-card.locked { opacity:0.5; overflow:hidden; position:relative; }
  @keyframes lockSwing { 0%,100%{transform:rotate(-18deg);}50%{transform:rotate(18deg);} }
  .lock-swing { display:inline-block; animation:lockSwing 1.4s ease-in-out infinite; transform-origin:50% 10%; font-size:2.4rem; }
 
@@ -58,8 +58,8 @@
  .play-btn { display:block; width:100%; padding:0.7rem; background:rgba(232,220,200,0.85); color:#ffffff; border:none; font-family:'Nunito',sans-serif; font-weight:900; font-size:1rem; border:none; border-radius:12px; cursor:pointer; transition:transform 0.15s; }
  .play-btn:hover { transform:scale(1.03); }
 
- .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.88); z-index:1000; align-items:center; justify-content:center; padding:1rem; }
- .modal-overlay.active { display:flex; }
+ .modal-overlay { display:flex; position:fixed; inset:0; background:rgba(0,0,0,0.88); z-index:1000; align-items:center; justify-content:center; padding:1rem; opacity:0; visibility:hidden; pointer-events:none; transition:opacity 0.28s ease, visibility 0.28s ease; }
+ .modal-overlay.active { opacity:1; visibility:visible; pointer-events:auto; }
  .modal { background:#f5efe4; border-radius:24px; padding:2rem; max-width:500px; width:100%; border:1px solid rgba(200,169,110,0.4); position:relative; max-height:90vh; overflow-y:auto; animation:popIn 0.3s cubic-bezier(0.175,0.885,0.32,1.275); }
  @keyframes popIn { from{transform:scale(0.7);opacity:0} to{transform:scale(1);opacity:1} }
  .modal-close { position:absolute; top:1rem; right:1rem; background:rgba(255,255,255,0.1); border:none; color:white; font-size:1.2rem; width:36px; height:36px; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center; font-weight:900; }
@@ -169,6 +169,20 @@
  @keyframes shakeBtnPulse{0%,100%{transform:scale(1) rotate(-1deg)}25%{transform:scale(1.04) rotate(1.5deg)}50%{transform:scale(1.06) rotate(-1.5deg)}75%{transform:scale(1.04) rotate(1deg)}}
  #shake-btn{animation:shakeBtnPulse 2s ease-in-out infinite}
  @keyframes spinPrize{0%{transform:rotate(0deg) scale(1)}50%{transform:rotate(180deg) scale(1.2)}100%{transform:rotate(360deg) scale(1)}}
+
+ /* === POLISH PASS === */
+ /* Button press feedback — feels physical */
+ .play-btn:active,.next-btn:active,.grey-btn:active,.home-go-btn:active,
+ .brekkie-btn:active,.option-btn:active,.dessert-btn:active,
+ .gift-box:active,.hour-card.unlocked:active{transform:scale(0.95)!important;transition:transform 0.08s ease!important;}
+
+ /* Locked card shimmer sweep */
+ @keyframes shimmerSweep{0%{transform:translateX(-120%) skewX(-18deg)}100%{transform:translateX(320%) skewX(-18deg)}}
+ .hour-card.locked::after{content:'';position:absolute;top:0;left:0;width:45%;height:100%;background:linear-gradient(90deg,transparent,rgba(200,169,110,0.18),transparent);animation:shimmerSweep 3s ease-in-out infinite;pointer-events:none;border-radius:20px;}
+
+ /* Modal content fade for inner screen swaps */
+ .modal-inner-fade{animation:innerFadeIn 0.22s ease forwards}
+ @keyframes innerFadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 </style>
 </head>
 <body>
