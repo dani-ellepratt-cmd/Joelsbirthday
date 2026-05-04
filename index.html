@@ -712,23 +712,31 @@ function renderSlots(el) {
          var current=0,score=0;
          var people=['Dani-Elle','Mike','Liv'];
          function btnId(p){return 'gb-'+p.replace(/[^a-zA-Z]/g,'');}
+
+         // Build full-screen overlay
+         var overlay=document.createElement('div');
+         overlay.id='guess-overlay';
+         overlay.style.cssText='position:fixed;inset:0;z-index:3000;background:linear-gradient(160deg,#0a0600,#150e00);display:flex;flex-direction:column;justify-content:center;padding:2rem 1.5rem;box-sizing:border-box;';
+         document.body.appendChild(overlay);
+
+         function removeOverlay(){var o=document.getElementById('guess-overlay');if(o)o.parentNode.removeChild(o);}
+
          function showQ(){
            var q=quotes[current];
-           document.getElementById('jackpot-result').innerHTML=
-             '<div style="margin-top:0.5rem">'+
-             '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.7rem">'+
-             '<div style="font-size:0.7rem;color:rgba(200,169,110,0.7);font-weight:700;letter-spacing:1px">'+(current+1)+' of '+quotes.length+'</div>'+
-             '<div style="font-size:0.7rem;color:rgba(200,169,110,0.7);font-weight:700">Score: '+score+'</div>'+
+           overlay.innerHTML=
+             '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.2rem">'+
+             '<div style="font-size:0.75rem;color:rgba(200,169,110,0.7);font-weight:700;letter-spacing:1px">'+(current+1)+' of '+quotes.length+'</div>'+
+             '<div style="font-size:0.75rem;color:rgba(200,169,110,0.7);font-weight:700">Score: '+score+'</div>'+
              '</div>'+
-             '<div style="background:linear-gradient(135deg,#3a2800,#2a1c00);border:1px solid rgba(200,169,110,0.6);border-radius:14px;padding:1.1rem;text-align:center;margin-bottom:0.9rem">'+
-             '<div style="font-size:0.6rem;letter-spacing:2px;color:rgba(200,169,110,0.6);text-transform:uppercase;margin-bottom:0.6rem">Who said this about Joel?</div>'+
-             '<div style="font-family:\'Cormorant Garamond\',serif;font-size:1.2rem;font-weight:600;color:rgba(255,255,255,0.9);line-height:1.45;font-style:italic">&ldquo;'+q.q+'&rdquo;</div>'+
+             '<div style="background:linear-gradient(135deg,#3a2800,#2a1c00);border:1px solid rgba(200,169,110,0.5);border-radius:18px;padding:2rem 1.5rem;text-align:center;margin-bottom:2rem;flex:1;display:flex;flex-direction:column;justify-content:center;">'+
+             '<div style="font-size:0.65rem;letter-spacing:3px;color:rgba(200,169,110,0.6);text-transform:uppercase;margin-bottom:1rem">Who said this about Joel?</div>'+
+             '<div style="font-family:\'Cormorant Garamond\',serif;font-size:clamp(1.3rem,5vw,1.8rem);font-weight:600;color:rgba(255,255,255,0.95);line-height:1.5;font-style:italic">&ldquo;'+q.q+'&rdquo;</div>'+
              '</div>'+
-             '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem">'+
+             '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.8rem">'+
              people.map(function(p){
-               return '<button id="'+btnId(p)+'" onclick="guessAnswer(\''+p+'\')" style="padding:0.65rem 0.2rem;background:linear-gradient(135deg,#3a2800,#2a1c00);border:1.5px solid rgba(200,169,110,0.6);border-radius:10px;color:#C8A96E;font-size:0.8rem;font-weight:700;cursor:pointer;transition:background 0.25s,border-color 0.25s">'+p+'</button>';
+               return '<button id="'+btnId(p)+'" onclick="guessAnswer(\''+p+'\')" style="padding:1rem 0.5rem;background:linear-gradient(135deg,#3a2800,#2a1c00);border:1.5px solid rgba(200,169,110,0.6);border-radius:12px;color:#C8A96E;font-size:0.9rem;font-weight:700;cursor:pointer;transition:background 0.25s,border-color 0.25s">'+p+'</button>';
              }).join('')+
-             '</div></div>';
+             '</div>';
 
            window.guessAnswer=function(picked){
              people.forEach(function(p){var b=document.getElementById(btnId(p));if(b)b.style.pointerEvents='none';});
@@ -749,12 +757,13 @@ function renderSlots(el) {
          function showFinal(){
            var t=quotes.length;
            var tag=score===t?'You know your people! \uD83C\uDFC6':score>=4?'Pretty good! \uD83D\uDE0F':score>=2?'Could be worse... \uD83D\uDE05':'Do you even know these people Joel? \uD83D\uDE02';
-           document.getElementById('jackpot-result').innerHTML=
-             '<div style="text-align:center;padding:1.2rem 0 0.5rem">'+
-             '<div style="font-family:\'Cormorant Garamond\',serif;font-size:3.2rem;font-weight:700;color:#C8A96E">'+score+' / '+t+'</div>'+
-             '<div style="font-size:0.88rem;color:rgba(255,255,255,0.8);margin-top:0.4rem">'+tag+'</div>'+
-             '</div>'+
-             '<button class="next-btn" style="margin-top:0.8rem" onclick="closeModal()">Time for that margarita! \uD83C\uDF79</button>';
+           overlay.innerHTML=
+             '<div style="text-align:center;display:flex;flex-direction:column;justify-content:center;align-items:center;height:100%">'+
+             '<div style="font-family:\'Cormorant Garamond\',serif;font-size:5rem;font-weight:700;color:#C8A96E;line-height:1">'+score+' / '+t+'</div>'+
+             '<div style="font-size:1rem;color:rgba(255,255,255,0.8);margin-top:0.8rem">'+tag+'</div>'+
+             '<button class="next-btn" style="margin-top:2rem;width:100%;max-width:300px" onclick="removeOverlay();closeModal()">Time for that margarita! \uD83C\uDF79</button>'+
+             '</div>';
+           window.removeOverlay=removeOverlay;
            if(score===t)launchConfetti();
          }
          showQ();
