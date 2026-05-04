@@ -2733,8 +2733,15 @@ function setHourBackground(hour) {
   var layer = document.getElementById('balloon-layer');
   if (layer) _origBalloonHTML = layer.innerHTML;
   setHourBackground(new Date().getHours());
-  // Re-check every minute in case the hour rolls over
-  setInterval(function() { setHourBackground(new Date().getHours()); }, 60000);
+  // Re-check every 10 seconds so hour changes are caught quickly
+  setInterval(function() { setHourBackground(new Date().getHours()); }, 10000);
+  // Also update immediately whenever the user returns to the tab (mobile fix)
+  document.addEventListener('visibilitychange', function() {
+    if (!document.hidden) {
+      _lastBgHour = -1; // force re-render
+      setHourBackground(new Date().getHours());
+    }
+  });
 })();
 
 </script>
