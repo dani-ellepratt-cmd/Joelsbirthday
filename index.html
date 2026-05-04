@@ -6,6 +6,9 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>Happy Birthday Joel!</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Inter:wght@300;400;500;600;700&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
@@ -2730,17 +2733,22 @@ function setHourBackground(hour) {
 
 // Capture original balloon HTML once DOM is ready, then set background for current hour
 (function initHourBg() {
-  var layer = document.getElementById('balloon-layer');
-  if (layer) _origBalloonHTML = layer.innerHTML;
-  setHourBackground(new Date().getHours());
+  function applyBg() {
+    var layer = document.getElementById('balloon-layer');
+    if (!layer) return;
+    if (!_origBalloonHTML) _origBalloonHTML = layer.innerHTML;
+    _lastBgHour = -1; // always force re-render on explicit call
+    setHourBackground(new Date().getHours());
+  }
+  // Run immediately
+  applyBg();
+  // Run again once page is fully loaded (catches mobile edge cases)
+  window.addEventListener('load', applyBg);
   // Re-check every 10 seconds so hour changes are caught quickly
   setInterval(function() { setHourBackground(new Date().getHours()); }, 10000);
-  // Also update immediately whenever the user returns to the tab (mobile fix)
+  // Update immediately whenever the user returns to the tab / unlocks phone
   document.addEventListener('visibilitychange', function() {
-    if (!document.hidden) {
-      _lastBgHour = -1; // force re-render
-      setHourBackground(new Date().getHours());
-    }
+    if (!document.hidden) { applyBg(); }
   });
 })();
 
