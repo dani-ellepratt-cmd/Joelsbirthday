@@ -259,7 +259,7 @@
 <script>
 (function(){
   var h=new Date().getHours();
-  var cfg={10:{e:'🎡',t:'spin'},11:{e:'💰',t:'float'},12:{e:'🎉',t:'float'},13:{e:'🤲',t:'float'},14:{e:'💸',t:'float'},15:{e:'🏀',t:'bounce'},16:{e:'🎱',t:'float'},17:{e:'🎁',t:'float'},18:{e:'🎸',t:'float'},19:{e:'🤲',t:'float'},20:{e:'🍰',t:'float'},21:{e:'🤍',t:'float'},22:{e:'🕹️',t:'float'}};
+  var cfg={10:{e:'🎡',t:'spin'},11:{e:'💰',t:'float'},12:{e:'🎉',t:'float'},13:{e:'🤲',t:'float'},14:{e:'💸',t:'float'},15:{e:'🏀',t:'bounce'},16:{e:'🎱',t:'float'},17:{e:'🎁',t:'float'},18:{e:'🎸',t:'float'},19:{e:'🤲',t:'float'},20:{e:'🍰',t:'float'},21:{e:'🤍',t:'float'},};
   var c=cfg[h];
   if(!c)return;
   var left=[5,14,22,32,42,52,62,72,83];
@@ -316,7 +316,6 @@ var slots = [
  { id:'s16', hour:16, half:false, label:'4pm',  emoji:'🎱', title:'8 Ball Time',                   desc:'You vs Dani-Elle — rack them up! Winner takes all.', type:'eightball' },
  { id:'s17', hour:17, half:false, label:'5pm',  emoji:'🎁', title:'Shake to Win',                  desc:'Your 5pm prize is waiting...', type:'cheese' },
  { id:'s18', hour:18, half:false, label:'6pm',  emoji:'🎸', title:'Springsteen Time',              desc:'Settle in — it is movie time with The Boss.', type:'movie' },
- { id:'s22', hour:22, half:false, label:'10pm', emoji:'🕹️', title:'Birthday Dash',                  desc:'Joel vs the world — how far can you run?', type:'game' },
  { id:'s19', hour:19, half:false, label:'7pm',  emoji:'🤲', title:'Only for the Birthday Boy',    desc:'This one is exclusively for Joel...', type:'headtickles' },
  { id:'s20', hour:20, half:false, label:'8pm',  emoji:'🍰', title:'Dessert Time',                  desc:'Time for something sweet — place your dessert order!', type:'dessert' },
  { id:'s21', hour:21, half:false, label:'9pm',  emoji:'🤍', title:'Love Note',              desc:'Something special to end the day.', type:'lovenote' }
@@ -2703,7 +2702,7 @@ var _hourBgConfig = {
   19: { emoji:'🤲', type:'float',  count:6 },
   20: { emoji:'🍰', type:'float',  count:7 },
   21: { emoji:'🤍', type:'float',  count:8 },
-  22: { emoji:'🕹️', type:'float',  count:7 }
+  22: null
 };
 
 // Varied positions, durations and delays for natural spread
