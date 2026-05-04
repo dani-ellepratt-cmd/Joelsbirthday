@@ -256,6 +256,24 @@
  <span class="bg-balloon" style="left:15%;animation-duration:13s;animation-delay:9s;filter:hue-rotate(200deg) saturate(1.2);font-size:2rem">🎈</span>
  <span class="bg-balloon" style="left:65%;animation-duration:17s;animation-delay:3s;filter:hue-rotate(105deg) saturate(0.85) brightness(0.85);font-size:1.7rem">🎈</span>
 </div>
+<script>
+(function(){
+  var h=new Date().getHours();
+  var cfg={10:{e:'🎡',t:'spin'},11:{e:'💰',t:'float'},12:{e:'🎉',t:'float'},13:{e:'🤲',t:'float'},14:{e:'💸',t:'float'},15:{e:'🏀',t:'bounce'},16:{e:'🎱',t:'float'},17:{e:'🎁',t:'float'},18:{e:'🎸',t:'float'},19:{e:'🤲',t:'float'},20:{e:'🍰',t:'float'},21:{e:'🤍',t:'float'},22:{e:'🕹️',t:'float'}};
+  var c=cfg[h];
+  if(!c)return;
+  var left=[5,14,22,32,42,52,62,72,83];
+  var durs=[13,10,16,11,14,9,15,12,17];
+  var dels=[0,5,9,2,7,11,1,6,3];
+  var cls=c.t==='spin'?'bg-emoji-spin':c.t==='bounce'?'bg-ball':'bg-emoji';
+  var html='';
+  var n=c.t==='bounce'?9:c.t==='spin'?7:8;
+  for(var i=0;i<n;i++){
+    html+='<span class="'+cls+'" style="left:'+left[i%left.length]+'%;animation-duration:'+durs[i%durs.length]+'s;animation-delay:'+dels[i%dels.length]+'s">'+c.e+'</span>';
+  }
+  document.getElementById('balloon-layer').innerHTML=html;
+})();
+</script>
 
 <div id="next-widget">
  <div class="nw-lbl">Next surprise</div>
