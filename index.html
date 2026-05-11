@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
 (function(){
-  var v='b14';
+  var v='b15';
   if(location.search.indexOf('_v='+v)===-1){
     location.replace(location.pathname+'?_v='+v);
   }
@@ -918,7 +918,7 @@ function renderTickles(el) {
    '</div>' +
    '<canvas class="scratch-canvas" id="scratch-canvas"></canvas>' +
    '</div>' +
-   '<div class="scratch-hint" id="scratch-hint">Scratch the card above! 🪙</div>' +
+   '<div class="scratch-hint" id="scratch-hint">Scratch 90% to reveal your prize! 🪙</div>' +
    '<div id="tickle-reveal" style="display:none;margin-top:1.2rem">' +
    '<div style="background:linear-gradient(135deg,#fdf8f0,#f5ead8);border-radius:16px;padding:3px;box-shadow:0 4px 24px rgba(200,169,110,0.25);margin-bottom:1.2rem">' +
    '<div style="border:2px dashed #C8A96E;border-radius:14px;padding:2rem 1.4rem;text-align:center">' +
@@ -1001,7 +1001,7 @@ function renderTickles(el) {
        var imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
        var px = imgData.data, transparent = 0, total = px.length / 4;
        for (var pi = 3; pi < px.length; pi += 4) { if (px[pi] < 128) transparent++; }
-       if (transparent / total > 0.70) triggerReveal();
+       if (transparent / total > 0.90) triggerReveal();
      }
    }
 
