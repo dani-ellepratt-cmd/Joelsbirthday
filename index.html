@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
 (function(){
-  var v='b15';
+  var v='b16';
   if(location.search.indexOf('_v='+v)===-1){
     location.replace(location.pathname+'?_v='+v);
   }
@@ -911,6 +911,7 @@ function renderTickles(el) {
    '<div class="love-note" style="text-align:center;margin-bottom:1.2rem">' +
    'Joel, grab a coin and start scratching... 🪙<br>' +
    '<strong style="color:#C8A96E">Something special is hiding underneath!</strong></div>' +
+   '<div class="scratch-hint" id="scratch-hint" style="margin-bottom:0.5rem">Scratch 90% to reveal your prize! 🪙</div>' +
    '<div class="scratch-wrap" id="scratch-wrap">' +
    '<div class="scratch-prize">' +
    '<div class="prize-text">HEAD TICKLES!</div>' +
@@ -918,7 +919,6 @@ function renderTickles(el) {
    '</div>' +
    '<canvas class="scratch-canvas" id="scratch-canvas"></canvas>' +
    '</div>' +
-   '<div class="scratch-hint" id="scratch-hint">Scratch 90% to reveal your prize! 🪙</div>' +
    '<div id="tickle-reveal" style="display:none;margin-top:1.2rem">' +
    '<div style="background:linear-gradient(135deg,#fdf8f0,#f5ead8);border-radius:16px;padding:3px;box-shadow:0 4px 24px rgba(200,169,110,0.25);margin-bottom:1.2rem">' +
    '<div style="border:2px dashed #C8A96E;border-radius:14px;padding:2rem 1.4rem;text-align:center">' +
