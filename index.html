@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
 (function(){
-  var v='b20';
+  var v='b21';
   if(location.search.indexOf('_v='+v)===-1){
     location.replace(location.pathname+'?_v='+v);
   }
@@ -1672,30 +1672,73 @@ function renderMystery(el) {
      if (shooting || shotsLeft <= 0) return;
      shooting = true; shotsLeft--; shotsTaken++; ballSpin = 0; netSway = 0;
 
-     /* calc trajectory to where tapped, arcing upward */
      var bx = BALL_X, by = BALL_Y;
      var gravity = 0.40, steps = 58;
      var vx = (tapX - bx) / steps;
      var vy = (tapY - by - 0.5 * gravity * steps * steps) / steps;
-     if (vy > -5) vy = -9; /* ensure ball goes up enough */
+     if (vy > -5) vy = -9;
 
      var scored = false, frame = 0;
+     var throughNet = false, tnFrame = 0;
+     var netDepth = rimW * 1.15;
      if (animId) cancelAnimationFrame(animId);
 
+     function finish() {
+       netSway = 0;
+       document.getElementById('bball-score').textContent = score + ' / ' + shotsTaken;
+       document.getElementById('bball-shots').textContent = shotsLeft + ' shot' + (shotsLeft !== 1 ? 's' : '') + ' left';
+       shooting = false;
+       if (shotsLeft === 0) {
+         setTimeout(showResult, 700);
+       } else {
+         drawFrame(null, null, 0, scored ? 'Swish! 🔥' : 'Miss! 😬', scored ? '#22C55E' : '#ef4444');
+         setTimeout(function(){ moveHoop(); }, 900);
+       }
+     }
+
      function tick() {
+       if (throughNet) {
+         /* Ball drops slowly through the net at hoop perspective scale */
+         tnFrame++;
+         var tnTotal = 32;
+         var prog = tnFrame / tnTotal;
+         bx = hoopX;
+         by = hoopY + (netDepth + rimW * 0.4) * prog;
+         var r = BALL_R * Math.max(ps(hoopY), 0.22) * 1.1;
+         if (netSway > 0) netSway *= 0.83;
+         ctx.clearRect(0, 0, W, H);
+         drawCourt(); drawBackboard();
+         drawNetBack(netSway);
+         /* ball is inside the net — draw between back and front rim */
+         drawBall(bx, by, r, ballSpin);
+         ballSpin += 0.07;
+         drawNetFront();
+         tickParticles();
+         if (tnFrame < tnTotal) {
+           animId = requestAnimationFrame(tick);
+         } else {
+           finish();
+         }
+         return;
+       }
+
+       /* Normal arc flight */
        bx += vx; by += vy; vy += gravity; ballSpin += 0.13;
        var r = BALL_R * ps(by) * 1.5;
 
        if (!scored && vy > 0 &&
-           by > hoopY - r && by < hoopY + r * 1.6 &&
-           bx > hoopX - rimW * 0.70 && bx < hoopX + rimW * 0.70) {
-         scored = true; score++; netSway = 18; spawnBurst(hoopX, hoopY);
+           by > hoopY - r * 0.6 && by < hoopY + r * 1.2 &&
+           bx > hoopX - rimW * 0.68 && bx < hoopX + rimW * 0.68) {
+         scored = true; score++; netSway = 20; spawnBurst(hoopX, hoopY);
+         throughNet = true; tnFrame = 0;
+         bx = hoopX; by = hoopY;
+         tick(); return;
        }
        if (netSway > 0) netSway *= 0.84;
 
        ctx.clearRect(0, 0, W, H);
        drawCourt(); drawBackboard();
-       var aboveHoop = by < hoopY + rimW*0.4;
+       var aboveHoop = by < hoopY + rimW * 0.4;
        drawNetBack(netSway);
        if (!aboveHoop) drawBall(bx, by, r, ballSpin);
        drawNetFront();
@@ -1706,21 +1749,11 @@ function renderMystery(el) {
        if (by < H + 80 && frame < 150) {
          animId = requestAnimationFrame(tick);
        } else {
-         netSway = 0;
-         document.getElementById('bball-score').textContent = score + ' / ' + shotsTaken;
-         document.getElementById('bball-shots').textContent = shotsLeft + ' shot' + (shotsLeft !== 1 ? 's' : '') + ' left';
-         shooting = false;
-         if (shotsLeft === 0) {
-           setTimeout(showResult, 700);
-         } else {
-           drawFrame(null, null, 0, scored ? 'Swish! 🔥' : 'Miss! 😬', scored ? '#22C55E' : '#ef4444');
-           setTimeout(function(){ moveHoop(); }, 900);
-         }
+         finish();
        }
      }
      tick();
    }
-
    /* ── Result ── */
    function showResult() {
      ctx.clearRect(0,0,W,H);
