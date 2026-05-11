@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
 (function(){
-  var v='b13';
+  var v='b14';
   if(location.search.indexOf('_v='+v)===-1){
     location.replace(location.pathname+'?_v='+v);
   }
@@ -1221,56 +1221,56 @@ function buildStripShow() {
 
 function renderEightBall(el) {
   el.innerHTML =
-    '<div class="modal-title">🃏 Uno Time!</div>' +
-    '<div class="love-note" style="text-align:center;margin-bottom:1.2rem">' +
-    'You vs Dani-Elle — grab the real cards!<br><br>' +
-    'But first... here is what is at stake 👇</div>' +
-    '<div style="background:linear-gradient(160deg,#0d0008,#1a0014);border-radius:16px;padding:1.2rem;text-align:center;margin-bottom:1.2rem;border:1px solid rgba(255,20,147,0.2)">' +
-    '<div style="font-size:0.75rem;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:rgba(255,105,180,0.7);margin-bottom:0.8rem">🏆 WIN and you get...</div>' +
-    '<div id="uno-stake">' +
-    '<div style="font-size:4rem;margin:0.5rem 0">🃏</div>' +
-    '<button class="play-btn" style="max-width:180px;margin:0.3rem auto 0;display:block;background:linear-gradient(135deg,#D32F2F,#B71C1C);border:none" onclick="revealUnoStake(this)">Reveal Stake →</button>' +
-    '</div>' +
-    '</div>' +
-    '<button class="play-btn" id="uno-start-btn" onclick="unoStart()" style="display:none;background:linear-gradient(135deg,#C8A96E,#9a7040);color:#000;font-weight:900">Let's play! 🃏</button>' +
-    '<div id="uno-result"></div>';
+    "<div class=\"modal-title\">🃏 Uno Time!</div>" +
+    "<div class=\"love-note\" style=\"text-align:center;margin-bottom:1.2rem\">" +
+    "You vs Dani-Elle — grab the real cards!<br><br>" +
+    "But first... here is what is at stake 👇</div>" +
+    "<div style=\"background:linear-gradient(160deg,#0d0008,#1a0014);border-radius:16px;padding:1.2rem;text-align:center;margin-bottom:1.2rem;border:1px solid rgba(255,20,147,0.2)\">" +
+    "<div style=\"font-size:0.75rem;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:rgba(255,105,180,0.7);margin-bottom:0.8rem\">🏆 WIN and you get...</div>" +
+    "<div id=\"uno-stake\">" +
+    "<div style=\"font-size:4rem;margin:0.5rem 0\">🃏</div>" +
+    "<button class=\"play-btn\" style=\"max-width:180px;margin:0.3rem auto 0;display:block;background:linear-gradient(135deg,#D32F2F,#B71C1C);border:none\" onclick=\"revealUnoStake(this)\">Reveal Stake →</button>" +
+    "</div>" +
+    "</div>" +
+    "<button class=\"play-btn\" id=\"uno-start-btn\" onclick=\"unoStart()\" style=\"display:none;background:linear-gradient(135deg,#C8A96E,#9a7040);color:#000;font-weight:900\">Let's play! 🃏</button>" +
+    "<div id=\"uno-result\"></div>";
 
   window.revealUnoStake = function(btn) {
-    btn.style.display = 'none';
-    document.getElementById('uno-stake').innerHTML = buildStripShow();
-    document.getElementById('uno-start-btn').style.display = 'block';
+    btn.style.display = "none";
+    document.getElementById("uno-stake").innerHTML = buildStripShow();
+    document.getElementById("uno-start-btn").style.display = "block";
     launchConfetti();
   };
 
   window.unoStart = function() {
-    document.getElementById('uno-start-btn').style.display = 'none';
-    document.getElementById('uno-result').innerHTML =
-      '<div class="love-note" style="text-align:center;margin-bottom:1rem">May the best player win... 😏<br><br>' +
-      '<strong style="color:#C8A96E">First to win 2 games takes the prize!</strong></div>' +
-      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:0.8rem">' +
-      '<button class="play-btn" onclick="unoWinResult('win')">I won! 🏆</button>' +
-      '<button class="grey-btn" onclick="unoWinResult('lose')">She won... 😅</button>' +
-      '</div>';
+    document.getElementById("uno-start-btn").style.display = "none";
+    document.getElementById("uno-result").innerHTML =
+      "<div class=\"love-note\" style=\"text-align:center;margin-bottom:1rem\">May the best player win... 😏<br><br>" +
+      "<strong style=\"color:#C8A96E\">First to win 2 games takes the prize!</strong></div>" +
+      "<div style=\"display:grid;grid-template-columns:1fr 1fr;gap:0.8rem\">" +
+      "<button class=\"play-btn\" onclick=\"unoWinResult('win')\">I won! 🏆</button>" +
+      "<button class=\"grey-btn\" onclick=\"unoWinResult('lose')\">She won... 😅</button>" +
+      "</div>";
   };
 
   window.unoWinResult = function(r) {
-    if (r === 'win') {
-      document.getElementById('uno-result').innerHTML =
-        '<div style="text-align:center;padding:1.2rem 0 0.8rem">' +
-        '<div style="font-size:2.8rem;margin-bottom:0.4rem">🏆</div>' +
-        '<div style="font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:700;color:#C8A96E;margin-bottom:0.3rem">WINNER!</div>' +
-        '<div class="love-note" style="text-align:center;margin-top:0.8rem">Your night at the Strip Club is locked in! 🎰🥂<br><br>' +
-        '<strong style="color:#C8A96E">Dani-Elle will sort it out!</strong></div>' +
-        '</div>' +
-        '<button class="next-btn" style="background:linear-gradient(135deg,#C8A96E,#9a7040);color:#000;font-weight:900" onclick="closeModal()">LETS GO! 🎉</button>';
+    if (r === "win") {
+      document.getElementById("uno-result").innerHTML =
+        "<div style=\"text-align:center;padding:1.2rem 0 0.8rem\">" +
+        "<div style=\"font-size:2.8rem;margin-bottom:0.4rem\">🏆</div>" +
+        "<div style=\"font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:700;color:#C8A96E;margin-bottom:0.3rem\">WINNER!</div>" +
+        "<div class=\"love-note\" style=\"text-align:center;margin-top:0.8rem\">Your night at the Strip Club is locked in! 🎰🥂<br><br>" +
+        "<strong style=\"color:#C8A96E\">Dani-Elle will sort it out!</strong></div>" +
+        "</div>" +
+        "<button class=\"next-btn\" style=\"background:linear-gradient(135deg,#C8A96E,#9a7040);color:#000;font-weight:900\" onclick=\"closeModal()\">LETS GO! 🎉</button>";
       launchConfetti();
     } else {
-      document.getElementById('uno-result').innerHTML =
-        '<div class="love-note" style="margin-top:1rem;text-align:center">' +
-        '<div style="font-size:2.5rem">😂🃏</div><br>' +
-        'Dani-Elle wins this time! Better luck next time birthday boy. 😄<br><br>' +
-        'Rematch accepted at any time! 🤍</div>' +
-        '<button class="next-btn" onclick="closeModal()">Rematch!</button>';
+      document.getElementById("uno-result").innerHTML =
+        "<div class=\"love-note\" style=\"margin-top:1rem;text-align:center\">" +
+        "<div style=\"font-size:2.5rem\">😂🃏</div><br>" +
+        "Dani-Elle wins this time! Better luck next time birthday boy. 😄<br><br>" +
+        "Rematch accepted at any time! 🤍</div>" +
+        "<button class=\"next-btn\" onclick=\"closeModal()\">Rematch!</button>";
     }
   };
 }
