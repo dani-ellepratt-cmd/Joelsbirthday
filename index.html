@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
 (function(){
-  var v='b26';
+  var v='b27';
   if(location.search.indexOf('_v='+v)===-1){
     location.replace(location.pathname+'?_v='+v);
   }
@@ -335,15 +335,7 @@ function getTodaySlots() {
 }
 
 function isUnlocked(slot) {
-  var now = new Date();
-  var d = now.getDate();
-  // If it's not the right day, locked
-  if (d === 26 || d === 30) {
-    if (slot.date !== d) return false;
-  }
-  var h = now.getHours(), m = now.getMinutes();
-  var slotMins = slot.hour * 60 + (slot.half ? 30 : 0);
-  return (h * 60 + m) >= slotMins;
+  return true; // PREVIEW MODE - all unlocked
 }
 
 function formatTime(d) {
