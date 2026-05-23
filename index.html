@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
 (function(){
-  var v='b35';
+  var v='b36';
   if(location.search.indexOf('_v='+v)===-1){
     location.replace(location.pathname+'?_v='+v);
   }
@@ -313,7 +313,7 @@ var slots = [
  { id:'s14', date:26, hour:16, half:false, label:'4pm',  emoji:'🎰', title:'Hit the Jackpot!',               desc:'Pull the lever on the birthday pokies!', type:'slots' },
  { id:'s15', date:26, hour:17, half:false, label:'5pm',  emoji:'🏀', title:"Let's find out 🏀",           desc:"Let's find out how good you really are...", type:'mystery' },
  { id:'s18', date:26, hour:19, half:false, label:'7pm',  emoji:'🎸', title:'Springsteen Time',              desc:'Settle in — it is movie time with The Boss.', type:'movie' },
- { id:'s19', date:26, hour:20, half:false, label:'8pm',  emoji:'🤲', title:'Only for the Birthday Boy',    desc:'This one is exclusively for Joel...', type:'headtickles' },
+ { id:'s19', date:26, hour:20, half:false, label:'8pm',  emoji:'🤲', title:'For the Birthday Boy',    desc:'This one is exclusively for Joel...', type:'headtickles' },
  { id:'s20', date:26, hour:21, half:false, label:'9pm',  emoji:'🍰', title:'Dessert Time',                  desc:'Time for something sweet — place your dessert order!', type:'dessert' },
  { id:'s21', date:26, hour:22, half:false, label:'10pm', emoji:'🤍', title:'Love Note',              desc:'Something special to end the day.', type:'lovenote' },
  // ── Part 2 — Friday 30 May ──
@@ -2440,7 +2440,7 @@ function renderHeadTickles(el) {
    var isLast = idx === facts.length - 1;
    var isJoel = isLast;
    el.innerHTML =
-     '<div class="modal-title">Only for the Birthday Boy 🤲</div>' +
+     '<div class="modal-title">For the Birthday Boy 🤲</div>' +
      '<div style="font-size:0.6rem;letter-spacing:3px;text-transform:uppercase;color:rgba(200,169,110,0.55);text-align:center;margin-bottom:1rem">' + (idx+1) + ' of ' + facts.length + '</div>' +
      '<div style="background:linear-gradient(135deg,' + (isJoel?'#1a1208,#2d1a00':'#0a0a0a,#141414') + ');border-radius:20px;padding:1.8rem 1.4rem;text-align:center;margin-bottom:1.2rem;border:1px solid rgba(200,169,110,' + (isJoel?'0.5':'0.15') + ')">' +
      '<div style="font-size:3rem;margin-bottom:0.6rem">' + f.icon + '</div>' +
@@ -2455,15 +2455,44 @@ function renderHeadTickles(el) {
    window.htNext = function() { fi++; showFact(fi); };
  }
 
- // Start with the head tickles message, then tap to begin facts
+ // Voucher reveal screen
  el.innerHTML =
-   '<div class="modal-title">Finally... 🤲</div>' +
-   '<div class="love-note" style="text-align:center;margin-bottom:1.2rem">' +
-   'Finally, it\'s head tickle time! 🎉<br><br>' +
-   '<strong style="color:#C8A96E;font-size:1.2rem">Sit back and relax Joel — Dani-Elle will now give you your hard earnt head tickles for 30 minutes.</strong><br><br>' +
-   'While you relax, let\'s have a little chat about you turning 32...<br><br>' +
-   '<span style="font-size:0.85rem;color:rgba(200,169,110,0.7)">Tap below when you\'re ready 👇</span></div>' +
-   '<button class="play-btn" onclick="htStart()">Let\'s chat →</button>';
+   '<div class="modal-title">For the Birthday Boy 🤲</div>' +
+   // Voucher card
+   '<div style="position:relative;margin:0.5rem 0 1.4rem;background:linear-gradient(145deg,#1a1208,#2d1f08,#1a1208);border-radius:18px;overflow:hidden;box-shadow:0 8px 40px rgba(200,169,110,0.25),0 2px 8px rgba(0,0,0,0.5)">' +
+     // Gold shimmer top band
+     '<div style="height:6px;background:linear-gradient(to right,#8b6914,#C8A96E,#f0d080,#C8A96E,#8b6914)"></div>' +
+     // Voucher body
+     '<div style="padding:1.6rem 1.4rem 1.4rem;text-align:center">' +
+       // Header label
+       '<div style="font-size:0.58rem;letter-spacing:5px;text-transform:uppercase;color:rgba(200,169,110,0.55);margin-bottom:0.3rem">Dani-Elle Presents</div>' +
+       '<div style="font-size:0.72rem;letter-spacing:4px;text-transform:uppercase;color:#C8A96E;font-weight:700;margin-bottom:1.1rem">Gift Voucher</div>' +
+       // Icon
+       '<div style="font-size:3.2rem;margin-bottom:0.8rem;filter:drop-shadow(0 0 12px rgba(200,169,110,0.4))">🤲</div>' +
+       // Service name
+       '<div style="font-family:\'Cormorant Garamond\',serif;font-size:1.9rem;font-weight:700;color:#C8A96E;line-height:1.2;margin-bottom:0.5rem;text-shadow:0 0 20px rgba(200,169,110,0.3)">30 Minute<br>Head Massage</div>' +
+       // Divider with diamonds
+       '<div style="display:flex;align-items:center;gap:0.5rem;justify-content:center;margin:0.9rem 0">' +
+         '<div style="flex:1;height:1px;background:linear-gradient(to right,transparent,rgba(200,169,110,0.4))"></div>' +
+         '<span style="color:rgba(200,169,110,0.6);font-size:0.6rem">◆ ◆ ◆</span>' +
+         '<div style="flex:1;height:1px;background:linear-gradient(to left,transparent,rgba(200,169,110,0.4))"></div>' +
+       '</div>' +
+       // Recipient
+       '<div style="font-size:0.62rem;letter-spacing:3px;text-transform:uppercase;color:rgba(200,169,110,0.5);margin-bottom:0.3rem">Exclusively for</div>' +
+       '<div style="font-family:\'Cormorant Garamond\',serif;font-size:1.5rem;font-weight:700;color:rgba(255,255,255,0.9);margin-bottom:0.9rem">Joel 🤍</div>' +
+       // Description
+       '<div style="color:rgba(255,255,255,0.6);font-size:0.82rem;line-height:1.7;font-style:italic;margin-bottom:1rem">' +
+         'Sit back, relax, and let Dani-Elle<br>take care of you tonight.' +
+       '</div>' +
+       // Dashed cut line
+       '<div style="border-top:2px dashed rgba(200,169,110,0.25);margin:0.8rem -1.4rem;padding-top:0.8rem">' +
+         '<div style="font-size:0.58rem;letter-spacing:3px;text-transform:uppercase;color:rgba(200,169,110,0.35)">Valid tonight only · Non-transferable</div>' +
+       '</div>' +
+     '</div>' +
+     // Gold shimmer bottom band
+     '<div style="height:6px;background:linear-gradient(to right,#8b6914,#C8A96E,#f0d080,#C8A96E,#8b6914)"></div>' +
+   '</div>' +
+   '<button class="play-btn" onclick="htStart()">Redeem Voucher →</button>';
 
  window.htStart = function() { showFact(0); };
 }
