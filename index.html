@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
 (function(){
-  var v='b50';
+  var v='b51';
   if(location.search.indexOf('_v='+v)===-1){
     location.replace(location.pathname+'?_v='+v);
   }
@@ -597,23 +597,16 @@ function renderSpinWheel(el) {
          document.getElementById('wheel-result').innerHTML =
            '<div style="text-align:center;padding:1rem 0">' +
            '<div style="font-size:2.5rem;margin-bottom:0.8rem">🎁</div>' +
-           '<div style="font-family:\'Cormorant Garamond\',serif;font-size:1.5rem;font-weight:700;color:#C8A96E;margin-bottom:0.6rem">Unlock a Second Present</div>' +
-           '<div style="color:rgba(255,255,255,0.75);font-size:0.95rem;line-height:1.7;margin-bottom:1.2rem">Tell Dani-Elle your favourite feature about her to unlock your next surprise...</div>' +
-           '<textarea id="fave-feature" placeholder="Type here..." style="width:100%;box-sizing:border-box;padding:0.8rem;border-radius:12px;border:1px solid rgba(200,169,110,0.4);background:rgba(255,255,255,0.06);color:white;font-size:0.95rem;font-family:Nunito,sans-serif;resize:none;height:100px;outline:none;margin-bottom:1rem"></textarea>' +
-           '<button class="play-btn" onclick="submitFaveFeature()">Unlock →</button>' +
+           '<div style="font-family:\'Cormorant Garamond\',serif;font-size:1.5rem;font-weight:700;color:#C8A96E;margin-bottom:0.8rem">Unlock a Second Present</div>' +
+           '<div style="color:rgba(255,255,255,0.8);font-size:1rem;line-height:1.8;margin-bottom:1.6rem">Tell Dani-Elle out loud your favourite feature about her to unlock your next surprise...</div>' +
+           '<button class="play-btn" onclick="spinWinUnlock()">Done — Unlock →</button>' +
            '</div>';
-         window.submitFaveFeature = function() {
-           var val = document.getElementById('fave-feature').value.trim();
-           if (!val) { document.getElementById('fave-feature').style.borderColor = '#ef4444'; return; }
+         window.spinWinUnlock = function() {
            document.getElementById('wheel-result').innerHTML =
              '<div style="text-align:center;padding:1rem 0">' +
              '<div style="font-size:2.8rem;margin-bottom:0.8rem">🎁</div>' +
-             '<div style="font-family:\'Cormorant Garamond\',serif;font-size:1.6rem;font-weight:700;color:#C8A96E;margin-bottom:0.8rem">Present Unlocked!</div>' +
-             '<div style="background:linear-gradient(135deg,#1a1208,#2d1f08);border-radius:16px;padding:1.2rem;border:1px solid rgba(200,169,110,0.3);margin-bottom:1rem">' +
-             '<div style="font-size:0.7rem;letter-spacing:3px;text-transform:uppercase;color:rgba(200,169,110,0.55);margin-bottom:0.5rem">You said...</div>' +
-             '<div style="font-family:\'Cormorant Garamond\',serif;font-size:1.2rem;font-style:italic;color:rgba(255,255,255,0.9)">"' + val + '"</div>' +
-             '</div>' +
-             '<div style="color:rgba(255,255,255,0.7);font-size:0.9rem;line-height:1.7;margin-bottom:1rem">That\'s the sweetest thing 🤍<br>Go find your second present!</div>' +
+             '<div style="font-family:\'Cormorant Garamond\',serif;font-size:1.6rem;font-weight:700;color:#C8A96E;margin-bottom:0.6rem">Present Unlocked!</div>' +
+             '<div style="color:rgba(255,255,255,0.7);font-size:0.95rem;line-height:1.7;margin-bottom:1.2rem">That\'s the sweetest thing 🤍<br>Go find your second present!</div>' +
              '<button class="next-btn" onclick="closeModal()">Let\'s go! →</button>';
            launchConfetti();
          };
