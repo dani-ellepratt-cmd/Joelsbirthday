@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
 (function(){
-  var v='b28';
+  var v='b29';
   if(location.search.indexOf('_v='+v)===-1){
     location.replace(location.pathname+'?_v='+v);
   }
@@ -310,7 +310,6 @@ var slots = [
  { id:'s9',  date:26, hour:7,  half:false, label:'7am',  emoji:'🍳', title:'Breakfast for the Birthday Boy', desc:'Your birthday starts with a cooked brekkie — place your order!', type:'breakfast' },
  { id:'s10', date:26, hour:8,  half:false, label:'8am',  emoji:'🎡', title:'Spin to Win!',                   desc:'Spin the wheel and claim your prize!', type:'spinwheel' },
  { id:'s11', date:26, hour:9,  half:false, label:'9am',  emoji:'💰', title:'Money Moment',                   desc:'Joel, it\'s time to test your luck...', type:'wheel' },
- { id:'s12', date:26, hour:12, half:false, label:'12pm', emoji:'🍽️', title:'Lunch Time!',                   desc:'Time to head out — we are going for a birthday lunch!', type:'lunch' },
  { id:'s14', date:26, hour:14, half:false, label:'2pm',  emoji:'🎰', title:'Hit the Jackpot!',               desc:'Pull the lever on the birthday pokies!', type:'slots' },
  { id:'s15', date:26, hour:15, half:false, label:'3pm',  emoji:'🏀', title:"Let's find out 🏀",           desc:"Let's find out how good you really are...", type:'mystery' },
  { id:'s17', date:26, hour:17, half:false, label:'5pm',  emoji:'🎁', title:'Shake to Win',                  desc:'Your 5pm prize is waiting...', type:'cheese' },
@@ -319,6 +318,7 @@ var slots = [
  { id:'s20', date:26, hour:20, half:false, label:'8pm',  emoji:'🍰', title:'Dessert Time',                  desc:'Time for something sweet — place your dessert order!', type:'dessert' },
  { id:'s21', date:26, hour:21, half:false, label:'9pm',  emoji:'🤍', title:'Love Note',              desc:'Something special to end the day.', type:'lovenote' },
  // ── Part 2 — Friday 30 May ──
+ { id:'s12', date:30, hour:12, half:false, label:'12pm', emoji:'🍽️', title:'Lunch Time!',                   desc:'Time to head out — we are going for a birthday lunch!', type:'lunch' },
  { id:'s13', date:30, hour:13, half:false, label:'1pm',  emoji:'🤲', title:'Congratulations',               desc:'Open to find out what you have won!', type:'tickles' },
  { id:'s16', date:30, hour:16, half:false, label:'4pm',  emoji:'🃏', title:'Uno Time 🃏',                     desc:'You vs Dani-Elle — shuffle up and deal!', type:'eightball' }
 ];
@@ -1706,15 +1706,21 @@ function renderMystery(el) {
      if (shooting || shotsLeft <= 0) return;
      shooting = true; shotsLeft--; shotsTaken++; ballSpin = 0; netSway = 0;
 
+     /* Always aim toward the hoop, adjusted by how far from centre the tap was */
+     var aimX = hoopX + (tapX - VPX) * 0.55;
+     var aimY = hoopY;
      var bx = BALL_X, by = BALL_Y;
-     var gravity = 0.40, steps = 58;
-     var vx = (tapX - bx) / steps;
-     var vy = (tapY - by - 0.5 * gravity * steps * steps) / steps;
-     if (vy > -5) vy = -9;
+     var gravity = 0.36, steps = 62;
+     var vx = (aimX - bx) / steps;
+     var vy = (aimY - by - 0.5 * gravity * steps * steps) / steps;
+     if (vy > -7) vy = -11;
 
      var scored = false, frame = 0;
      var throughNet = false, tnFrame = 0;
      var netDepth = rimW * 1.15;
+     /* Roll-back phase after a miss */
+     var rolling = false, rollFrame = 0, rollVx = 0;
+     var FLOOR_Y = BALL_Y;
      if (animId) cancelAnimationFrame(animId);
 
      function finish() {
@@ -1725,14 +1731,14 @@ function renderMystery(el) {
        if (shotsLeft === 0) {
          setTimeout(showResult, 700);
        } else {
-         drawFrame(null, null, 0, scored ? 'Swish! 🔥' : 'Miss! 😬', scored ? '#22C55E' : '#ef4444');
+         drawFrame(null, null, 0, scored ? 'Swish! \U0001f525' : 'Miss! \U0001f62c', scored ? '#22C55E' : '#ef4444');
          setTimeout(function(){ moveHoop(); }, 900);
        }
      }
 
      function tick() {
+       /* ── Phase 3: through net ── */
        if (throughNet) {
-         /* Ball drops slowly through the net at hoop perspective scale */
          tnFrame++;
          var tnTotal = 32;
          var prog = tnFrame / tnTotal;
@@ -1743,12 +1749,31 @@ function renderMystery(el) {
          ctx.clearRect(0, 0, W, H);
          drawCourt(); drawBackboard();
          drawNetBack(netSway);
-         /* ball is inside the net — draw between back and front rim */
          drawBall(bx, by, r, ballSpin);
          ballSpin += 0.07;
          drawNetFront();
          tickParticles();
-         if (tnFrame < tnTotal) {
+         if (tnFrame < tnTotal) { animId = requestAnimationFrame(tick); }
+         else { finish(); }
+         return;
+       }
+
+       /* ── Phase 2: roll back on floor after miss ── */
+       if (rolling) {
+         rollFrame++;
+         bx += rollVx;
+         /* Slight perspective — ball stays near floor level */
+         var rollProgress = rollFrame / 38;
+         by = FLOOR_Y + Math.sin(rollProgress * Math.PI) * H * 0.02; /* tiny bounce arc */
+         var r = BALL_R * ps(by) * 1.5;
+         /* Spin direction matches roll direction */
+         ballSpin += rollVx > 0 ? 0.18 : -0.18;
+         ctx.clearRect(0, 0, W, H);
+         drawCourt(); drawBackboard();
+         drawNetBack(0); drawNetFront();
+         drawBall(bx, by, r, ballSpin);
+         tickParticles();
+         if (rollFrame < 38 && Math.abs(bx - BALL_X) > 4) {
            animId = requestAnimationFrame(tick);
          } else {
            finish();
@@ -1756,10 +1781,15 @@ function renderMystery(el) {
          return;
        }
 
-       /* Normal arc flight */
-       bx += vx; by += vy; vy += gravity; ballSpin += 0.13;
-       var r = BALL_R * ps(by) * 1.5;
+       /* ── Phase 1: arc flight ── */
+       bx += vx; by += vy; vy += gravity; frame++;
+       /* Perspective scale — ball shrinks as it goes toward hoop, grows coming back */
+       var scaledY = Math.max(by, VPY + 1);
+       var r = BALL_R * ps(scaledY) * 1.5;
+       /* Natural spin — faster near peak, slower at apex */
+       ballSpin += 0.10 + Math.abs(vy) * 0.008;
 
+       /* Score detection */
        if (!scored && vy > 0 &&
            by > hoopY - r * 0.6 && by < hoopY + r * 1.2 &&
            bx > hoopX - rimW * 0.68 && bx < hoopX + rimW * 0.68) {
@@ -1770,6 +1800,15 @@ function renderMystery(el) {
        }
        if (netSway > 0) netSway *= 0.84;
 
+       /* Miss: ball returns to floor level → roll back */
+       if (!scored && vy > 0 && by >= FLOOR_Y - r &&
+           bx > -60 && bx < W + 60) {
+         by = FLOOR_Y;
+         rolling = true; rollFrame = 0;
+         rollVx = (BALL_X - bx) / 38;
+         tick(); return;
+       }
+
        ctx.clearRect(0, 0, W, H);
        drawCourt(); drawBackboard();
        var aboveHoop = by < hoopY + rimW * 0.4;
@@ -1778,9 +1817,8 @@ function renderMystery(el) {
        drawNetFront();
        if (aboveHoop)  drawBall(bx, by, r, ballSpin);
        tickParticles();
-       frame++;
 
-       if (by < H + 80 && frame < 150) {
+       if (by < H + 80 && frame < 160) {
          animId = requestAnimationFrame(tick);
        } else {
          finish();
