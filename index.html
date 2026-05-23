@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
 (function(){
-  var v='b44';
+  var v='b45';
   if(location.search.indexOf('_v='+v)===-1){
     location.replace(location.pathname+'?_v='+v);
   }
@@ -721,92 +721,17 @@ function renderSlots(el) {
      if(isLastMargarita){
        document.getElementById('jackpot-result').innerHTML=
          '<div class="love-note" style="text-align:center;margin-top:0.5rem">'+
-         '\uD83C\uDF89 <strong style="color:#FFD700;font-size:1.1rem">WINNER! Margarita!</strong><br><br>'+
-         'Who\'s making it?</div>'+
-         '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem;margin-top:0.8rem">'+
-         '<button class="brekkie-btn" onclick="pickMaker(\'wife\')" style="font-size:0.8rem"><div style="font-size:1.5rem">\uD83D\uDC8D</div>Your Wife</button>'+
-         '<button class="brekkie-btn" onclick="pickMaker(\'mike\')" style="font-size:0.8rem"><div style="font-size:1.5rem">\uD83C\uDF7A</div>Mike</button>'+
-         '<button class="brekkie-btn" onclick="pickMaker(\'liv\')" style="font-size:0.8rem"><div style="font-size:1.5rem">\uD83C\uDF38</div>Liv</button>'+
+         '\uD83C\uDF89 <strong style="color:#FFD700;font-size:1.1rem">WINNER! Margarita!</strong></div>'+
+         '<div style="text-align:center;font-family:\'Cormorant Garamond\',serif;font-size:1.4rem;font-weight:700;color:#C8A96E;margin:1rem 0">Would you like to redeem your margarita? \uD83C\uDF79</div>'+
+         '<div style="display:grid;grid-template-columns:1fr 1fr;gap:0.8rem;margin-top:0.5rem">'+
+         '<button class="play-btn" onclick="redeemMarg(true)">Hell Yes \uD83C\uDF79</button>'+
+         '<button class="next-btn" onclick="redeemMarg(false)">Maybe Later</button>'+
          '</div><div id="maker-result"></div>';
-       window.pickMaker=function(who){
-         var msgs={
-           wife:'Your wife is on it! \uD83D\uDC8D\uD83C\uDF79',
-           mike:'Mike\'s on margarita duty! \uD83C\uDF7A',
-           liv:'Liv\'s making it! \uD83C\uDF38'
-         };
+       window.redeemMarg=function(yes){
          document.getElementById('maker-result').innerHTML=
-           '<div class="love-note" style="text-align:center;margin-top:0.8rem">'+msgs[who]+'<br><br>While it\'s being made \u2014 can you guess who said these about you? \uD83D\uDC40</div>'+
-           '<button class="play-btn" style="margin-top:0.8rem" onclick="startGuessGame()">Let\'s find out \u2192</button>';
-         launchConfetti();
-       };
-
-       window.startGuessGame=function(){
-         var quotes=[
-           {q:'You could say Joel is similar to an 11 year old',a:'Dani-Elle'},
-           {q:'Joel could eat the same meal every single day and genuinely be fine with it',a:'Mike'},
-           {q:'Joel is the only person I know who gets competitive about absolutely everything',a:'Liv'},
-           {q:'He doesn\'t just fall asleep \u2014 he disappears. Like actually gone',a:'Dani-Elle'},
-           {q:'Joel\'s idea of a quiet one always somehow turns into a big night',a:'Mike'},
-           {q:'Joel has the energy of someone ten years younger and the humour of someone ten years older',a:'Liv'}
-         ];
-         var current=0,score=0;
-         var people=['Dani-Elle','Mike','Liv'];
-         function btnId(p){return 'gb-'+p.replace(/[^a-zA-Z]/g,'');}
-
-         // Build full-screen overlay
-         var overlay=document.createElement('div');
-         overlay.id='guess-overlay';
-         overlay.style.cssText='position:fixed;inset:0;z-index:3000;background:linear-gradient(160deg,#0a0600,#150e00);display:flex;flex-direction:column;justify-content:center;padding:2rem 1.5rem;box-sizing:border-box;';
-         document.body.appendChild(overlay);
-
-         function removeOverlay(){var o=document.getElementById('guess-overlay');if(o)o.parentNode.removeChild(o);}
-
-         function showQ(){
-           var q=quotes[current];
-           overlay.innerHTML=
-             '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.2rem">'+
-             '<div style="font-size:0.75rem;color:rgba(200,169,110,0.7);font-weight:700;letter-spacing:1px">'+(current+1)+' of '+quotes.length+'</div>'+
-             '<div style="font-size:0.75rem;color:rgba(200,169,110,0.7);font-weight:700">Score: '+score+'</div>'+
-             '</div>'+
-             '<div style="background:linear-gradient(135deg,#3a2800,#2a1c00);border:1px solid rgba(200,169,110,0.5);border-radius:18px;padding:2rem 1.5rem;text-align:center;margin-bottom:2rem;flex:1;display:flex;flex-direction:column;justify-content:center;">'+
-             '<div style="font-size:0.65rem;letter-spacing:3px;color:rgba(200,169,110,0.6);text-transform:uppercase;margin-bottom:1rem">Who said this about Joel?</div>'+
-             '<div style="font-family:\'Cormorant Garamond\',serif;font-size:clamp(1.3rem,5vw,1.8rem);font-weight:600;color:rgba(255,255,255,0.95);line-height:1.5;font-style:italic">&ldquo;'+q.q+'&rdquo;</div>'+
-             '</div>'+
-             '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.8rem">'+
-             people.map(function(p){
-               return '<button id="'+btnId(p)+'" onclick="guessAnswer(\''+p+'\')" style="padding:1rem 0.5rem;background:linear-gradient(135deg,#3a2800,#2a1c00);border:1.5px solid rgba(200,169,110,0.6);border-radius:12px;color:#C8A96E;font-size:0.9rem;font-weight:700;cursor:pointer;transition:background 0.25s,border-color 0.25s">'+p+'</button>';
-             }).join('')+
-             '</div>';
-
-           window.guessAnswer=function(picked){
-             people.forEach(function(p){var b=document.getElementById(btnId(p));if(b)b.style.pointerEvents='none';});
-             var correct=q.a;
-             var pb=document.getElementById(btnId(picked));
-             var cb=document.getElementById(btnId(correct));
-             if(picked===correct){
-               score++;
-               if(pb){pb.style.background='#16a34a';pb.style.borderColor='#16a34a';pb.style.color='#fff';}
-             } else {
-               if(pb){pb.style.background='#dc2626';pb.style.borderColor='#dc2626';pb.style.color='#fff';}
-               setTimeout(function(){if(cb){cb.style.background='#16a34a';cb.style.borderColor='#16a34a';cb.style.color='#fff';}},650);
-             }
-             current++;
-             setTimeout(function(){if(current<quotes.length){showQ();}else{showFinal();}},1700);
-           };
-         }
-         function showFinal(){
-           var t=quotes.length;
-           var tag=score===t?'You know your people! \uD83C\uDFC6':score>=4?'Pretty good! \uD83D\uDE0F':score>=2?'Could be worse... \uD83D\uDE05':'Do you even know these people Joel? \uD83D\uDE02';
-           overlay.innerHTML=
-             '<div style="text-align:center;display:flex;flex-direction:column;justify-content:center;align-items:center;height:100%">'+
-             '<div style="font-family:\'Cormorant Garamond\',serif;font-size:5rem;font-weight:700;color:#C8A96E;line-height:1">'+score+' / '+t+'</div>'+
-             '<div style="font-size:1rem;color:rgba(255,255,255,0.8);margin-top:0.8rem">'+tag+'</div>'+
-             '<button class="next-btn" style="margin-top:2rem;width:100%;max-width:300px" onclick="removeOverlay();closeModal()">Time for that margarita! \uD83C\uDF79</button>'+
-             '</div>';
-           window.removeOverlay=removeOverlay;
-           if(score===t)launchConfetti();
-         }
-         showQ();
+           '<div class="love-note" style="text-align:center;margin-top:1rem">'+(yes?'On its way! Your wife is on margarita duty \uD83C\uDF79\uD83D\uDC8D':'No worries \u2014 it\'ll be waiting for you when you\'re ready \uD83D\uDE0A')+'</div>'+
+           '<button class="next-btn" style="margin-top:0.8rem" onclick="closeModal()">LETS GO! \uD83C\uDF89</button>';
+         if(yes)launchConfetti();
        };
      } else {
        var prizeName=prizes[res[0]].name;
