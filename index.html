@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
 (function(){
-  var v='b53';
+  var v='b54';
   if(location.search.indexOf('_v='+v)===-1){
     location.replace(location.pathname+'?_v='+v);
   }
@@ -71,7 +71,7 @@
 
  .modal-overlay { display:flex; position:fixed; inset:0; background:rgba(0,0,0,0.88); z-index:1000; align-items:center; justify-content:center; padding:1rem; opacity:0; visibility:hidden; pointer-events:none; transition:opacity 0.28s ease, visibility 0.28s ease; }
  .modal-overlay.active { opacity:1; visibility:visible; pointer-events:auto; }
- .modal { background:#f5efe4; border-radius:24px; padding:2rem; max-width:500px; width:100%; border:1px solid rgba(200,169,110,0.4); position:relative; max-height:90vh; overflow-y:auto; animation:popIn 0.3s cubic-bezier(0.175,0.885,0.32,1.275); }
+ .modal { background:#f5efe4; border-radius:24px; padding:2rem; max-width:500px; width:100%; border:1px solid rgba(200,169,110,0.4); position:relative; max-height:90vh; overflow-y:auto; -webkit-overflow-scrolling:touch; overscroll-behavior:contain; animation:popIn 0.3s cubic-bezier(0.175,0.885,0.32,1.275); }
  @keyframes popIn { from{transform:scale(0.7);opacity:0} to{transform:scale(1);opacity:1} }
  .modal-close { position:absolute; top:1rem; right:1rem; background:rgba(255,255,255,0.1); border:none; color:white; font-size:1.2rem; width:36px; height:36px; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center; font-weight:900; }
  .modal-close:hover { background:rgba(255,255,255,0.2); }
@@ -317,9 +317,9 @@ var slots = [
  { id:'s20', date:26, hour:21, half:false, label:'9pm',  emoji:'🍰', title:'Dessert Time',                  desc:'Time for something sweet — place your dessert order!', type:'dessert' },
  { id:'s21', date:26, hour:22, half:false, label:'10pm', emoji:'🤍', title:'Love Note',              desc:'Something special to end the day.', type:'lovenote' },
  // ── Part 2 — Friday 30 May ──
- { id:'s12', date:30, hour:12, half:false, label:'12pm', emoji:'🍽️', title:'Lunch Time!',                   desc:'Time to head out — we are going for a birthday lunch!', type:'lunch' },
  { id:'s13', date:30, hour:13, half:false, label:'1pm',  emoji:'🤲', title:'Congratulations',               desc:'Open to find out what you have won!', type:'tickles' },
- { id:'s16', date:30, hour:16, half:false, label:'4pm',  emoji:'🃏', title:'Uno Time 🃏',                     desc:'You vs Dani-Elle — shuffle up and deal!', type:'eightball' }
+ { id:'s16', date:30, hour:16, half:false, label:'4pm',  emoji:'🃏', title:'Uno Time 🃏',                     desc:'You vs Dani-Elle — shuffle up and deal!', type:'eightball' },
+ { id:'s17', date:30, hour:15, half:false, label:'3pm',  emoji:'🗣️', title:'Who Said It?',                   desc:'Can you guess who said it?', type:'whosaidit' }
 ];
 
 function getTodayDate() {
@@ -392,7 +392,7 @@ function openSlot(id) {
  if (!slot || !isUnlocked(slot)) return;
  document.getElementById('modal-overlay').classList.add('active');
  var el = document.getElementById('modal-inner');
- var fns = { breakfast:renderBreakfast, gift:renderGift, spinwheel:renderSpinWheel, slots:renderSlots, lunch:renderLunch, tickles:renderTickles, wheel:renderWheel, eightball:renderEightBall, mystery:renderMystery, cheese:renderCheese, movie:renderMovie, headtickles:renderHeadTickles, dessert:renderDessert, lovenote:renderLoveNote, game:renderGame };
+ var fns = { breakfast:renderBreakfast, gift:renderGift, spinwheel:renderSpinWheel, slots:renderSlots, lunch:renderLunch, tickles:renderTickles, wheel:renderWheel, eightball:renderEightBall, mystery:renderMystery, cheese:renderCheese, movie:renderMovie, headtickles:renderHeadTickles, dessert:renderDessert, lovenote:renderLoveNote, game:renderGame, whosaidit:renderWhoSaidIt };
  if (fns[slot.type]) fns[slot.type](el);
  launchConfetti();
 }
@@ -800,6 +800,77 @@ function renderSlots(el) {
 }
 
 // ── LUNCH ─────────────────────────────────────────────────────────────
+function renderWhoSaidIt(el) {
+ var quotes = [
+   { q:'You could say Joel is similar to an 11 year old', a:'Dani-Elle' },
+   { q:'Joel could eat the same meal every single day and genuinely be fine with it', a:'Mike' },
+   { q:'Joel is the only person I know who gets competitive about absolutely everything', a:'Liv' },
+   { q:'He doesn\'t just fall asleep — he disappears. Like actually gone', a:'Dani-Elle' },
+   { q:'Joel\'s idea of a quiet one always somehow turns into a big night', a:'Mike' },
+   { q:'Joel has the energy of someone ten years younger and the humour of someone ten years older', a:'Liv' }
+ ];
+ var current = 0, score = 0;
+ var people = ['Dani-Elle', 'Mike', 'Liv'];
+
+ function btnId(p) { return 'wsb-' + p.replace(/[^a-zA-Z]/g,''); }
+
+ function showQ() {
+   var q = quotes[current];
+   el.innerHTML =
+     '<div class="modal-title">Who Said It? 🗣️</div>' +
+     '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">' +
+       '<div style="font-size:0.75rem;color:rgba(139,94,60,0.7);font-weight:700;letter-spacing:1px">' + (current+1) + ' of ' + quotes.length + '</div>' +
+       '<div style="font-size:0.75rem;color:rgba(139,94,60,0.7);font-weight:700">Score: ' + score + '</div>' +
+     '</div>' +
+     '<div style="background:linear-gradient(135deg,#fff8f0,#f5ece0);border-radius:18px;padding:1.8rem 1.4rem;text-align:center;margin-bottom:1.4rem;border:1px solid rgba(200,169,110,0.3)">' +
+       '<div style="font-size:0.65rem;letter-spacing:3px;color:rgba(139,94,60,0.55);text-transform:uppercase;margin-bottom:0.8rem">Who said this about Joel?</div>' +
+       '<div style="font-family:\'Cormorant Garamond\',serif;font-size:clamp(1.2rem,5vw,1.7rem);font-weight:600;color:#3a1a00;line-height:1.5;font-style:italic">&ldquo;' + q.q + '&rdquo;</div>' +
+     '</div>' +
+     '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.8rem">' +
+     people.map(function(p) {
+       return '<button id="' + btnId(p) + '" onclick="wsGuess(\'' + p + '\')" style="padding:1rem 0.5rem;background:linear-gradient(135deg,#fff8f0,#f0e4d0);border:1.5px solid rgba(200,169,110,0.5);border-radius:12px;color:#5a3820;font-size:0.9rem;font-weight:700;cursor:pointer;font-family:Nunito,sans-serif">' + p + '</button>';
+     }).join('') +
+     '</div>' +
+     '<div id="ws-feedback" style="margin-top:0.8rem;text-align:center;min-height:1.5rem"></div>';
+
+   window.wsGuess = function(picked) {
+     people.forEach(function(p) { var b = document.getElementById(btnId(p)); if(b) b.style.pointerEvents='none'; });
+     var correct = q.a;
+     var pb = document.getElementById(btnId(picked));
+     var cb = document.getElementById(btnId(correct));
+     var fb = document.getElementById('ws-feedback');
+     if (picked === correct) {
+       score++;
+       if (pb) { pb.style.background='#16a34a'; pb.style.borderColor='#16a34a'; pb.style.color='#fff'; }
+       if (fb) fb.innerHTML = '<span style="color:#16a34a;font-weight:700">Correct! 🎉</span>';
+     } else {
+       if (pb) { pb.style.background='#dc2626'; pb.style.borderColor='#dc2626'; pb.style.color='#fff'; }
+       setTimeout(function(){ if(cb){ cb.style.background='#16a34a'; cb.style.borderColor='#16a34a'; cb.style.color='#fff'; } }, 600);
+       if (fb) fb.innerHTML = '<span style="color:#dc2626;font-weight:700">Not quite! It was ' + correct + '</span>';
+     }
+     current++;
+     setTimeout(function() { if (current < quotes.length) { showQ(); } else { showFinal(); } }, 1600);
+   };
+ }
+
+ function showFinal() {
+   var t = quotes.length;
+   var tag = score === t ? 'You know your people! 🏆' : score >= 4 ? 'Pretty good! 😏' : score >= 2 ? 'Could be worse...' : 'Do you even know these people Joel? 😂';
+   el.innerHTML =
+     '<div class="modal-title">Who Said It? 🗣️</div>' +
+     '<div style="text-align:center;padding:1.5rem 0">' +
+       '<div style="font-family:\'Cormorant Garamond\',serif;font-size:5rem;font-weight:700;color:#C8A96E;line-height:1">' + score + ' / ' + t + '</div>' +
+       '<div style="font-size:1rem;color:#5a3820;margin-top:0.6rem;font-weight:700">' + tag + '</div>' +
+       '<div style="margin-top:1.5rem">' +
+         '<button class="next-btn" onclick="closeModal()">Done →</button>' +
+       '</div>' +
+     '</div>';
+   if (score === t) launchConfetti();
+ }
+
+ showQ();
+}
+
 function renderLunch(el) {
  el.innerHTML =
    '<div class="modal-title">Lunch Time!</div>' +
