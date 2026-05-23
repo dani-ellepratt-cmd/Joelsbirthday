@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
 (function(){
-  var v='b46';
+  var v='b47';
   if(location.search.indexOf('_v='+v)===-1){
     location.replace(location.pathname+'?_v='+v);
   }
@@ -1977,13 +1977,24 @@ function renderMystery(el) {
                     W / 2, H * 0.592);
        var won = score === 5;
        document.getElementById('bball-result').innerHTML =
-         '<div class="love-note" style="text-align:center;margin-top:0.8rem">' +
+         '<div id="bball-final" class="love-note" style="text-align:center;margin-top:0.8rem">' +
          (won ? '🏆 <strong style="color:#C8A96E">5/5 — PERFECT SCORE!</strong><br><br>Joel\'s got serious game! 🏀🔥<br><br><strong style="color:#C8A96E;font-size:1.1rem">Dani-Elle is taking you out for dinner! 🍽️🎉</strong>' :
                 '😅 <strong style="color:#ef4444">' + score + '/5 — Not good enough!</strong><br><br>Joel owes <strong style="color:#C8A96E">Dani-Elle $100! 💸</strong><br><br>Pay up birthday boy! 😂') +
          '</div>' +
-         '<button class="next-btn" style="margin-top:0.8rem" onclick="closeModal()">' +
-         (won ? 'Dinner time! 🍽️' : 'Fine... 😂') + '</button>';
+         '<button id="bball-close-btn" class="next-btn" style="margin-top:0.8rem;display:none" onclick="closeModal()">' +
+         (won ? 'Dinner time! 🍽️' : 'Can\'t wait! 🍽️') + '</button>';
        if (won) launchConfetti();
+       setTimeout(function() {
+         var el = document.getElementById('bball-final');
+         if (el) {
+           el.innerHTML += '<br><br>' +
+             (won ? '' : '...but lucky for you she is still taking you out to dinner 🍽️<br><br>') +
+             '<strong style="color:#C8A96E;font-size:1.1rem">Be ready to leave at 5:30 🕠</strong>';
+           launchConfetti();
+         }
+         var btn = document.getElementById('bball-close-btn');
+         if (btn) btn.style.display = 'block';
+       }, 3000);
      }
    }
 
