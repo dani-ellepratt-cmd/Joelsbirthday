@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
 (function(){
-  var v='b52';
+  var v='b53';
   if(location.search.indexOf('_v='+v)===-1){
     location.replace(location.pathname+'?_v='+v);
   }
@@ -2465,8 +2465,6 @@ function renderDessert(el) {
    '<div class="dessert-grid">' +
    '<button class="dessert-btn" onclick="pickDessert(\'cake\')"><div style="font-size:2rem">🎂</div><div style="margin-top:0.4rem">Birthday Cake</div></button>' +
    '<button class="dessert-btn" onclick="pickDessert(\'icecream\')"><div style="font-size:2rem">🍦</div><div style="margin-top:0.4rem">Ice Cream</div></button>' +
-   '<button class="dessert-btn" onclick="pickDessert(\'brownie\')"><div style="font-size:2rem">🍫</div><div style="margin-top:0.4rem">Chocolate Brownie</div></button>' +
-   '<button class="dessert-btn" onclick="pickDessert(\'cheesecake\')"><div style="font-size:2rem">🍮</div><div style="margin-top:0.4rem">Cheesecake</div></button>' +
    '</div>' +
    '<div id="dessert-result"></div>';
  window.pickDessert = function(c) {
