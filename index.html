@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
 (function(){
-  var v='b30';
+  var v='b31';
   if(location.search.indexOf('_v='+v)===-1){
     location.replace(location.pathname+'?_v='+v);
   }
@@ -1384,7 +1384,7 @@ function renderMystery(el) {
    var BWL = W * 0.18;   /* back-wall left  at floor start / horizon */
    var BWR = W * 0.82;   /* back-wall right at floor start / horizon */
 
-   var hoopX = VPX, hoopY = H * 0.40, rimW = W * 0.20;
+   var hoopX = VPX, hoopY = H * 0.30, rimW = W * 0.155;
 
    var BALL_X  = VPX;
    var BALL_Y  = H * 0.76;
@@ -1397,11 +1397,11 @@ function renderMystery(el) {
 
    /* Hoop positions shift after each shot */
    var hoopPositions = [
-     {x: VPX,          y: H * 0.40,  r: W * 0.200},
-     {x: VPX - W*0.09, y: H * 0.405, r: W * 0.200},
-     {x: VPX,          y: H * 0.375, r: W * 0.168},
-     {x: VPX + W*0.09, y: H * 0.400, r: W * 0.200},
-     {x: VPX - W*0.06, y: H * 0.366, r: W * 0.158},
+     {x: VPX,          y: H * 0.30,  r: W * 0.155},
+     {x: VPX - W*0.08, y: H * 0.305, r: W * 0.155},
+     {x: VPX,          y: H * 0.270, r: W * 0.125},
+     {x: VPX + W*0.08, y: H * 0.300, r: W * 0.155},
+     {x: VPX - W*0.06, y: H * 0.265, r: W * 0.118},
    ];
    var hoopSlot = 0;
 
@@ -1919,17 +1919,33 @@ function renderMystery(el) {
        /* Phase 3: ball drops through net */
        if (throughNet) {
          tnFrame++;
-         var tnTotal = 32;
+         var tnTotal = 38;
          var prog = tnFrame / tnTotal;
          bx = hoopX;
-         by = hoopY + (netDepth + rimW * 0.5) * prog;
-         var ballR = BALL_R * Math.max(ps(hoopY), 0.20) * 1.12;
-         if (netSway > 0) netSway *= 0.82;
+         /* Ease-out fall: fast entry, slows as net catches ball */
+         var fallEase = Math.sin(prog * Math.PI * 0.5);
+         var netBottom = netDepth + rimW * 0.55;
+         by = hoopY + netBottom * fallEase;
+         /* Ball grows slightly as it falls toward camera through net */
+         var baseScale = Math.max(ps(hoopY), 0.20);
+         var ballR = BALL_R * (baseScale + fallEase * 0.13) * 1.15;
+         /* Net sway decays, with a small secondary bounce at catch point */
+         if (netSway > 0) {
+           netSway *= 0.80;
+           if (tnFrame === 22) netSway += 8; /* secondary bounce as ball hits bottom */
+         }
          ctx.clearRect(0, 0, W, H);
          drawCourt(); drawBackboard();
          drawNetBack(netSway);
+         /* Ball inside net - clip to net area so it looks contained */
+         ctx.save();
+         ctx.beginPath();
+         ctx.ellipse(hoopX, hoopY, rimW * 1.05, rimW * 0.3, 0, 0, Math.PI * 2);
+         ctx.rect(hoopX - rimW * 1.1, hoopY, rimW * 2.2, netBottom + rimW * 0.3);
+         ctx.clip();
          drawBall(bx, by, ballR, ballSpin);
-         ballSpin += 0.07;
+         ctx.restore();
+         ballSpin += 0.06;
          drawNetFront();
          tickParticles();
          if (tnFrame < tnTotal) { animId = requestAnimationFrame(tick); }
@@ -1968,7 +1984,7 @@ function renderMystery(el) {
        if (!scored && vy > 0 &&
            by > hoopY - r * 0.55 && by < hoopY + r * 1.2 &&
            bx > hoopX - rimW * 0.66 && bx < hoopX + rimW * 0.66) {
-         scored = true; score++; netSway = 24; spawnBurst(hoopX, hoopY);
+         scored = true; score++; netSway = 28; spawnBurst(hoopX, hoopY);
          throughNet = true; tnFrame = 0;
          bx = hoopX; by = hoopY;
          tick(); return;
