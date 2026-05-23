@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
 (function(){
-  var v='b32';
+  var v='b33';
   if(location.search.indexOf('_v='+v)===-1){
     location.replace(location.pathname+'?_v='+v);
   }
@@ -2389,7 +2389,7 @@ function renderMovie(el) {
      'This is The Boss at his finest — raw, real, and full of heart.<br><br>' +
      'Happy Birthday, Joel." 🤘</div>' +
      '</div>' +
-     '<button class="next-btn" onclick="closeModal()">Let\'s go!</button>';
+     '<button class="next-btn" onclick="window.bruceBonus()">Let\'s go! 🎁</button>';
  };
  window.bruceMusicNote = function() {
    var bc = document.getElementById('boss-close');
@@ -2402,7 +2402,25 @@ function renderMovie(el) {
      'Let The Boss carry you through the night — this is your birthday soundtrack.<br><br>' +
      'Enjoy every track, kid. You\'ve earned it." 🤘</div>' +
      '</div>' +
-     '<button class="next-btn" onclick="closeModal()">Cranking it!</button>';
+     '<button class="next-btn" onclick="window.bruceBonus()">Cranking it! 🎁</button>';
+ };
+
+ window.bruceBonus = function() {
+   var modalEl = document.getElementById('modal-inner');
+   if (!modalEl) return;
+   modalEl.innerHTML =
+     '<div style="text-align:center;padding:3.5rem 1.5rem 2.5rem;background:linear-gradient(160deg,#0a0018,#18002a);min-height:60vh;display:flex;flex-direction:column;align-items:center;justify-content:center">' +
+     '<div style="font-size:4.5rem;margin-bottom:1.2rem;animation:shakeBtnPulse 0.7s ease-in-out infinite;display:inline-block">🎁</div>' +
+     '<div style="font-size:0.65rem;letter-spacing:4px;text-transform:uppercase;color:rgba(200,169,110,0.55);margin-bottom:0.6rem">Wait... there\'s more</div>' +
+     '<div style="font-family:\'Cormorant Garamond\',serif;font-size:2.4rem;font-weight:700;color:#C8A96E;letter-spacing:2px;margin-bottom:0.4rem;text-shadow:0 0 28px rgba(200,169,110,0.85),0 0 60px rgba(200,169,110,0.4)">Bonus Surprise!</div>' +
+     '<div style="width:60px;height:2px;background:linear-gradient(to right,transparent,#C8A96E,transparent);margin:1rem auto"></div>' +
+     '<div style="color:rgba(255,255,255,0.65);font-size:0.95rem;line-height:1.8;max-width:280px">One more thing waiting for you tonight, Joel... 👀</div>' +
+     '<button class="play-btn" style="margin-top:2.5rem;font-size:1rem" onclick="window._launchShakeWin()">What is it?! →</button>' +
+     '</div>';
+   window._launchShakeWin = function() {
+     var el2 = document.getElementById('modal-inner');
+     if (el2) renderCheese(el2);
+   };
  };
 }
 
