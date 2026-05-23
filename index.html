@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
 (function(){
-  var v='b47';
+  var v='b48';
   if(location.search.indexOf('_v='+v)===-1){
     location.replace(location.pathname+'?_v='+v);
   }
@@ -724,13 +724,13 @@ function renderSlots(el) {
          '\uD83C\uDF89 <strong style="color:#FFD700;font-size:1.1rem">WINNER! Margarita!</strong></div>'+
          '<div style="text-align:center;font-family:\'Cormorant Garamond\',serif;font-size:1.4rem;font-weight:700;color:#C8A96E;margin:1rem 0">Would you like to redeem your margarita? \uD83C\uDF79</div>'+
          '<div style="display:grid;grid-template-columns:1fr 1fr;gap:0.8rem;margin-top:0.5rem">'+
-         '<button class="play-btn" onclick="redeemMarg(true)">Hell Yes \uD83C\uDF79</button>'+
+         '<button class="play-btn" onclick="redeemMarg(true)">Hell Yes</button>'+
          '<button class="next-btn" onclick="redeemMarg(false)">Maybe Later</button>'+
          '</div><div id="maker-result"></div>';
        window.redeemMarg=function(yes){
          document.getElementById('maker-result').innerHTML=
            '<div class="love-note" style="text-align:center;margin-top:1rem">'+(yes?'On its way! Your wife is on margarita duty \uD83C\uDF79\uD83D\uDC8D':'No worries \u2014 it\'ll be waiting for you when you\'re ready \uD83D\uDE0A')+'</div>'+
-           '<button class="next-btn" style="margin-top:0.8rem" onclick="closeModal()">LETS GO! \uD83C\uDF89</button>';
+           '<button class="next-btn" style="margin-top:0.8rem" onclick="closeModal()">LETS GO!</button>';
          if(yes)launchConfetti();
        };
      } else {
@@ -1189,7 +1189,7 @@ function renderEightBall(el) {
     "<button class=\"play-btn\" style=\"max-width:180px;margin:0.3rem auto 0;display:block;background:linear-gradient(135deg,#D32F2F,#B71C1C);border:none\" onclick=\"revealUnoStake(this)\">Reveal Stake →</button>" +
     "</div>" +
     "</div>" +
-    "<button class=\"play-btn\" id=\"uno-start-btn\" onclick=\"unoStart()\" style=\"display:none;background:linear-gradient(135deg,#C8A96E,#9a7040);color:#000;font-weight:900\">Let's play! 🃏</button>" +
+    "<button class=\"play-btn\" id=\"uno-start-btn\" onclick=\"unoStart()\" style=\"display:none;background:linear-gradient(135deg,#C8A96E,#9a7040);color:#000;font-weight:900\">Let's play! →</button>" +
     "<div id=\"uno-result\"></div>";
 
   window.revealUnoStake = function(btn) {
@@ -1205,8 +1205,8 @@ function renderEightBall(el) {
       "<div class=\"love-note\" style=\"text-align:center;margin-bottom:1rem\">May the best player win... 😏<br><br>" +
       "<strong style=\"color:#C8A96E\">First to win 2 games takes the prize!</strong></div>" +
       "<div style=\"display:grid;grid-template-columns:1fr 1fr;gap:0.8rem\">" +
-      "<button class=\"play-btn\" onclick=\"unoWinResult('win')\">I won! 🏆</button>" +
-      "<button class=\"grey-btn\" onclick=\"unoWinResult('lose')\">She won... 😅</button>" +
+      "<button class=\"play-btn\" onclick=\"unoWinResult('win')\">I won!</button>" +
+      "<button class=\"grey-btn\" onclick=\"unoWinResult('lose')\">She won...</button>" +
       "</div>";
   };
 
@@ -1219,7 +1219,7 @@ function renderEightBall(el) {
         "<div class=\"love-note\" style=\"text-align:center;margin-top:0.8rem\">Your night at the Strip Club is locked in! 🎰🥂<br><br>" +
         "<strong style=\"color:#C8A96E\">Dani-Elle will sort it out!</strong></div>" +
         "</div>" +
-        "<button class=\"next-btn\" style=\"background:linear-gradient(135deg,#C8A96E,#9a7040);color:#000;font-weight:900\" onclick=\"closeModal()\">LETS GO! 🎉</button>";
+        "<button class=\"next-btn\" style=\"background:linear-gradient(135deg,#C8A96E,#9a7040);color:#000;font-weight:900\" onclick=\"closeModal()\">LETS GO!</button>";
       launchConfetti();
     } else {
       document.getElementById("uno-result").innerHTML =
@@ -1982,7 +1982,7 @@ function renderMystery(el) {
                 '😅 <strong style="color:#ef4444">' + score + '/5 — Not good enough!</strong><br><br>Joel owes <strong style="color:#C8A96E">Dani-Elle $100! 💸</strong><br><br>Pay up birthday boy! 😂') +
          '</div>' +
          '<button id="bball-close-btn" class="next-btn" style="margin-top:0.8rem;display:none" onclick="closeModal()">' +
-         (won ? 'Dinner time! 🍽️' : 'Can\'t wait! 🍽️') + '</button>';
+         (won ? 'Dinner time!' : 'Can\'t wait!') + '</button>';
        if (won) launchConfetti();
        setTimeout(function() {
          var el = document.getElementById('bball-final');
@@ -2319,7 +2319,7 @@ function renderMovie(el) {
      '<div style="font-size:2rem;margin-bottom:0.6rem">🎬🎸</div>' +
      '<div style="font-family:\'Cormorant Garamond\',serif;font-size:1.5rem;font-weight:700;color:#C8A96E">Enjoy the show, kid.</div>' +
      '</div>' +
-     '<button class="next-btn" onclick="window.bruceBonus()">Let\'s go! 🎁</button>';
+     '<button class="next-btn" onclick="window.bruceBonus()">Let\'s go! →</button>';
  };
  window.bruceMusicNote = function() {
    var bc = document.getElementById('boss-close');
@@ -2328,7 +2328,7 @@ function renderMovie(el) {
      '<div style="font-size:2rem;margin-bottom:0.6rem">🎵🎸</div>' +
      '<div style="font-family:\'Cormorant Garamond\',serif;font-size:1.5rem;font-weight:700;color:#C8A96E">Enjoy the show, kid.</div>' +
      '</div>' +
-     '<button class="next-btn" onclick="window.bruceBonus()">Cranking it! 🎁</button>';
+     '<button class="next-btn" onclick="window.bruceBonus()">Cranking it! →</button>';
  };
 
  window.bruceBonus = function() {
