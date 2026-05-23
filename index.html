@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
 (function(){
-  var v='b42';
+  var v='b43';
   if(location.search.indexOf('_v='+v)===-1){
     location.replace(location.pathname+'?_v='+v);
   }
@@ -2349,10 +2349,10 @@ function renderMovie(el) {
   '</div>';
 
  var msgs = [
-   { text:'Hey Joel. It\'s Bruce.', delay:1200 },
-   { text:'Heard it\'s your 32nd birthday, kid. 🎂', delay:2800 },
-   { text:'Tonight you sit back, pour a drink, and let The Boss do the talking. 🍷🎸', delay:4800 },
-   { text:'Happy Birthday, Joel. This one\'s for you. 🤘', delay:6800 }
+   { text:'Hey Joel, It\'s Bruce', delay:1200 },
+   { text:'Heard its your 32nd birthday.. 🎂', delay:2800 },
+   { text:'Tonight just sit back, relax, pour a drink, and let the boss do the talking 🍷🎸', delay:4800 },
+   { text:'Happy Birthday Joel, This is for you 🤟', delay:6800 }
  ];
 
  msgs.forEach(function(m, idx) {
@@ -2381,11 +2381,7 @@ function renderMovie(el) {
    if (bc) bc.innerHTML =
      '<div style="background:linear-gradient(135deg,#0d0800,#1a1208);border-radius:16px;padding:1.4rem;text-align:center;margin-bottom:1.2rem;border:1px solid rgba(200,169,110,0.3)">' +
      '<div style="font-size:2rem;margin-bottom:0.6rem">🎬🎸</div>' +
-     '<div style="font-family:\'Cormorant Garamond\',serif;font-size:1.2rem;font-weight:700;color:#C8A96E;margin-bottom:0.6rem">Enjoy the show, kid.</div>' +
-     '<div style="color:rgba(255,255,255,0.75);font-size:0.9rem;line-height:1.7;font-style:italic">' +
-     '"Turn the lights low, pour something good, and let it take you there.<br><br>' +
-     'This is The Boss at his finest — raw, real, and full of heart.<br><br>' +
-     'Happy Birthday, Joel." 🤘</div>' +
+     '<div style="font-family:\'Cormorant Garamond\',serif;font-size:1.5rem;font-weight:700;color:#C8A96E">Enjoy the show, kid.</div>' +
      '</div>' +
      '<button class="next-btn" onclick="window.bruceBonus()">Let\'s go! 🎁</button>';
  };
@@ -2394,11 +2390,7 @@ function renderMovie(el) {
    if (bc) bc.innerHTML =
      '<div style="background:linear-gradient(135deg,#0d0800,#1a1208);border-radius:16px;padding:1.4rem;text-align:center;margin-bottom:1.2rem;border:1px solid rgba(200,169,110,0.3)">' +
      '<div style="font-size:2rem;margin-bottom:0.6rem">🎵🎸</div>' +
-     '<div style="font-family:\'Cormorant Garamond\',serif;font-size:1.2rem;font-weight:700;color:#C8A96E;margin-bottom:0.6rem">Turn it up, Joel.</div>' +
-     '<div style="color:rgba(255,255,255,0.75);font-size:0.9rem;line-height:1.7;font-style:italic">' +
-     '"Born to Run. Darkness on the Edge of Town. Born in the USA.<br><br>' +
-     'Let The Boss carry you through the night — this is your birthday soundtrack.<br><br>' +
-     'Enjoy every track, kid. You\'ve earned it." 🤘</div>' +
+     '<div style="font-family:\'Cormorant Garamond\',serif;font-size:1.5rem;font-weight:700;color:#C8A96E">Enjoy the show, kid.</div>' +
      '</div>' +
      '<button class="next-btn" onclick="window.bruceBonus()">Cranking it! 🎁</button>';
  };
