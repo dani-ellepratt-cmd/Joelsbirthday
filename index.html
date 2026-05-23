@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
 (function(){
-  var v='b31';
+  var v='b32';
   if(location.search.indexOf('_v='+v)===-1){
     location.replace(location.pathname+'?_v='+v);
   }
@@ -1333,29 +1333,26 @@ function renderMystery(el) {
   window._bballIsPractice = false;
   var totalShots = isPractice ? 3 : 5;
   var mbox = document.getElementById('modal-box');
-  if(mbox) mbox.style.padding = '0.4rem 0.4rem 0.8rem';
+  /* Full-screen modal for basketball */
+  if(mbox) {
+    mbox.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;max-height:100vh;border-radius:0;padding:0;overflow:hidden;display:block;background:#000';
+  }
+  var closeBtn = mbox && mbox.querySelector('.modal-close');
+  if(closeBtn) {
+    closeBtn.style.cssText = 'position:absolute;top:14px;right:14px;z-index:100;background:rgba(0,0,0,0.55);border:1px solid rgba(255,255,255,0.22);color:rgba(255,255,255,0.85);width:38px;height:38px;border-radius:50%;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0';
+  }
 
   el.innerHTML =
-    '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.3rem;padding:0 0.3rem">' +
-    '<div style="font-family:\'Cormorant Garamond\',serif;font-size:1.1rem;font-weight:700;color:#C8A96E">🏀 ' + (isPractice ? 'Warm Up' : 'The Challenge') + '</div>' +
-    '<div id="bball-shots" style="font-size:0.82rem;color:var(--muted);font-weight:600">' + totalShots + ' shots left</div>' +
-    '</div>' +
-    '<canvas id="bball-canvas" style="display:block;width:100%;border-radius:14px;cursor:crosshair;touch-action:none;-webkit-tap-highlight-color:transparent"></canvas>' +
-    '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:0.3rem;padding:0 0.3rem">' +
-    '<div id="bball-score" style="font-family:\'Cormorant Garamond\',serif;font-size:1.2rem;color:#C8A96E;font-weight:700">0 / 0</div>' +
-    '<div style="font-size:0.7rem;color:rgba(200,169,110,0.55)">Tap the screen to shoot</div>' +
-    '</div>' +
-    '<div id="bball-result"></div>';
+    '<canvas id="bball-canvas" style="display:block;position:absolute;inset:0;touch-action:none;-webkit-tap-highlight-color:transparent"></canvas>' +
+    '<div id="bball-result" style="position:absolute;bottom:0;left:0;right:0;padding:1rem 1rem 2rem;z-index:10;text-align:center"></div>';
 
   setTimeout(function(){
    var canvas = document.getElementById('bball-canvas');
    if (!canvas) return;
    var ctx = canvas.getContext('2d');
    var dpr = window.devicePixelRatio || 1;
-   var W = Math.max(canvas.offsetWidth, 280);
-   var H = Math.round(W * 1.18);
-   H = Math.min(H, Math.round(window.innerHeight * 0.64));
-   H = Math.max(H, 320);
+   var W = window.innerWidth;
+   var H = window.innerHeight;
    canvas.width  = W * dpr;
    canvas.height = H * dpr;
    canvas.style.width  = W + 'px';
@@ -1887,13 +1884,13 @@ function renderMystery(el) {
      shooting = true; shotsLeft--; shotsTaken++; ballSpin = 0; netSway = 0;
 
      /* Aim toward hoop center, adjusted by tap offset */
-     var aimX = hoopX + (tapX - VPX) * 0.55;
+     var aimX = hoopX + (tapX - VPX) * 0.50;
      var aimY = hoopY;
      var bx = BALL_X, by = BALL_Y;
-     var gravity = 0.36, steps = 62;
+     var gravity = 0.28, steps = 72;
      var vx = (aimX - bx) / steps;
      var vy = (aimY - by - 0.5 * gravity * steps * steps) / steps;
-     if (vy > -7) vy = -11;
+     if (vy > -6) vy = -10;
 
      var scored = false, frame = 0;
      var throughNet = false, tnFrame = 0;
@@ -1904,8 +1901,6 @@ function renderMystery(el) {
 
      function finish() {
        netSway = 0;
-       document.getElementById('bball-score').textContent = score + ' / ' + shotsTaken;
-       document.getElementById('bball-shots').textContent = shotsLeft + ' shot' + (shotsLeft !== 1 ? 's' : '') + ' left';
        shooting = false;
        if (shotsLeft === 0) {
          setTimeout(showResult, 700);
@@ -1926,9 +1921,8 @@ function renderMystery(el) {
          var fallEase = Math.sin(prog * Math.PI * 0.5);
          var netBottom = netDepth + rimW * 0.55;
          by = hoopY + netBottom * fallEase;
-         /* Ball grows slightly as it falls toward camera through net */
-         var baseScale = Math.max(ps(hoopY), 0.20);
-         var ballR = BALL_R * (baseScale + fallEase * 0.13) * 1.15;
+         /* Consistent ball size through net - only very slightly larger than at hoop distance */
+         var ballR = BALL_R * Math.max(ps(hoopY), 0.22) * 1.18;
          /* Net sway decays, with a small secondary bounce at catch point */
          if (netSway > 0) {
            netSway *= 0.80;
@@ -1975,10 +1969,12 @@ function renderMystery(el) {
        }
 
        /* Phase 1: arc flight */
+       vx *= 0.998; /* subtle air resistance */
        bx += vx; by += vy; vy += gravity; frame++;
        var scaledY = Math.max(by, VPY + 1);
        var r = BALL_R * ps(scaledY) * 1.5;
-       ballSpin += 0.10 + Math.abs(vy) * 0.007;
+       var speed = Math.sqrt(vx*vx + vy*vy);
+       ballSpin += 0.055 + speed * 0.004;
 
        /* Score detection */
        if (!scored && vy > 0 &&
@@ -2083,7 +2079,7 @@ function renderMystery(el) {
    /* Dashed trajectory preview */
    function drawAim(tx, ty) {
      drawFrame(null, null, 0);
-     var px = BALL_X, py = BALL_Y, grav = 0.36, stps = 62;
+     var px = BALL_X, py = BALL_Y, grav = 0.28, stps = 72;
      var pvx = (tx - px) / stps;
      var pvy = (ty - py - 0.5 * grav * stps * stps) / stps;
      if (pvy > -7) pvy = -11;
