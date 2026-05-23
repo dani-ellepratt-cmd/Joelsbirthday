@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
 (function(){
-  var v='b38';
+  var v='b39';
   if(location.search.indexOf('_v='+v)===-1){
     location.replace(location.pathname+'?_v='+v);
   }
@@ -2430,7 +2430,7 @@ function renderHeadTickles(el) {
    { icon:'🏠', name:'Brian Chesky', age:'Age 32', fact:'Was 32 when Airbnb started scaling globally after surviving its early struggles.' },
    { icon:'🏀', name:'LeBron James', age:'Age 32', fact:'Was still dominating and winning championships at 32 — arguably becoming a more complete player than ever.' },
    { icon:'⚽', name:'Cristiano Ronaldo', age:'Age 32', fact:'Won the Ballon d\'Or at 32, proving that elite performance only gets sharper with time.' },
-   { icon:'🤍', name:'Joel', age:'Age 32', fact:'32 is where experience meets clarity. You\'ve lived enough to know what works, what matters, and where you\'re going. You\'ve laid the foundations — now it\'s about executing, backing yourself, and turning everything you\'ve been building into something real.\n\nThis isn\'t just another year... this is YOUR year. 🔥' }
+   { icon:'🤍', name:'Joel', age:'Age 32', fact:'32 is where experience meets clarity. You\'ve lived enough to know what works, what matters, and where you\'re going. You\'ve laid the foundations — now it\'s about executing, backing yourself, and turning everything you\'ve been building into something real.\n\nThis is your year 🔥' }
  ];
  var fi = 0;
 
@@ -2448,7 +2448,7 @@ function renderHeadTickles(el) {
      '<div style="color:rgba(255,255,255,0.88);font-size:0.95rem;line-height:1.7;font-style:italic">"' + f.fact.replace(/\n/g,'<br><br>') + '"</div>' +
      '</div>' +
      (isLast
-       ? '<button class="next-btn" onclick="closeModal()">Love it 🤍</button>'
+       ? '<button class="next-btn" onclick="closeModal()" style="font-size:2rem;background:none;border:none;padding:0.5rem;box-shadow:none">🤍</button>'
        : '<button class="play-btn" onclick="htNext()">Next ›</button>'
      );
    window.htNext = function() { fi++; showFact(fi); };
