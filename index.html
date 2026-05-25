@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
 (function(){
-  var v='b58';
+  var v='b59';
   if(location.search.indexOf('_v='+v)===-1){
     location.replace(location.pathname+'?_v='+v);
   }
@@ -584,8 +584,12 @@ function renderSpinWheel(el) {
              '<div style="text-align:center;padding:1rem 0">' +
              '<div style="font-size:2.8rem;margin-bottom:0.8rem">🎁</div>' +
              '<div style="font-family:\'Cormorant Garamond\',serif;font-size:1.6rem;font-weight:700;color:#C8A96E;margin-bottom:0.6rem">Present Unlocked!</div>' +
-             '<div style="color:rgba(255,255,255,0.7);font-size:0.95rem;line-height:1.7;margin-bottom:1.2rem">That\'s the sweetest thing 🤍<br>Go find your second present!</div>' +
-             '<button class="next-btn" onclick="closeModal()">Let\'s go! →</button>';
+             '<div style="color:rgba(255,255,255,0.7);font-size:0.95rem;line-height:1.7;margin-bottom:0.8rem">That\'s the sweetest thing 🤍<br>Go find your second present!</div>' +
+             '<div style="background:linear-gradient(135deg,#1a1208,#2d1f08);border-radius:16px;padding:1.2rem;border:1px solid rgba(200,169,110,0.35);margin-bottom:1rem">' +
+             '<div style="font-size:0.65rem;letter-spacing:3px;text-transform:uppercase;color:rgba(200,169,110,0.6);margin-bottom:0.4rem">And one more thing...</div>' +
+             '<div style="font-family:\'Cormorant Garamond\',serif;font-size:1.2rem;font-weight:700;color:#C8A96E;margin-bottom:0.6rem">You have a scratch card waiting 🪙</div>' +
+             '<button class="play-btn" onclick="renderTickles(document.getElementById(\'modal-inner\'))">Scratch it →</button>' +
+             '</div>';
            launchConfetti();
          };
        };
