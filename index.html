@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
 (function(){
-  var v='b67';
+  var v='b68';
   if(location.search.indexOf('_v='+v)===-1){
     location.replace(location.pathname+'?_v='+v);
   }
@@ -243,6 +243,7 @@
    <div class="home-cd-lbl" id="home-cd-lbl">First surprise unlocks in</div>
    <div class="home-cd-time" id="home-cd-time">--:--:--</div>
  </div>
+ <script>(function(){function t(){var e=document.getElementById('home-cd-time');if(!e)return;var n=new Date(),g=new Date(2026,4,26,6,0,0,0),d=g-n;if(d<=0){e.textContent='Now! ✨';return;}var h=Math.floor(d/3600000),m=Math.floor((d%3600000)/60000),s=Math.floor((d%60000)/1000);e.textContent=String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');setTimeout(t,1000);}t();})();</script>
  <div class="home-divider"></div>
  <button class="home-go-btn" onclick="enterApp()">Are you ready?</button>
  <div class="home-footer">With love — Dani-Elle 🤍</div>
