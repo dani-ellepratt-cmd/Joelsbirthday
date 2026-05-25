@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
 (function(){
-  var v='b54';
+  var v='b55';
   if(location.search.indexOf('_v='+v)===-1){
     location.replace(location.pathname+'?_v='+v);
   }
@@ -307,9 +307,9 @@
 <script>
 // Part 1 = Tue 26 May, Part 2 = Fri 30 May
 var slots = [
- { id:'s9',  date:26, hour:7,  half:false, label:'7am',  emoji:'🍳', title:'Breakfast for the Birthday Boy', desc:'Your birthday starts with a cooked brekkie — place your order!', type:'breakfast' },
- { id:'s10', date:26, hour:8,  half:false, label:'8am',  emoji:'🎡', title:'Spin to Win!',                   desc:'Spin the wheel and claim your prize!', type:'spinwheel' },
- { id:'s11', date:26, hour:9,  half:false, label:'9am',  emoji:'💰', title:'Money Moment',                   desc:'Joel, it\'s time to test your luck...', type:'wheel' },
+ { id:'s9',  date:26, hour:6,  half:false, label:'6am',  emoji:'🍳', title:'Breakfast for the Birthday Boy', desc:'Your birthday starts with a cooked brekkie — place your order!', type:'breakfast' },
+ { id:'s10', date:26, hour:7,  half:false, label:'7am',  emoji:'🎡', title:'Spin to Win!',                   desc:'Spin the wheel and claim your prize!', type:'spinwheel' },
+ { id:'s11', date:26, hour:18, half:false, label:'6pm',  emoji:'💰', title:'Money Moment',                   desc:'Joel, it\'s time to test your luck...', type:'wheel' },
  { id:'s14', date:26, hour:16, half:false, label:'4pm',  emoji:'🎰', title:'Hit the Jackpot!',               desc:'Pull the lever on the birthday pokies!', type:'slots' },
  { id:'s15', date:26, hour:17, half:false, label:'5pm',  emoji:'🏀', title:"Let's find out 🏀",           desc:"Let's find out how good you really are...", type:'mystery' },
  { id:'s18', date:26, hour:19, half:false, label:'7pm',  emoji:'🎸', title:'Springsteen Time',              desc:'Settle in — it is movie time with The Boss.', type:'movie' },
@@ -438,7 +438,12 @@ function renderBreakfast(el) {
      '<div class="love-note" style="margin-top:1rem;text-align:center"><div style="font-size:1.8rem;margin-bottom:0.5rem">🛎️</div>' +
      '<strong style="color:#C8A96E">Order received, birthday boy!</strong><br><br>' +
      fl + '<br>' + dl + '<br><br>Coming right up — give me 10 mins! 🍳🤍</div>' +
-     '<button class="next-btn" style="margin-top:1rem" onclick="closeModal();openTikTokFeed()">All done! →</button>';
+     '<div style="margin-top:1rem;text-align:center;background:linear-gradient(135deg,#1a1208,#2d1f08);border-radius:16px;padding:1.2rem;border:1px solid rgba(200,169,110,0.35)">' +
+     '<div style="font-size:0.65rem;letter-spacing:3px;text-transform:uppercase;color:rgba(200,169,110,0.6);margin-bottom:0.4rem">While you wait...</div>' +
+     '<div style="font-family:\'Cormorant Garamond\',serif;font-size:1.3rem;font-weight:700;color:#C8A96E;margin-bottom:0.8rem">You have a little something to open 🎁</div>' +
+     '<button class="play-btn" onclick="brekCongrats()">Open it →</button>' +
+     '</div>';
+   window.brekCongrats = function() { renderTickles(document.getElementById('modal-inner')); };
  }
 }
 
@@ -2081,8 +2086,19 @@ function renderMystery(el) {
          if (el) {
            el.innerHTML += '<br><br>' +
              (won ? '' : '...but lucky for you she is still taking you out to dinner 🍽️<br><br>') +
-             '<strong style="color:#C8A96E;font-size:1.1rem">Be ready to leave at 5:30 🕠</strong>';
+             '<strong style="color:#C8A96E;font-size:1.1rem">You need to get ready NOW —<br>you\'re leaving in 5 minutes! 🕠</strong>' +
+             '<div id="dinner-countdown" style="font-family:\'Cormorant Garamond\',serif;font-size:3.5rem;font-weight:700;color:#C8A96E;margin-top:0.5rem;letter-spacing:2px">5:00</div>';
            launchConfetti();
+           var secs = 300;
+           var cdInterval = setInterval(function() {
+             secs--;
+             var cd = document.getElementById('dinner-countdown');
+             if (!cd) { clearInterval(cdInterval); return; }
+             if (secs <= 0) { cd.textContent = "Let's go!"; clearInterval(cdInterval); return; }
+             var m = Math.floor(secs / 60), s = secs % 60;
+             cd.textContent = m + ':' + (s < 10 ? '0' : '') + s;
+             if (secs <= 60) cd.style.color = '#ef4444';
+           }, 1000);
          }
          var btn = document.getElementById('bball-close-btn');
          if (btn) btn.style.display = 'block';
@@ -2530,23 +2546,36 @@ function renderHeadTickles(el) {
 // ── DESSERT ───────────────────────────────────────────────────────────
 function renderDessert(el) {
  el.innerHTML =
-   '<div class="modal-title">Dessert Time!</div>' +
-   '<div class="love-note" style="margin-bottom:1.2rem">Time for something sweet, birthday boy! 🍰<br><br>What are you having?</div>' +
-   '<div class="section-label">🍰 Pick your dessert</div>' +
-   '<div class="dessert-grid">' +
-   '<button class="dessert-btn" onclick="pickDessert(\'cake\')"><div style="font-size:2rem">🎂</div><div style="margin-top:0.4rem">Birthday Cake</div></button>' +
-   '<button class="dessert-btn" onclick="pickDessert(\'icecream\')"><div style="font-size:2rem">🍦</div><div style="margin-top:0.4rem">Ice Cream</div></button>' +
+   '<div style="text-align:center;padding:0.5rem 0 1rem">' +
+   '<div style="font-size:4rem;margin-bottom:0.5rem;animation:shakeBtnPulse 1s ease-in-out infinite;display:inline-block">🎂</div>' +
+   '<div style="font-family:\'Cormorant Garamond\',serif;font-size:2rem;font-weight:700;color:#C8A96E;margin-bottom:0.3rem">Dessert Time!</div>' +
+   '<div style="font-size:0.8rem;letter-spacing:3px;text-transform:uppercase;color:rgba(139,94,60,0.6)">The birthday boy gets to choose</div>' +
+   '</div>' +
+   '<div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1rem 0">' +
+   '<button class="dessert-btn" onclick="pickDessert(\'cake\')" style="padding:2rem 1rem;border:2px solid rgba(200,169,110,0.4);background:linear-gradient(135deg,#fff8f0,#f5ece0)">' +
+     '<div style="font-size:2.8rem">🎂</div>' +
+     '<div style="margin-top:0.6rem;font-weight:900;color:#5a3820;font-size:1rem">Birthday Cake</div>' +
+   '</button>' +
+   '<button class="dessert-btn" onclick="pickDessert(\'icecream\')" style="padding:2rem 1rem;border:2px solid rgba(200,169,110,0.4);background:linear-gradient(135deg,#fff8f0,#f5ece0)">' +
+     '<div style="font-size:2.8rem">🍦</div>' +
+     '<div style="margin-top:0.6rem;font-weight:900;color:#5a3820;font-size:1rem">Ice Cream</div>' +
+   '</button>' +
    '</div>' +
    '<div id="dessert-result"></div>';
  window.pickDessert = function(c) {
-   el.querySelectorAll('.dessert-btn').forEach(function(b) { b.disabled = true; });
-   var labels = { cake:'🎂 Birthday Cake', icecream:'🍦 Ice Cream', brownie:'🍫 Chocolate Brownie', cheesecake:'🍮 Cheesecake' };
-   document.getElementById('dessert-result').innerHTML =
-     '<div class="love-note" style="margin-top:1rem;text-align:center"><div style="font-size:1.8rem;margin-bottom:0.5rem">🛎️</div>' +
-     '<strong style="color:#C8A96E">Order received!</strong><br><br>' +
-     labels[c] + ' coming right up! 🍰<br><br>Happy Birthday Joel. 🤍</div>' +
-     '<button class="next-btn" onclick="closeModal()">Yes please!</button>';
+   el.querySelectorAll('.dessert-btn').forEach(function(b) { b.disabled = true; b.style.opacity = c === (b.textContent.trim() === 'Birthday Cake' ? 'cake' : 'icecream') ? '1' : '0.4'; });
    launchConfetti();
+   setTimeout(function() {
+     document.getElementById('dessert-result').innerHTML =
+       '<div style="text-align:center;background:linear-gradient(135deg,#1a1208,#2d1f08);border-radius:18px;padding:1.8rem 1.4rem;margin-top:0.5rem;border:1px solid rgba(200,169,110,0.4)">' +
+       '<div style="font-size:3rem;margin-bottom:0.6rem">' + (c === 'cake' ? '🎂' : '🍦') + '</div>' +
+       '<div style="font-family:\'Cormorant Garamond\',serif;font-size:1.6rem;font-weight:700;color:#C8A96E;margin-bottom:0.4rem">' + (c === 'cake' ? 'Birthday Cake' : 'Ice Cream') + '</div>' +
+       '<div style="font-size:0.6rem;letter-spacing:3px;text-transform:uppercase;color:rgba(200,169,110,0.5);margin-bottom:0.8rem">Coming right up!</div>' +
+       '<div style="color:rgba(255,255,255,0.75);font-size:0.95rem;line-height:1.7">A perfect end to a perfect day 🤍<br>Happy Birthday Joel!</div>' +
+       '</div>' +
+       '<button class="next-btn" style="margin-top:1rem" onclick="closeModal()">Yes please!</button>';
+     launchConfetti();
+   }, 400);
  };
 }
 
