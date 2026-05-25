@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
 (function(){
-  var v='b66';
+  var v='b67';
   if(location.search.indexOf('_v='+v)===-1){
     location.replace(location.pathname+'?_v='+v);
   }
@@ -2754,11 +2754,14 @@ function startHomeCountdown(){
  function tick(){
    var el=document.getElementById('home-cd-time'),lbl=document.getElementById('home-cd-lbl');
    if(!el)return;
-   var now=new Date(),tgt=new Date();tgt.setHours(9,0,0,0);
+   var now=new Date();
+   // Target: May 26 2026 at 6:00 AM
+   var tgt=new Date(2026,4,26,6,0,0,0);
    if(now>=tgt){el.textContent='Now! \u2728';if(lbl)lbl.textContent='Surprises are unlocked!';return;}
    var d=tgt-now;
    var h=Math.floor(d/3600000),m=Math.floor((d%3600000)/60000),s=Math.floor((d%60000)/1000);
    el.textContent=String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+   if(lbl)lbl.textContent='First surprise unlocks in';
    setTimeout(tick,1000);
  }
  tick();
