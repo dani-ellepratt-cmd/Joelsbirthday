@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
 (function(){
-  var v='b65';
+  var v='b66';
   if(location.search.indexOf('_v='+v)===-1){
     location.replace(location.pathname+'?_v='+v);
   }
@@ -289,6 +289,12 @@
 </div>
 
 
+<div id="birthday-countdown-wrap" style="display:none;margin:0.8rem 1rem 0;background:linear-gradient(135deg,#1a1208,#2d1f08);border-radius:16px;padding:1.2rem 1rem;text-align:center;border:1px solid rgba(200,169,110,0.35)">
+ <div style="font-size:0.6rem;letter-spacing:4px;text-transform:uppercase;color:rgba(200,169,110,0.55);margin-bottom:0.4rem">First surprise unlocks in</div>
+ <div id="birthday-countdown" style="font-family:'Cormorant Garamond',serif;font-size:2.4rem;font-weight:700;color:#C8A96E;letter-spacing:2px;line-height:1">--:--:--</div>
+ <div style="font-size:0.7rem;color:rgba(200,169,110,0.5);margin-top:0.3rem">Tomorrow at 6am 🎂</div>
+</div>
+
 <div class="progress-wrap">
  <div class="progress-label" id="progress-label">Loading...</div>
  <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
@@ -325,13 +331,18 @@ function getTodayDate() {
 
 function getTodaySlots() {
   var d = getTodayDate();
-  // On Part 1 day show Part 1; on Part 2 day show Part 2; else show all (preview)
-  if (d === 26 || d === 30) return slots.filter(function(s){ return s.date === d; });
-  return slots; // preview: show all
+  if (d === 26) return slots.filter(function(s){ return s.date === 26; });
+  return slots; // show all on other days (preview)
 }
 
 function isUnlocked(slot) {
-  return true; // PREVIEW MODE - all unlocked
+  var now = new Date();
+  var d = now.getDate(), m = now.getMonth()+1, h = now.getHours();
+  // Only unlock on May 26 when the hour has been reached
+  if (m === 5 && d === 26) {
+    return h >= slot.hour;
+  }
+  return false; // locked until birthday
 }
 
 function formatTime(d) {
@@ -2789,6 +2800,29 @@ initBalloons();
 startHomeCountdown();
 setInterval(updateClock, 1000);
 setInterval(renderGrid, 20000);
+
+// ── BIRTHDAY COUNTDOWN ────────────────────────────────────────────────
+(function() {
+  var wrap = document.getElementById('birthday-countdown-wrap');
+  var display = document.getElementById('birthday-countdown');
+  function tick() {
+    var now = new Date();
+    var d = now.getDate(), m = now.getMonth()+1;
+    // Only show countdown on May 25 (day before birthday)
+    if (m !== 5 || d !== 25) { if(wrap) wrap.style.display='none'; return; }
+    // Target: May 26 at 6:00:00 AM
+    var target = new Date(now.getFullYear(), 4, 26, 6, 0, 0);
+    var diff = target - now;
+    if (diff <= 0) { if(wrap) wrap.style.display='none'; renderGrid(); return; }
+    var h = Math.floor(diff / 3600000);
+    var min = Math.floor((diff % 3600000) / 60000);
+    var s = Math.floor((diff % 60000) / 1000);
+    if(wrap) wrap.style.display='block';
+    if(display) display.textContent = String(h).padStart(2,'0') + ':' + String(min).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+  }
+  tick();
+  setInterval(tick, 1000);
+})();
 // ── SHAKE TO WIN ──────────────────────────────────────────────────────
 var _shakeUsed=false,_shakeLastAcc={x:0,y:0,z:0},_shakeCooldown=false;
 var _shakePrizes=[
