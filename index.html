@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
 (function(){
-  var v='b59';
+  var v='b60';
   if(location.search.indexOf('_v='+v)===-1){
     location.replace(location.pathname+'?_v='+v);
   }
@@ -416,7 +416,11 @@ function renderBreakfast(el) {
      '<div class="love-note" style="margin-top:1rem;text-align:center"><div style="font-size:1.8rem;margin-bottom:0.5rem">🛎️</div>' +
      '<strong style="color:#C8A96E">Order received, birthday boy!</strong><br><br>' +
      fl + '<br>' + dl + '<br><br>Coming right up — give me 10 mins! 🍳🤍</div>' +
-     '<button class="next-btn" style="margin-top:1rem" onclick="closeModal()">Can\'t wait! →</button>';
+     '<div style="margin-top:1rem;text-align:center;background:linear-gradient(135deg,#1a1208,#2d1f08);border-radius:16px;padding:1.2rem;border:1px solid rgba(200,169,110,0.35)">' +
+     '<div style="font-size:0.65rem;letter-spacing:3px;text-transform:uppercase;color:rgba(200,169,110,0.6);margin-bottom:0.4rem">While you wait...</div>' +
+     '<div style="font-family:\'Cormorant Garamond\',serif;font-size:1.2rem;font-weight:700;color:#C8A96E;margin-bottom:0.6rem">You have a scratch card waiting 🪙</div>' +
+     '<button class="play-btn" onclick="renderTickles(document.getElementById(\'modal-inner\'))">Scratch it →</button>' +
+     '</div>';
  }
 }
 
@@ -584,12 +588,8 @@ function renderSpinWheel(el) {
              '<div style="text-align:center;padding:1rem 0">' +
              '<div style="font-size:2.8rem;margin-bottom:0.8rem">🎁</div>' +
              '<div style="font-family:\'Cormorant Garamond\',serif;font-size:1.6rem;font-weight:700;color:#C8A96E;margin-bottom:0.6rem">Present Unlocked!</div>' +
-             '<div style="color:rgba(255,255,255,0.7);font-size:0.95rem;line-height:1.7;margin-bottom:0.8rem">That\'s the sweetest thing 🤍<br>Go find your second present!</div>' +
-             '<div style="background:linear-gradient(135deg,#1a1208,#2d1f08);border-radius:16px;padding:1.2rem;border:1px solid rgba(200,169,110,0.35);margin-bottom:1rem">' +
-             '<div style="font-size:0.65rem;letter-spacing:3px;text-transform:uppercase;color:rgba(200,169,110,0.6);margin-bottom:0.4rem">And one more thing...</div>' +
-             '<div style="font-family:\'Cormorant Garamond\',serif;font-size:1.2rem;font-weight:700;color:#C8A96E;margin-bottom:0.6rem">You have a scratch card waiting 🪙</div>' +
-             '<button class="play-btn" onclick="renderTickles(document.getElementById(\'modal-inner\'))">Scratch it →</button>' +
-             '</div>';
+             '<div style="color:rgba(255,255,255,0.7);font-size:0.95rem;line-height:1.7;margin-bottom:1.2rem">That\'s the sweetest thing 🤍<br>Go find your second present!</div>' +
+             '<button class="next-btn" onclick="closeModal()">Let\'s go! →</button>';
            launchConfetti();
          };
        };
