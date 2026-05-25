@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
 (function(){
-  var v='b57';
+  var v='b58';
   if(location.search.indexOf('_v='+v)===-1){
     location.replace(location.pathname+'?_v='+v);
   }
@@ -309,16 +309,13 @@
 var slots = [
  { id:'s9',  date:26, hour:6,  half:false, label:'6am',  emoji:'🍳', title:'Breakfast for the Birthday Boy', desc:'Your birthday starts with a cooked brekkie — place your order!', type:'breakfast' },
  { id:'s10', date:26, hour:7,  half:false, label:'7am',  emoji:'🎡', title:'Spin to Win!',                   desc:'Spin the wheel and claim your prize!', type:'spinwheel' },
- { id:'s11', date:26, hour:18, half:false, label:'6pm',  emoji:'💰', title:'Money Moment',                   desc:'Joel, it\'s time to test your luck...', type:'wheel' },
  { id:'s14', date:26, hour:16, half:false, label:'4pm',  emoji:'🎰', title:'Hit the Jackpot!',               desc:'Pull the lever on the birthday pokies!', type:'slots' },
  { id:'s15', date:26, hour:17, half:false, label:'5pm',  emoji:'🏀', title:"Let's find out 🏀",           desc:"Let's find out how good you really are...", type:'mystery' },
+ { id:'s11', date:26, hour:18, half:false, label:'6pm',  emoji:'💰', title:'Money Moment',                   desc:'Joel, it\'s time to test your luck...', type:'wheel' },
  { id:'s18', date:26, hour:19, half:false, label:'7pm',  emoji:'🎸', title:'Springsteen Time',              desc:'Settle in — it is movie time with The Boss.', type:'movie' },
  { id:'s19', date:26, hour:20, half:false, label:'8pm',  emoji:'🤲', title:'For the Birthday Boy',    desc:'This one is exclusively for Joel...', type:'headtickles' },
  { id:'s20', date:26, hour:21, half:false, label:'9pm',  emoji:'🍰', title:'Dessert Time',                  desc:'Time for something sweet — place your dessert order!', type:'dessert' },
- { id:'s21', date:26, hour:22, half:false, label:'10pm', emoji:'🤍', title:'Love Note',              desc:'Something special to end the day.', type:'lovenote' },
- // ── Part 2 — Friday 30 May ──
- { id:'s13', date:30, hour:13, half:false, label:'1pm',  emoji:'🤲', title:'Congratulations',               desc:'Open to find out what you have won!', type:'tickles' },
- { id:'s16', date:30, hour:16, half:false, label:'4pm',  emoji:'🃏', title:'Uno Time 🃏',                     desc:'You vs Dani-Elle — shuffle up and deal!', type:'eightball' }
+ { id:'s21', date:26, hour:22, half:false, label:'10pm', emoji:'🤍', title:'Love Note',              desc:'Something special to end the day.', type:'lovenote' }
 ];
 
 function getTodayDate() {
@@ -348,30 +345,12 @@ function renderGrid() {
  grid.innerHTML = '';
  var todaySlots = getTodaySlots();
  var d = getTodayDate();
- var partLabel = d === 26 ? 'Part 1 — Tuesday 🎉' : d === 30 ? 'Part 2 — Friday 🎉' : null;
- var subEl = document.querySelector('.header p');
- if (subEl && partLabel) subEl.textContent = partLabel;
  var total = todaySlots.length;
  var unlocked = todaySlots.filter(isUnlocked).length;
  document.getElementById('progress-label').textContent = unlocked + ' of ' + total + ' surprises unlocked';
  document.getElementById('progress-fill').style.width = Math.round((unlocked/total)*100) + '%';
 
- // Inject Part 2 heading before first date:30 slot (in preview AND on May 30)
- var shownPart2Heading = false;
-
  todaySlots.forEach(function(slot) {
-   if (slot.date === 30 && !shownPart2Heading) {
-     shownPart2Heading = true;
-     var heading = document.createElement('div');
-     heading.style.cssText = 'grid-column:1/-1;text-align:center;padding:1.4rem 0 0.6rem;';
-     heading.innerHTML = '<div style="display:inline-flex;align-items:center;gap:0.8rem;font-family:\'Cormorant Garamond\',serif;font-size:1.5rem;font-weight:700;color:#C8A96E;letter-spacing:1px">' +
-       '<span style="flex:1;height:1px;width:40px;background:linear-gradient(to right,transparent,rgba(200,169,110,0.5))"></span>' +
-       'Part Two — Friday' +
-       '<span style="flex:1;height:1px;width:40px;background:linear-gradient(to left,transparent,rgba(200,169,110,0.5))"></span>' +
-       '</div>';
-     grid.appendChild(heading);
-   }
-
    var locked = !isUnlocked(slot);
    var div = document.createElement('div');
    div.className = 'hour-card ' + (locked ? 'locked' : 'unlocked');
@@ -437,12 +416,7 @@ function renderBreakfast(el) {
      '<div class="love-note" style="margin-top:1rem;text-align:center"><div style="font-size:1.8rem;margin-bottom:0.5rem">🛎️</div>' +
      '<strong style="color:#C8A96E">Order received, birthday boy!</strong><br><br>' +
      fl + '<br>' + dl + '<br><br>Coming right up — give me 10 mins! 🍳🤍</div>' +
-     '<div style="margin-top:1rem;text-align:center;background:linear-gradient(135deg,#1a1208,#2d1f08);border-radius:16px;padding:1.2rem;border:1px solid rgba(200,169,110,0.35)">' +
-     '<div style="font-size:0.65rem;letter-spacing:3px;text-transform:uppercase;color:rgba(200,169,110,0.6);margin-bottom:0.4rem">While you wait...</div>' +
-     '<div style="font-family:\'Cormorant Garamond\',serif;font-size:1.3rem;font-weight:700;color:#C8A96E;margin-bottom:0.8rem">You have a little something to open 🎁</div>' +
-     '<button class="play-btn" onclick="brekCongrats()">Open it →</button>' +
-     '</div>';
-   window.brekCongrats = function() { renderTickles(document.getElementById('modal-inner')); };
+     '<button class="next-btn" style="margin-top:1rem" onclick="closeModal()">Can\'t wait! →</button>';
  }
 }
 
