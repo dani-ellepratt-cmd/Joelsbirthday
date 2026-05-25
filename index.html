@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
 (function(){
-  var v='b68';
+  var v='b69';
   if(location.search.indexOf('_v='+v)===-1){
     location.replace(location.pathname+'?_v='+v);
   }
@@ -260,20 +260,57 @@
 </div>
 <script>
 (function(){
-  var h=new Date().getHours();
-  var cfg={10:{e:'🎡',t:'spin'},11:{e:'💰',t:'float'},12:{e:'🎉',t:'float'},13:{e:'🤲',t:'float'},14:{e:'💸',t:'float'},15:{e:'🏀',t:'bounce'},16:{e:'🎱',t:'float'},17:{e:'🎁',t:'float'},18:{e:'🎸',t:'float'},19:{e:'🤲',t:'float'},20:{e:'🍰',t:'float'},21:{e:'🤍',t:'float'},};
-  var c=cfg[h];
-  if(!c)return;
   var left=[5,14,22,32,42,52,62,72,83];
   var durs=[13,10,16,11,14,9,15,12,17];
   var dels=[0,5,9,2,7,11,1,6,3];
-  var cls=c.t==='spin'?'bg-emoji-spin':c.t==='bounce'?'bg-ball':'bg-emoji';
-  var html='';
-  var n=c.t==='bounce'?9:c.t==='spin'?7:8;
-  for(var i=0;i<n;i++){
-    html+='<span class="'+cls+'" style="left:'+left[i%left.length]+'%;animation-duration:'+durs[i%durs.length]+'s;animation-delay:'+dels[i%dels.length]+'s">'+c.e+'</span>';
+
+  // Per-hour config for May 26 (birthday)
+  var bdayCfg={
+    6:{e:'🍳',t:'float'},
+    7:{e:'🎡',t:'spin'},
+    8:{e:'🎡',t:'spin'},
+    9:{e:'🎡',t:'spin'},
+    10:{e:'🎡',t:'spin'},
+    11:{e:'🎡',t:'spin'},
+    12:{e:'🎡',t:'spin'},
+    13:{e:'🎡',t:'spin'},
+    14:{e:'🎡',t:'spin'},
+    15:{e:'🎡',t:'spin'},
+    16:{e:'🎰',t:'float'},
+    17:{e:'🏀',t:'bounce'},
+    18:{e:'💰',t:'float'},
+    19:{e:'🎸',t:'float'},
+    20:{e:'🤲',t:'float'},
+    21:{e:'🍦',t:'float'},
+    22:{e:'🤍',t:'float'},
+    23:{e:'🤍',t:'float'}
+  };
+
+  function updateBg(){
+    var now=new Date();
+    var d=now.getDate(), m=now.getMonth()+1, h=now.getHours();
+    var layer=document.getElementById('balloon-layer');
+    if(!layer)return;
+    var c=null;
+    // On birthday (May 26) after 6am, use hour-based emojis
+    if(m===5 && d===26 && h>=6){
+      c=bdayCfg[h]||{e:'🤍',t:'float'};
+    } else {
+      // Before birthday: balloons
+      c={e:'🎈',t:'float'};
+    }
+    var cls=c.t==='spin'?'bg-emoji-spin':c.t==='bounce'?'bg-ball':'bg-emoji';
+    var n=c.t==='bounce'?9:c.t==='spin'?7:8;
+    var html='';
+    for(var i=0;i<n;i++){
+      html+='<span class="'+cls+'" style="left:'+left[i%left.length]+'%;animation-duration:'+durs[i%durs.length]+'s;animation-delay:'+dels[i%dels.length]+'s">'+c.e+'</span>';
+    }
+    layer.innerHTML=html;
   }
-  document.getElementById('balloon-layer').innerHTML=html;
+
+  updateBg();
+  // Re-check every minute so it updates when the hour changes
+  setInterval(updateBg, 60000);
 })();
 </script>
 
