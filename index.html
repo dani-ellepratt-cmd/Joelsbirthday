@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
 (function(){
-  var v='b62';
+  var v='b63';
   if(location.search.indexOf('_v='+v)===-1){
     location.replace(location.pathname+'?_v='+v);
   }
@@ -71,7 +71,8 @@
 
  .modal-overlay { display:flex; position:fixed; inset:0; background:rgba(0,0,0,0.88); z-index:1000; align-items:center; justify-content:center; padding:1rem; opacity:0; visibility:hidden; pointer-events:none; transition:opacity 0.28s ease, visibility 0.28s ease; }
  .modal-overlay.active { opacity:1; visibility:visible; pointer-events:auto; }
- .modal { background:#f5efe4; border-radius:24px; padding:2rem; max-width:500px; width:100%; border:1px solid rgba(200,169,110,0.4); position:relative; max-height:90vh; overflow-y:auto; -webkit-overflow-scrolling:touch; overscroll-behavior:contain; animation:popIn 0.3s cubic-bezier(0.175,0.885,0.32,1.275); }
+ .modal { background:#f5efe4; border-radius:24px; padding:2rem; max-width:500px; width:100%; border:1px solid rgba(200,169,110,0.4); position:relative; max-height:85vh; overflow-y:scroll; -webkit-overflow-scrolling:touch; overscroll-behavior:contain; animation:popIn 0.3s cubic-bezier(0.175,0.885,0.32,1.275); }
+ body.modal-open { overflow:hidden; position:fixed; width:100%; }
  @keyframes popIn { from{transform:scale(0.7);opacity:0} to{transform:scale(1);opacity:1} }
  .modal-close { position:absolute; top:1rem; right:1rem; background:rgba(255,255,255,0.1); border:none; color:white; font-size:1.2rem; width:36px; height:36px; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center; font-weight:900; }
  .modal-close:hover { background:rgba(255,255,255,0.2); }
@@ -363,19 +364,32 @@ function renderGrid() {
  });
 }
 
+var _scrollY = 0;
 function openSlot(id) {
  _appStarted=true;
  var slot = null;
  for (var i = 0; i < slots.length; i++) { if (slots[i].id === id) { slot = slots[i]; break; } }
  if (!slot || !isUnlocked(slot)) return;
+ _scrollY = window.scrollY;
+ document.body.classList.add('modal-open');
+ document.body.style.top = '-' + _scrollY + 'px';
  document.getElementById('modal-overlay').classList.add('active');
+ var mb = document.getElementById('modal-box');
+ if (mb) mb.scrollTop = 0;
  var el = document.getElementById('modal-inner');
  var fns = { breakfast:renderBreakfast, gift:renderGift, spinwheel:renderSpinWheel, slots:renderSlots, lunch:renderLunch, tickles:renderTickles, wheel:renderWheel, eightball:renderEightBall, mystery:renderMystery, cheese:renderCheese, movie:renderMovie, headtickles:renderHeadTickles, dessert:renderDessert, lovenote:renderLoveNote, game:renderGame, whosaidit:renderWhoSaidIt };
  if (fns[slot.type]) fns[slot.type](el);
  launchConfetti();
 }
 
-function closeModal() { document.getElementById('modal-overlay').classList.remove('active'); var mb=document.getElementById('modal-box'); if(mb) mb.style.padding=''; if(typeof _appStarted!=='undefined'&&_appStarted) showNextWidget(); }
+function closeModal() {
+ document.getElementById('modal-overlay').classList.remove('active');
+ document.body.classList.remove('modal-open');
+ document.body.style.top = '';
+ window.scrollTo(0, _scrollY);
+ var mb=document.getElementById('modal-box'); if(mb) mb.style.padding='';
+ if(typeof _appStarted!=='undefined'&&_appStarted) showNextWidget();
+}
 document.getElementById('modal-overlay').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
 
 // ── BREAKFAST ─────────────────────────────────────────────────────────
