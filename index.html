@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <script>
 (function(){
-  var v='b69';
+  var v='b70';
   if(location.search.indexOf('_v='+v)===-1){
     location.replace(location.pathname+'?_v='+v);
   }
@@ -359,7 +359,7 @@ var slots = [
  { id:'s11', date:26, hour:18, half:false, label:'6pm',  emoji:'💰', title:'Money Moment',                   desc:'Joel, it\'s time to test your luck...', type:'wheel' },
  { id:'s18', date:26, hour:19, half:false, label:'7pm',  emoji:'🎸', title:'Springsteen Time',              desc:'Settle in — it is movie time with The Boss.', type:'movie' },
  { id:'s19', date:26, hour:20, half:false, label:'8pm',  emoji:'🤲', title:'For the Birthday Boy',    desc:'This one is exclusively for Joel...', type:'headtickles' },
- { id:'s20', date:26, hour:21, half:false, label:'9pm',  emoji:'🍰', title:'Dessert Time',                  desc:'Time for something sweet — place your dessert order!', type:'dessert' },
+ { id:'s20', date:26, hour:20, minute:15,  half:false, label:'8:15pm', emoji:'🍰', title:'Dessert Time',                  desc:'Time for something sweet — place your dessert order!', type:'dessert' },
  { id:'s21', date:26, hour:22, half:false, label:'10pm', emoji:'🤍', title:'Love Note',              desc:'Something special to end the day.', type:'lovenote' }
 ];
 
@@ -375,10 +375,13 @@ function getTodaySlots() {
 
 function isUnlocked(slot) {
   var now = new Date();
-  var d = now.getDate(), m = now.getMonth()+1, h = now.getHours();
-  // Only unlock on May 26 when the hour has been reached
+  var d = now.getDate(), m = now.getMonth()+1, h = now.getHours(), min = now.getMinutes();
+  // Only unlock on May 26 when the time has been reached
   if (m === 5 && d === 26) {
-    return h >= slot.hour;
+    var slotMin = slot.minute || 0;
+    var nowMins = h * 60 + min;
+    var slotMins = slot.hour * 60 + slotMin;
+    return nowMins >= slotMins;
   }
   return false; // locked until birthday
 }
